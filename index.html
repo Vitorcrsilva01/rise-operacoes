@@ -7,178 +7,61 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #081630;
-      color: #fff;
-    }
-
+    body { margin: 0; font-family: Arial, sans-serif; background: #081630; color: #fff; }
     .topbar {
-      height: 64px;
-      background: #061124;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
+      height: 64px; background: #061124; border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
     }
-
-    .brand {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 32px auto;
-      padding: 0 20px;
-    }
-
-    .card {
-      background: #0f2248;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-    }
-
-    .login-wrap {
-      max-width: 420px;
-      margin: 60px auto;
-    }
-
-    h1, h2, h3 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      margin-top: 14px;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: rgba(255,255,255,.8);
-      font-weight: 700;
-    }
-
+    .brand { font-size: 18px; font-weight: 800; }
+    .top-actions { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+    .container { max-width: 1200px; margin: 32px auto; padding: 0 20px; }
+    .card { background: #0f2248; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .login-wrap { max-width: 420px; margin: 60px auto; }
+    h1, h2, h3 { margin-top: 0; }
+    label { display: block; margin-top: 14px; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.8); font-weight: 700; }
     input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
+      width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px;
     }
-
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-
+    textarea { min-height: 90px; resize: vertical; }
     button {
-      margin-top: 20px;
-      padding: 12px 16px;
-      border: none;
-      border-radius: 8px;
-      background: #f28a3c;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+      margin-top: 20px; padding: 12px 16px; border: none; border-radius: 8px;
+      background: #f28a3c; color: white; font-weight: bold; cursor: pointer;
     }
-
-    button:hover {
-      opacity: .94;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,.18);
-    }
-
-    .msg {
-      margin-top: 14px;
-      font-size: 14px;
-      line-height: 1.4;
-      min-height: 20px;
-    }
-
-    .menu {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .menu button {
-      margin-top: 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
+    button:hover { opacity: .94; }
+    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,.18); }
+    .btn-small { margin-top: 0; padding: 8px 12px; font-size: 13px; }
+    .msg { margin-top: 14px; font-size: 14px; line-height: 1.4; min-height: 20px; }
+    .menu { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .menu button { margin-top: 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; }
+    .hidden { display: none !important; }
     .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(242,138,60,.14);
-      color: #f6a35d;
-      font-size: 12px;
-      font-weight: 700;
-      margin-top: 8px;
+      display: inline-block; padding: 6px 10px; border-radius: 999px;
+      background: rgba(242,138,60,.14); color: #f6a35d; font-size: 12px; font-weight: 700; margin-top: 8px;
     }
-
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 16px;
-      font-size: 14px;
+    .table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+    .table th, .table td {
+      border-bottom: 1px solid rgba(255,255,255,.08); padding: 10px 8px; text-align: left; vertical-align: top;
     }
-
-    .table th,
-    .table td {
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      padding: 10px 8px;
-      text-align: left;
-      vertical-align: top;
+    .muted { color: rgba(255,255,255,.72); }
+    .version-badge { color: yellow; font-weight: bold; margin-top: 8px; font-size: 13px; }
+    .totals-box {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px;
     }
-
-    .muted {
-      color: rgba(255,255,255,.72);
+    .total-card {
+      background: rgba(255,255,255,.05); border-radius: 12px; padding: 16px;
     }
-
-    .version-badge {
-      color: yellow;
-      font-weight: bold;
-      margin-top: 8px;
-      font-size: 13px;
+    .total-card .label { font-size: 12px; color: rgba(255,255,255,.72); font-weight: 700; text-transform: uppercase; }
+    .total-card .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
+    .inline-note {
+      margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75);
     }
-
-    @media(max-width:800px){
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        padding: 0 14px;
-      }
-
-      .container {
-        padding: 0 14px;
-      }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    @media(max-width:900px){
+      .grid, .grid-3, .totals-box { grid-template-columns: 1fr; }
+      .topbar { padding: 0 14px; }
+      .container { padding: 0 14px; }
     }
   </style>
 </head>
@@ -195,7 +78,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO GITHUB FINAL 09/03</p>
+      <p class="version-badge">VERSAO GITHUB RELATORIO ABERTO 09/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -230,15 +113,12 @@
         <h1>Bem-vindo ao Rise Operações</h1>
         <div id="roleBadge" class="pill"></div>
         <p id="profileInfo" class="muted" style="margin-top:16px;"></p>
-
         <div id="mainMenu" class="menu"></div>
       </div>
 
       <div id="homeModule" class="card" style="margin-top:20px;">
         <h2>Início</h2>
-        <p class="muted">
-          Base do sistema pronta. Agora vamos operar os módulos reais da Rise.
-        </p>
+        <p class="muted">Base do sistema pronta. Agora vamos operar os módulos reais da Rise.</p>
       </div>
 
       <div id="teamModule" class="hidden" style="margin-top:20px;">
@@ -271,22 +151,20 @@
             <h2>Usuários cadastrados</h2>
             <button class="btn-secondary" onclick="loadTeam()" style="margin-top:0;">Atualizar lista</button>
 
-            <div id="teamListWrap" style="margin-top:14px;">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Perfil</th>
-                    <th>Ativo</th>
-                    <th>Troca senha</th>
-                  </tr>
-                </thead>
-                <tbody id="teamTableBody">
-                  <tr><td colspan="5" class="muted">Carregando...</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Perfil</th>
+                  <th>Ativo</th>
+                  <th>Troca senha</th>
+                </tr>
+              </thead>
+              <tbody id="teamTableBody">
+                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -326,7 +204,7 @@
             <h2>Meus relatórios</h2>
             <button class="btn-secondary" onclick="loadMyReports()" style="margin-top:0;">Atualizar lista</button>
 
-            <table class="table" style="margin-top:16px;">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Período</th>
@@ -334,10 +212,172 @@
                   <th>Serviços</th>
                   <th>Reembolsos</th>
                   <th>Total</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody id="reportsTableBody">
+                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="reportDetailModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <div class="row-actions">
+            <button class="btn-secondary btn-small" onclick="backToReports()">← Voltar</button>
+          </div>
+
+          <h2 style="margin-top:16px;">Relatório</h2>
+          <p id="reportHeaderInfo" class="muted"></p>
+
+          <div class="totals-box">
+            <div class="total-card">
+              <div class="label">Total serviços</div>
+              <div id="detailTotalServicos" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Total reembolsos</div>
+              <div id="detailTotalReembolsos" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Total geral</div>
+              <div id="detailTotalGeral" class="value">R$ 0,00</div>
+            </div>
+          </div>
+
+          <p class="inline-note">
+            Valor da NF = <strong id="detailValorNF">R$ 0,00</strong> • CNPJ Rise: <strong>16.935.970/0001-19</strong>
+          </p>
+
+          <div class="row-actions">
+            <button id="sendForApprovalBtn" onclick="sendReportForApproval()">Enviar para aprovação</button>
+          </div>
+          <div id="detailMsg" class="msg"></div>
+        </div>
+
+        <div class="grid" style="margin-top:20px;">
+          <div class="card">
+            <h2>Adicionar serviço</h2>
+
+            <label for="svcData">Data</label>
+            <input id="svcData" type="date">
+
+            <label for="svcCliente">Cliente</label>
+            <input id="svcCliente" placeholder="Cliente">
+
+            <label for="svcPrograma">Projeto/Programa</label>
+            <input id="svcPrograma" placeholder="Projeto/Programa">
+
+            <label for="svcDescricao">Serviço executado</label>
+            <input id="svcDescricao" placeholder="Serviço executado">
+
+            <label for="svcDuracao">Duração (horas)</label>
+            <input id="svcDuracao" type="number" min="0.5" step="0.5" value="4">
+
+            <label for="svcValorBase">Valor base</label>
+            <input id="svcValorBase" type="number" min="0" step="0.01" value="0">
+
+            <label for="svcPernoites">Qtd. pernoites</label>
+            <input id="svcPernoites" type="number" min="0" step="1" value="0">
+
+            <label>
+              <input id="svcOutroIdioma" type="checkbox" style="width:auto; margin-right:8px;">
+              Outro idioma (+ R$ 50,00)
+            </label>
+
+            <label for="svcCoord4">Coordenação 4h (dias)</label>
+            <input id="svcCoord4" type="number" min="0" step="1" value="0">
+
+            <label for="svcCoord8">Coordenação 8h (dias)</label>
+            <input id="svcCoord8" type="number" min="0" step="1" value="0">
+
+            <button onclick="addService()">Adicionar serviço</button>
+            <div id="serviceMsg" class="msg"></div>
+          </div>
+
+          <div class="card">
+            <h2>Serviços lançados</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Programa</th>
+                  <th>Horas</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="servicesTableBody">
                 <tr><td colspan="5" class="muted">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:20px;">
+          <div class="card">
+            <h2>Adicionar reembolso</h2>
+
+            <label for="rebData">Data</label>
+            <input id="rebData" type="date">
+
+            <label for="rebCliente">Cliente</label>
+            <input id="rebCliente" placeholder="Cliente">
+
+            <label for="rebPercurso">Percurso/Descrição</label>
+            <input id="rebPercurso" placeholder="Percurso/Descrição">
+
+            <label for="rebTipo">Tipo de despesa</label>
+            <select id="rebTipo">
+              <option value="alimentacao">Alimentação</option>
+              <option value="combustivel">Combustível</option>
+              <option value="estacionamento">Estacionamento</option>
+              <option value="hospedagem">Hospedagem</option>
+              <option value="pedagio">Pedágio</option>
+              <option value="uber_taxi">Uber / Táxi</option>
+              <option value="onibus_aviao">Ônibus / Avião</option>
+              <option value="km_rodado">KM rodado</option>
+              <option value="outros">Outros</option>
+            </select>
+
+            <label for="rebModo">Modo de cálculo</label>
+            <select id="rebModo" onchange="toggleReembolsoMode()">
+              <option value="valor_direto">Valor direto</option>
+              <option value="km">KM</option>
+            </select>
+
+            <div id="rebValorDiretoWrap">
+              <label for="rebValorDireto">Valor</label>
+              <input id="rebValorDireto" type="number" min="0" step="0.01" value="0">
+            </div>
+
+            <div id="rebKmWrap" class="hidden">
+              <label for="rebKm">KM rodado</label>
+              <input id="rebKm" type="number" min="0" step="0.01" value="0">
+
+              <label for="rebValorKm">Valor por KM</label>
+              <input id="rebValorKm" type="number" min="0" step="0.01" value="1.20">
+            </div>
+
+            <button onclick="addReembolso()">Adicionar reembolso</button>
+            <div id="reembolsoMsg" class="msg"></div>
+          </div>
+
+          <div class="card">
+            <h2>Reembolsos lançados</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody id="reembolsosTableBody">
+                <tr><td colspan="4" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -361,9 +401,11 @@
 
     let currentUser = null;
     let currentProfile = null;
+    let currentReport = null;
 
-    function byId(id) {
-      return document.getElementById(id);
+    function byId(id) { return document.getElementById(id); }
+    function currencyBRL(v) {
+      return `R$ ${Number(v || 0).toFixed(2)}`;
     }
 
     function showOnly(viewId) {
@@ -373,9 +415,7 @@
       byId(viewId).classList.remove("hidden");
     }
 
-    function setMsg(id, text) {
-      byId(id).innerText = text || "";
-    }
+    function setMsg(id, text) { byId(id).innerText = text || ""; }
 
     function updateTopbar() {
       if (currentUser) {
@@ -388,12 +428,7 @@
     }
 
     async function getProfile(userId) {
-      const { data, error } = await sb
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
-
+      const { data, error } = await sb.from("profiles").select("*").eq("user_id", userId).single();
       if (error) throw error;
       return data;
     }
@@ -422,19 +457,14 @@
     }
 
     function openModule(moduleId) {
-      ["homeModule", "teamModule", "launchModule", "approvalsModule"].forEach(id => {
+      ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule"].forEach(id => {
         byId(id).classList.add("hidden");
       });
 
       byId(moduleId).classList.remove("hidden");
 
-      if (moduleId === "teamModule") {
-        loadTeam();
-      }
-
-      if (moduleId === "launchModule") {
-        loadMyReports();
-      }
+      if (moduleId === "teamModule") loadTeam();
+      if (moduleId === "launchModule") loadMyReports();
     }
 
     function renderApp() {
@@ -452,12 +482,10 @@
 
     window.login = async function login() {
       setMsg("loginMsg", "Entrando...");
-
       const email = byId("email").value.trim().toLowerCase();
       const password = byId("password").value;
 
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
       if (error) {
         setMsg("loginMsg", error.message);
         return;
@@ -467,13 +495,11 @@
 
       try {
         currentProfile = await getProfile(currentUser.id);
-
         if (currentProfile.must_change_password) {
           setMsg("changePasswordMsg", "");
           showOnly("changePasswordView");
           return;
         }
-
         setMsg("loginMsg", "");
         renderApp();
       } catch (e) {
@@ -490,12 +516,10 @@
         setMsg("changePasswordMsg", "Preencha os dois campos.");
         return;
       }
-
       if (newPassword !== confirmPassword) {
         setMsg("changePasswordMsg", "As senhas não coincidem.");
         return;
       }
-
       if (newPassword.length < 8) {
         setMsg("changePasswordMsg", "A nova senha deve ter pelo menos 8 caracteres.");
         return;
@@ -509,11 +533,7 @@
         return;
       }
 
-      const { error: profileError } = await sb
-        .from("profiles")
-        .update({ must_change_password: false })
-        .eq("user_id", currentUser.id);
-
+      const { error: profileError } = await sb.from("profiles").update({ must_change_password: false }).eq("user_id", currentUser.id);
       if (profileError) {
         setMsg("changePasswordMsg", profileError.message);
         return;
@@ -528,12 +548,11 @@
       await sb.auth.signOut();
       currentUser = null;
       currentProfile = null;
-
+      currentReport = null;
       byId("email").value = "";
       byId("password").value = "";
       byId("newPassword").value = "";
       byId("confirmPassword").value = "";
-
       setMsg("loginMsg", "");
       setMsg("changePasswordMsg", "");
       updateTopbar();
@@ -554,14 +573,12 @@
 
       try {
         const { data: sessionData, error: sessionError } = await sb.auth.getSession();
-
         if (sessionError) {
           setMsg("teamMsg", `Erro de sessão: ${sessionError.message}`);
           return;
         }
 
         const accessToken = sessionData?.session?.access_token;
-
         if (!accessToken) {
           setMsg("teamMsg", "Sessão inválida. Saia e entre novamente.");
           return;
@@ -579,12 +596,8 @@
 
         const text = await res.text();
         let result = {};
-
-        try {
-          result = text ? JSON.parse(text) : {};
-        } catch {
-          result = { error: text || "Resposta inválida da function." };
-        }
+        try { result = text ? JSON.parse(text) : {}; }
+        catch { result = { error: text || "Resposta inválida da function." }; }
 
         if (!res.ok) {
           setMsg("teamMsg", `Erro ${res.status}: ${result.error || "Erro ao criar usuário."}`);
@@ -596,7 +609,6 @@
         byId("teamEmail").value = "";
         byId("teamRole").value = "prestador";
         loadTeam();
-
       } catch (err) {
         setMsg("teamMsg", `Falha de rede: ${err.message || err}`);
       }
@@ -605,11 +617,9 @@
     window.loadTeam = async function loadTeam() {
       const tbody = byId("teamTableBody");
       if (!tbody) return;
-
       tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
 
-      const { data, error } = await sb
-        .from("profiles")
+      const { data, error } = await sb.from("profiles")
         .select("nome,email,role,ativo,must_change_password")
         .order("criado_em", { ascending: false });
 
@@ -647,15 +657,13 @@
       setMsg("relatorioMsg", "Criando relatório...");
 
       try {
-        const { error } = await sb
-          .from("relatorios")
-          .insert([{
-            prestador_profile_id: currentProfile.id,
-            mes_referencia: mes,
-            ano_referencia: ano,
-            comentario_prestador: comentario,
-            status: "rascunho"
-          }]);
+        const { error } = await sb.from("relatorios").insert([{
+          prestador_profile_id: currentProfile.id,
+          mes_referencia: mes,
+          ano_referencia: ano,
+          comentario_prestador: comentario,
+          status: "rascunho"
+        }]);
 
         if (error) {
           setMsg("relatorioMsg", `Erro: ${error.message}`);
@@ -665,7 +673,6 @@
         setMsg("relatorioMsg", "Relatório criado com sucesso.");
         byId("relComentario").value = "";
         loadMyReports();
-
       } catch (err) {
         setMsg("relatorioMsg", `Falha: ${err.message || err}`);
       }
@@ -675,23 +682,22 @@
       const tbody = byId("reportsTableBody");
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
 
       try {
-        const { data, error } = await sb
-          .from("relatorios")
+        const { data, error } = await sb.from("relatorios")
           .select("id, mes_referencia, ano_referencia, status, total_servicos, total_reembolsos, total_geral")
           .eq("prestador_profile_id", currentProfile.id)
           .order("ano_referencia", { ascending: false })
           .order("mes_referencia", { ascending: false });
 
         if (error) {
-          tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
           return;
         }
 
         if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum relatório encontrado.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum relatório encontrado.</td></tr>`;
           return;
         }
 
@@ -699,15 +705,252 @@
           <tr>
             <td>${String(item.mes_referencia).padStart(2, "0")}/${item.ano_referencia}</td>
             <td>${item.status}</td>
-            <td>R$ ${Number(item.total_servicos || 0).toFixed(2)}</td>
-            <td>R$ ${Number(item.total_reembolsos || 0).toFixed(2)}</td>
-            <td><strong>R$ ${Number(item.total_geral || 0).toFixed(2)}</strong></td>
+            <td>${currencyBRL(item.total_servicos)}</td>
+            <td>${currencyBRL(item.total_reembolsos)}</td>
+            <td><strong>${currencyBRL(item.total_geral)}</strong></td>
+            <td>
+              <button class="btn-small" onclick="openReport('${item.id}')">Abrir</button>
+            </td>
           </tr>
         `).join("");
-
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5">${err.message || err}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6">${err.message || err}</td></tr>`;
       }
+    };
+
+    async function getReport(reportId) {
+      const { data, error } = await sb.from("relatorios").select("*").eq("id", reportId).single();
+      if (error) throw error;
+      return data;
+    }
+
+    window.openReport = async function openReport(reportId) {
+      try {
+        currentReport = await getReport(reportId);
+        byId("reportHeaderInfo").innerHTML = `
+          <strong>Período:</strong> ${String(currentReport.mes_referencia).padStart(2, "0")}/${currentReport.ano_referencia}<br>
+          <strong>Status:</strong> ${currentReport.status}<br>
+          <strong>Comentário:</strong> ${currentReport.comentario_prestador || "-"}
+        `;
+        renderReportTotals();
+        byId("reportDetailModule").classList.remove("hidden");
+        ["homeModule","teamModule","launchModule","approvalsModule"].forEach(id => byId(id).classList.add("hidden"));
+        await loadServices();
+        await loadReembolsos();
+      } catch (err) {
+        setMsg("relatorioMsg", `Erro ao abrir relatório: ${err.message || err}`);
+      }
+    };
+
+    window.backToReports = function backToReports() {
+      currentReport = null;
+      openModule("launchModule");
+    };
+
+    function renderReportTotals() {
+      if (!currentReport) return;
+      byId("detailTotalServicos").innerText = currencyBRL(currentReport.total_servicos);
+      byId("detailTotalReembolsos").innerText = currencyBRL(currentReport.total_reembolsos);
+      byId("detailTotalGeral").innerText = currencyBRL(currentReport.total_geral);
+      byId("detailValorNF").innerText = currencyBRL(currentReport.valor_nf_aprovado);
+
+      const btn = byId("sendForApprovalBtn");
+      btn.disabled = currentReport.status !== "rascunho" && currentReport.status !== "devolvido";
+      btn.style.opacity = btn.disabled ? "0.6" : "1";
+    }
+
+    async function refreshCurrentReport() {
+      if (!currentReport) return;
+      currentReport = await getReport(currentReport.id);
+      renderReportTotals();
+    }
+
+    window.addService = async function addService() {
+      if (!currentReport) return;
+
+      const payload = {
+        relatorio_id: currentReport.id,
+        data_execucao: byId("svcData").value,
+        cliente: byId("svcCliente").value.trim(),
+        programa: byId("svcPrograma").value.trim(),
+        descricao_servico: byId("svcDescricao").value.trim(),
+        duracao_horas: parseFloat(byId("svcDuracao").value || "0"),
+        valor_base: parseFloat(byId("svcValorBase").value || "0"),
+        qtd_pernoites: parseInt(byId("svcPernoites").value || "0", 10),
+        outro_idioma: byId("svcOutroIdioma").checked,
+        coord_4h_dias: parseInt(byId("svcCoord4").value || "0", 10),
+        coord_8h_dias: parseInt(byId("svcCoord8").value || "0", 10)
+      };
+
+      if (!payload.data_execucao || !payload.cliente || !payload.programa) {
+        setMsg("serviceMsg", "Preencha data, cliente e projeto/programa.");
+        return;
+      }
+
+      setMsg("serviceMsg", "Adicionando serviço...");
+
+      const { error } = await sb.from("relatorio_servicos").insert([payload]);
+      if (error) {
+        setMsg("serviceMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      setMsg("serviceMsg", "Serviço adicionado com sucesso.");
+      byId("svcData").value = "";
+      byId("svcCliente").value = "";
+      byId("svcPrograma").value = "";
+      byId("svcDescricao").value = "";
+      byId("svcDuracao").value = "4";
+      byId("svcValorBase").value = "0";
+      byId("svcPernoites").value = "0";
+      byId("svcOutroIdioma").checked = false;
+      byId("svcCoord4").value = "0";
+      byId("svcCoord8").value = "0";
+
+      await loadServices();
+      await refreshCurrentReport();
+      await loadMyReports();
+    };
+
+    async function loadServices() {
+      if (!currentReport) return;
+      const tbody = byId("servicesTableBody");
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb.from("relatorio_servicos")
+        .select("data_execucao, cliente, programa, duracao_horas, subtotal_servico")
+        .eq("relatorio_id", currentReport.id)
+        .order("data_execucao", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum serviço lançado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.data_execucao || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.programa || ""}</td>
+          <td>${item.duracao_horas || 0}h</td>
+          <td>${currencyBRL(item.subtotal_servico)}</td>
+        </tr>
+      `).join("");
+    }
+
+    window.toggleReembolsoMode = function toggleReembolsoMode() {
+      const modo = byId("rebModo").value;
+      byId("rebValorDiretoWrap").classList.toggle("hidden", modo === "km");
+      byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
+    };
+
+    window.addReembolso = async function addReembolso() {
+      if (!currentReport) return;
+
+      const modo = byId("rebModo").value;
+      const payload = {
+        relatorio_id: currentReport.id,
+        data_despesa: byId("rebData").value,
+        cliente: byId("rebCliente").value.trim(),
+        percurso_descricao: byId("rebPercurso").value.trim(),
+        tipo_despesa: byId("rebTipo").value,
+        modo_valor: modo,
+        km_rodado: modo === "km" ? parseFloat(byId("rebKm").value || "0") : null,
+        valor_km: modo === "km" ? parseFloat(byId("rebValorKm").value || "1.2") : 1.20,
+        valor_informado: modo === "valor_direto" ? parseFloat(byId("rebValorDireto").value || "0") : null
+      };
+
+      if (!payload.data_despesa || !payload.cliente || !payload.percurso_descricao) {
+        setMsg("reembolsoMsg", "Preencha data, cliente e percurso/descrição.");
+        return;
+      }
+
+      setMsg("reembolsoMsg", "Adicionando reembolso...");
+
+      const { error } = await sb.from("relatorio_reembolsos").insert([payload]);
+      if (error) {
+        setMsg("reembolsoMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      setMsg("reembolsoMsg", "Reembolso adicionado com sucesso.");
+      byId("rebData").value = "";
+      byId("rebCliente").value = "";
+      byId("rebPercurso").value = "";
+      byId("rebTipo").value = "alimentacao";
+      byId("rebModo").value = "valor_direto";
+      byId("rebValorDireto").value = "0";
+      byId("rebKm").value = "0";
+      byId("rebValorKm").value = "1.20";
+      toggleReembolsoMode();
+
+      await loadReembolsos();
+      await refreshCurrentReport();
+      await loadMyReports();
+    };
+
+    async function loadReembolsos() {
+      if (!currentReport) return;
+      const tbody = byId("reembolsosTableBody");
+      tbody.innerHTML = `<tr><td colspan="4" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb.from("relatorio_reembolsos")
+        .select("data_despesa, cliente, tipo_despesa, valor_final")
+        .eq("relatorio_id", currentReport.id)
+        .order("data_despesa", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="muted">Nenhum reembolso lançado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.data_despesa || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.tipo_despesa || ""}</td>
+          <td>${currencyBRL(item.valor_final)}</td>
+        </tr>
+      `).join("");
+    }
+
+    window.sendReportForApproval = async function sendReportForApproval() {
+      if (!currentReport) return;
+
+      if ((Number(currentReport.total_servicos || 0) + Number(currentReport.total_reembolsos || 0)) <= 0) {
+        setMsg("detailMsg", "Adicione pelo menos um serviço ou reembolso antes de enviar.");
+        return;
+      }
+
+      setMsg("detailMsg", "Enviando para aprovação...");
+
+      const { error } = await sb.from("relatorios")
+        .update({
+          status: "enviado",
+          enviado_em: new Date().toISOString()
+        })
+        .eq("id", currentReport.id);
+
+      if (error) {
+        setMsg("detailMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      await refreshCurrentReport();
+      setMsg("detailMsg", "Relatório enviado para aprovação.");
+      await loadMyReports();
     };
 
     async function bootstrap() {
@@ -741,6 +984,7 @@
     }
 
     bootstrap();
+    toggleReembolsoMode();
   </script>
 </body>
 </html>
