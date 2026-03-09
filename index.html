@@ -419,7 +419,14 @@
     });
 
     if (error) {
-      setMsg("teamMsg", `Erro: ${error.message}`);
+      let detail = error.message || "Erro ao criar usuário.";
+
+      try {
+        const body = await error.context.json();
+        if (body?.error) detail = body.error;
+      } catch (_) {}
+
+      setMsg("teamMsg", `Erro: ${detail}`);
       return;
     }
 
