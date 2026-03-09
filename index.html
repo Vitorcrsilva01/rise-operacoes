@@ -414,35 +414,52 @@
   setMsg("teamMsg","Criando usuário...");
 
   try {
-    const { data, error } = await sb.functions.invoke("create-user", {
-      body: { nome, email, role }
+    const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+
+    if (sessionError) {
+      setMsg("teamMsg", `Erro de sessão: ${sessionError.message}`);
+      return;
+    }
+
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      setMsg("teamMsg","Sessão inválida. Saia e entre novamente.");
+      return;
+    }
+
+    const res = await fetch(FUNCTION_CREATE_USER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`,
+        "apikey": SUPABASE_KEY
+      },
+      body: JSON.stringify({ nome, email, role })
     });
 
-    if (error) {
-      let detail = error.message || "Erro ao criar usuário.";
+    const text = await res.text();
+    let result = {};
 
-      try {
-        const body = await error.context.json();
-        if (body?.error) detail = body.error;
-      } catch (_) {}
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch {
+      result = { error: text || "Resposta inválida da function." };
+    }
 
-      setMsg("teamMsg", `Erro: ${detail}`);
+    if (!res.ok) {
+      setMsg("teamMsg", `Erro ${res.status}: ${result.error || "Erro ao criar usuário."}`);
       return;
     }
 
-    if (data?.error) {
-      setMsg("teamMsg", `Erro: ${data.error}`);
-      return;
-    }
-
-    setMsg("teamMsg", "Usuário criado com sucesso. Senha inicial: Oper@coes_Rise2026");
+    setMsg("teamMsg","Usuário criado com sucesso. Senha inicial: Oper@coes_Rise2026");
     byId("teamNome").value = "";
     byId("teamEmail").value = "";
     byId("teamRole").value = "prestador";
     loadTeam();
 
   } catch (err) {
-    setMsg("teamMsg", `Falha: ${err.message || err}`);
+    setMsg("teamMsg", `Falha de rede: ${err.message || err}`);
   }
 };
 
