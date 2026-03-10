@@ -7,7 +7,7 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; background: #081630; color: #fff; }
+    body { margin: 0; font-family: Calibri, Arial, sans-serif; background: #081630; color: #fff; }
     .topbar {
       height: 64px;
       background: #061124;
@@ -17,7 +17,7 @@
       justify-content: space-between;
       padding: 0 24px;
     }
-    .brand { font-size: 18px; font-weight: 800; }
+    .brand { font-size: 18px; font-weight: 800; font-family: 'Exo', Arial, sans-serif; }
     .top-actions { display: flex; align-items: center; gap: 12px; font-size: 14px; }
     .container { max-width: 1280px; margin: 32px auto; padding: 0 20px; }
     .card {
@@ -27,7 +27,13 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.25);
     }
     .login-wrap { max-width: 420px; margin: 60px auto; }
-    h1, h2, h3 { margin-top: 0; }
+    h1, h2, h3 {
+      margin-top: 0;
+      font-family: 'Exo', Arial, sans-serif;
+    }
+    h1 { font-weight: 800; }
+    h2, h3 { font-weight: 700; }
+
     label {
       display: block;
       margin-top: 14px;
@@ -36,6 +42,7 @@
       color: rgba(255,255,255,.8);
       font-weight: 700;
     }
+
     input, select, textarea {
       width: 100%;
       padding: 12px;
@@ -43,7 +50,9 @@
       border: none;
       font-size: 14px;
     }
+
     textarea { min-height: 90px; resize: vertical; }
+
     button {
       margin-top: 20px;
       padding: 12px 16px;
@@ -54,37 +63,51 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     button:hover { opacity: .94; }
+
     .btn-secondary {
       background: transparent;
       border: 1px solid rgba(255,255,255,.18);
     }
+
     .btn-danger { background: #b73b3b; }
+
     .btn-small {
       margin-top: 0;
       padding: 8px 12px;
       font-size: 13px;
     }
+
+    .btn-linkish {
+      background: #173467;
+    }
+
     .msg {
       margin-top: 14px;
       font-size: 14px;
       line-height: 1.4;
       min-height: 20px;
     }
+
     .menu {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       margin-top: 20px;
     }
+
     .menu button { margin-top: 0; }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-top: 20px;
     }
+
     .hidden { display: none !important; }
+
     .pill {
       display: inline-block;
       padding: 6px 10px;
@@ -95,61 +118,140 @@
       font-weight: 700;
       margin-top: 8px;
     }
+
     .table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 16px;
       font-size: 14px;
     }
+
     .table th, .table td {
       border-bottom: 1px solid rgba(255,255,255,.08);
       padding: 10px 8px;
       text-align: left;
       vertical-align: top;
     }
+
     .muted { color: rgba(255,255,255,.72); }
+
     .version-badge {
       color: yellow;
       font-weight: bold;
       margin-top: 8px;
       font-size: 13px;
     }
+
     .totals-box {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
       margin-top: 16px;
     }
+
     .total-card {
       background: rgba(255,255,255,.05);
       border-radius: 12px;
       padding: 16px;
     }
+
     .total-card .label {
       font-size: 12px;
       color: rgba(255,255,255,.72);
       font-weight: 700;
       text-transform: uppercase;
     }
+
     .total-card .value {
       font-size: 24px;
       font-weight: 800;
       margin-top: 6px;
     }
+
     .inline-note {
       margin-top: 10px;
       font-size: 13px;
       color: rgba(255,255,255,.75);
     }
+
     .row-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
+
+    .nf-highlight {
+      margin-top: 16px;
+      background: rgba(242,138,60,.16);
+      border: 1px solid rgba(242,138,60,.45);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .nf-highlight .nf-title {
+      font-family: 'Exo', Arial, sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #ffbe84;
+    }
+
+    .nf-highlight .nf-value {
+      font-family: 'Exo', Arial, sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      margin-top: 6px;
+      color: #fff;
+    }
+
+    .nf-highlight .nf-cnpj {
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nf-highlight .nf-help {
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,.82);
+      line-height: 1.4;
+    }
+
+    .badge-ok,
+    .badge-warn,
+    .badge-neutral {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-ok {
+      background: rgba(63, 191, 127, .15);
+      color: #7ee2a8;
+    }
+
+    .badge-warn {
+      background: rgba(242,138,60,.15);
+      color: #ffbe84;
+    }
+
+    .badge-neutral {
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.85);
+    }
+
     @media(max-width:900px){
       .grid, .totals-box { grid-template-columns: 1fr; }
       .topbar { padding: 0 14px; }
       .container { padding: 0 14px; }
+      .table { display: block; overflow-x: auto; }
+      button { min-height: 44px; }
+      input, select, textarea { min-height: 44px; }
     }
   </style>
 </head>
@@ -166,7 +268,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO FINANCEIRO 09/03</p>
+      <p class="version-badge">VERSAO FLUXO NF CORRIGIDO 10/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -206,7 +308,7 @@
 
       <div id="homeModule" class="card" style="margin-top:20px;">
         <h2>Início</h2>
-        <p class="muted">Fluxo completo: prestador, gestor e financeiro.</p>
+        <p class="muted">Fluxo completo: prestador → gestor → financeiro.</p>
       </div>
 
       <div id="teamModule" class="hidden" style="margin-top:20px;">
@@ -298,6 +400,7 @@
                 <tr>
                   <th>Período</th>
                   <th>Status</th>
+                  <th>NF</th>
                   <th>Serviços</th>
                   <th>Reembolsos</th>
                   <th>Total</th>
@@ -305,7 +408,7 @@
                 </tr>
               </thead>
               <tbody id="reportsTableBody">
-                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+                <tr><td colspan="7" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -336,15 +439,31 @@
             </div>
           </div>
 
-          <p class="inline-note">
-            Valor da NF = <strong id="detailValorNF">R$ 0,00</strong> • CNPJ Rise: <strong>16.935.970/0001-19</strong>
-          </p>
+          <div class="nf-highlight">
+            <div class="nf-title">Valor da NF</div>
+            <div id="detailValorNFStrong" class="nf-value">R$ 0,00</div>
+            <div class="nf-cnpj">CNPJ Rise 16.935.970/0001-19</div>
+            <div class="nf-help">A NF deve conter apenas os serviços. Reembolsos serão pagos fora da NF.</div>
+          </div>
 
           <div class="row-actions">
             <button id="sendForApprovalBtn" onclick="sendReportForApproval()">Enviar para aprovação</button>
             <button id="backToDraftBtn" class="btn-secondary hidden" onclick="backToDraft()">Voltar para rascunho</button>
           </div>
           <div id="detailMsg" class="msg"></div>
+        </div>
+
+        <div id="nfPrestadorModule" class="card hidden" style="margin-top:20px;">
+          <h2>Nota Fiscal</h2>
+          <p id="prestadorNfInfo" class="muted"></p>
+
+          <label for="prestadorNfPdf">PDF da NF</label>
+          <input id="prestadorNfPdf" type="file" accept=".pdf">
+
+          <div class="row-actions">
+            <button id="sendNfBtn" onclick="sendNfByPrestador()">Enviar NF</button>
+          </div>
+          <div id="prestadorNfMsg" class="msg"></div>
         </div>
 
         <div class="grid" style="margin-top:20px;">
@@ -383,7 +502,7 @@
             <label for="svcCoord8">Coordenação 8h (dias)</label>
             <input id="svcCoord8" type="number" min="0" step="1" value="0">
 
-            <button onclick="addService()">Adicionar serviço</button>
+            <button id="addServiceBtn" onclick="addService()">Adicionar serviço</button>
             <div id="serviceMsg" class="msg"></div>
           </div>
 
@@ -397,10 +516,11 @@
                   <th>Programa</th>
                   <th>Horas</th>
                   <th>Subtotal</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody id="servicesTableBody">
-                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+                <tr><td colspan="6" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -454,7 +574,7 @@
             <label for="rebComprovante">Comprovante</label>
             <input id="rebComprovante" type="file" accept="image/*,.pdf">
 
-            <button onclick="addReembolso()">Adicionar reembolso</button>
+            <button id="addReembolsoBtn" onclick="addReembolso()">Adicionar reembolso</button>
             <div id="reembolsoMsg" class="msg"></div>
           </div>
 
@@ -468,10 +588,11 @@
                   <th>Tipo</th>
                   <th>Valor</th>
                   <th>Comprovante</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody id="reembolsosTableBody">
-                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+                <tr><td colspan="6" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -479,7 +600,7 @@
 
         <div class="card" style="margin-top:20px;">
           <h2>Anexos do relatório</h2>
-          <p class="muted">Comprovantes enviados para este relatório.</p>
+          <p class="muted">Comprovantes e NF enviados para este relatório.</p>
           <table class="table">
             <thead>
               <tr>
@@ -493,6 +614,7 @@
             </tbody>
           </table>
         </div>
+
       </div>
 
       <div id="approvalsModule" class="hidden" style="margin-top:20px;">
@@ -505,6 +627,7 @@
               <tr>
                 <th>Prestador</th>
                 <th>Período</th>
+                <th>NF</th>
                 <th>Serviços</th>
                 <th>Reembolsos</th>
                 <th>Total</th>
@@ -512,7 +635,7 @@
               </tr>
             </thead>
             <tbody id="approvalsTableBody">
-              <tr><td colspan="6" class="muted">Carregando...</td></tr>
+              <tr><td colspan="7" class="muted">Carregando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -542,16 +665,22 @@
             </div>
           </div>
 
-          <p class="inline-note">
-            Valor da NF a aprovar = <strong id="approvalValorNF">R$ 0,00</strong> • CNPJ Rise: <strong>16.935.970/0001-19</strong>
-          </p>
+          <div class="nf-highlight">
+            <div class="nf-title">Valor da NF</div>
+            <div id="approvalValorNF" class="nf-value">R$ 0,00</div>
+            <div class="nf-cnpj">CNPJ Rise 16.935.970/0001-19</div>
+            <div class="nf-help">A NF deve conter apenas os serviços. Reembolsos são pagos separados.</div>
+          </div>
 
           <label for="gestorComentario">Comentário do gestor</label>
           <textarea id="gestorComentario" placeholder="Ex.: aprovado sem ajustes / devolver com orientação"></textarea>
 
           <div class="row-actions">
-            <button onclick="approveReport()">Aprovar</button>
-            <button class="btn-danger" onclick="returnReport()">Devolver</button>
+            <button id="approveReportBtn" onclick="approveReport()">Aprovar relatório</button>
+            <button id="returnReportBtn" class="btn-danger" onclick="returnReport()">Devolver relatório</button>
+            <button id="validateNfBtn" class="hidden" onclick="validateNfByGestor()">Validar NF</button>
+            <button id="rejectNfBtn" class="hidden btn-danger" onclick="rejectNfByGestor()">Rejeitar NF</button>
+            <button id="sendToFinanceBtn" class="hidden" onclick="sendToFinance()">Enviar para financeiro</button>
           </div>
           <div id="approvalMsg" class="msg"></div>
         </div>
@@ -595,7 +724,7 @@
         </div>
 
         <div class="card" style="margin-top:20px;">
-          <h2>Comprovantes</h2>
+          <h2>Anexos do relatório</h2>
           <table class="table">
             <thead>
               <tr>
@@ -614,7 +743,7 @@
       <div id="financeModule" class="hidden" style="margin-top:20px;">
         <div class="card">
           <h2>Financeiro</h2>
-          <p class="muted">Relatórios aprovados pelo gestor aguardando NF e pagamento.</p>
+          <p class="muted">Relatórios com NF validada, enviados ao financeiro.</p>
           <button class="btn-secondary" onclick="loadFinanceReports()" style="margin-top:0;">Atualizar lista</button>
 
           <table class="table">
@@ -623,6 +752,7 @@
                 <th>Prestador</th>
                 <th>Período</th>
                 <th>NF</th>
+                <th>Serviços</th>
                 <th>Reembolsos</th>
                 <th>Total</th>
                 <th>Status NF</th>
@@ -631,7 +761,7 @@
               </tr>
             </thead>
             <tbody id="financeTableBody">
-              <tr><td colspan="8" class="muted">Carregando...</td></tr>
+              <tr><td colspan="9" class="muted">Carregando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -664,13 +794,8 @@
           <label for="financeObs">Observação do financeiro</label>
           <textarea id="financeObs" placeholder="Observações internas do financeiro"></textarea>
 
-          <label for="nfPdf">PDF da NF</label>
-          <input id="nfPdf" type="file" accept=".pdf">
-
           <div class="row-actions">
-            <button onclick="uploadNfPdf()">Receber PDF da NF</button>
-            <button class="btn-secondary" onclick="markNfReceived()">Marcar NF recebida</button>
-            <button onclick="markAsPaid()">Marcar pagamento realizado</button>
+            <button onclick="markAsPaid()">Pagamento realizado</button>
           </div>
 
           <div id="financeMsg" class="msg"></div>
@@ -708,9 +833,17 @@
     let currentReport = null;
     let currentApprovalReport = null;
     let currentFinanceReport = null;
-
-    function byId(id) { return document.getElementById(id); }
+    let editingServiceId = null;
+    let editingReembolsoId = null;    function byId(id) { return document.getElementById(id); }
     function currencyBRL(v) { return `R$ ${Number(v || 0).toFixed(2)}`; }
+
+    function nfBadge(status) {
+      if (status === "validada") return `<span class="badge-ok">validada</span>`;
+      if (status === "rejeitada") return `<span class="badge-warn">rejeitada</span>`;
+      if (status === "enviada") return `<span class="badge-warn">enviada</span>`;
+      if (status === "aguardando_emissao") return `<span class="badge-neutral">aguardando_emissão</span>`;
+      return `<span class="badge-neutral">${status || "nao_solicitada"}</span>`;
+    }
 
     function showOnly(viewId) {
       byId("loginView").classList.add("hidden");
@@ -719,7 +852,10 @@
       byId(viewId).classList.remove("hidden");
     }
 
-    function setMsg(id, text) { byId(id).innerText = text || ""; }
+    function setMsg(id, text) {
+      const el = byId(id);
+      if (el) el.innerText = text || "";
+    }
 
     function updateTopbar() {
       if (currentUser) {
@@ -736,6 +872,38 @@
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    }
+
+    function clearServiceForm() {
+      editingServiceId = null;
+      byId("svcData").value = "";
+      byId("svcCliente").value = "";
+      byId("svcPrograma").value = "";
+      byId("svcDescricao").value = "";
+      byId("svcDuracao").value = "4";
+      byId("svcValorBase").value = "0";
+      byId("svcPernoites").value = "0";
+      byId("svcOutroIdioma").checked = false;
+      byId("svcCoord4").value = "0";
+      byId("svcCoord8").value = "0";
+      byId("addServiceBtn").innerText = "Adicionar serviço";
+      setMsg("serviceMsg", "");
+    }
+
+    function clearReembolsoForm() {
+      editingReembolsoId = null;
+      byId("rebData").value = "";
+      byId("rebCliente").value = "";
+      byId("rebPercurso").value = "";
+      byId("rebTipo").value = "alimentacao";
+      byId("rebModo").value = "valor_direto";
+      byId("rebValorDireto").value = "0";
+      byId("rebKm").value = "0";
+      byId("rebValorKm").value = "1.20";
+      byId("rebComprovante").value = "";
+      byId("addReembolsoBtn").innerText = "Adicionar reembolso";
+      toggleReembolsoMode();
+      setMsg("reembolsoMsg", "");
     }
 
     async function getProfile(userId) {
@@ -777,12 +945,14 @@
       [
         "homeModule","teamModule","launchModule","reportDetailModule",
         "approvalsModule","approvalDetailModule",
-        "financeModule","financeDetailModule"
+        "financeModule","financeDetailModule","nfPrestadorModule"
       ].forEach(id => {
-        byId(id).classList.add("hidden");
+        const el = byId(id);
+        if (el) el.classList.add("hidden");
       });
 
-      byId(moduleId).classList.remove("hidden");
+      const target = byId(moduleId);
+      if (target) target.classList.remove("hidden");
 
       if (moduleId === "teamModule") loadTeam();
       if (moduleId === "launchModule") loadMyReports();
@@ -874,6 +1044,8 @@
       currentReport = null;
       currentApprovalReport = null;
       currentFinanceReport = null;
+      editingServiceId = null;
+      editingReembolsoId = null;
       byId("email").value = "";
       byId("password").value = "";
       byId("newPassword").value = "";
@@ -1039,7 +1211,8 @@
           mes_referencia: mes,
           ano_referencia: ano,
           comentario_prestador: comentario,
-          status: "rascunho"
+          status: "rascunho",
+          nf_status: "nao_solicitada"
         }]);
 
         if (error) {
@@ -1063,22 +1236,22 @@
       const tbody = byId("reportsTableBody");
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="muted">Carregando...</td></tr>`;
 
       try {
         const { data, error } = await sb.from("relatorios")
-          .select("id, mes_referencia, ano_referencia, status, total_servicos, total_reembolsos, total_geral")
+          .select("id, mes_referencia, ano_referencia, status, nf_status, total_servicos, total_reembolsos, total_geral, valor_nf_aprovado")
           .eq("prestador_profile_id", currentProfile.id)
           .order("ano_referencia", { ascending: false })
           .order("mes_referencia", { ascending: false });
 
         if (error) {
-          tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7">${error.message}</td></tr>`;
           return;
         }
 
         if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum relatório encontrado.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhum relatório encontrado.</td></tr>`;
           return;
         }
 
@@ -1086,41 +1259,57 @@
           <tr>
             <td>${String(item.mes_referencia).padStart(2, "0")}/${item.ano_referencia}</td>
             <td>${item.status}</td>
-            <td>${currencyBRL(item.total_servicos)}</td>
+            <td>${nfBadge(item.nf_status)}</td>
+            <td>${currencyBRL(item.valor_nf_aprovado || item.total_servicos)}</td>
             <td>${currencyBRL(item.total_reembolsos)}</td>
             <td><strong>${currencyBRL(item.total_geral)}</strong></td>
             <td><button class="btn-small" onclick="openReport('${item.id}')">Abrir</button></td>
           </tr>
         `).join("");
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6">${err.message || err}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7">${err.message || err}</td></tr>`;
       }
     };
 
-    window.openReport = async function openReport(reportId) {
-      try {
-        currentReport = await getReport(reportId);
-        byId("reportHeaderInfo").innerHTML = `
-          <strong>Período:</strong> ${String(currentReport.mes_referencia).padStart(2, "0")}/${currentReport.ano_referencia}<br>
-          <strong>Status:</strong> ${currentReport.status}<br>
-          <strong>Comentário:</strong> ${currentReport.comentario_prestador || "-"}<br>
-          <strong>Comentário do gestor:</strong> ${currentReport.comentario_gestor || "-"}
+    async function refreshCurrentReport() {
+      if (!currentReport) return;
+      currentReport = await getReport(currentReport.id);
+      renderReportTotals();
+      renderPrestadorNfBox();
+    }
+
+    function renderPrestadorNfBox() {
+      const box = byId("nfPrestadorModule");
+      const info = byId("prestadorNfInfo");
+      if (!box || !info || !currentReport) return;
+
+      box.classList.add("hidden");
+
+      if (currentProfile.role !== "prestador") return;
+      if (!["aprovado_gestor"].includes(currentReport.status)) return;
+
+      box.classList.remove("hidden");
+
+      if (currentReport.nf_status === "rejeitada") {
+        info.innerHTML = `
+          <strong>Sua NF foi rejeitada pelo gestor.</strong><br>
+          Motivo: ${currentReport.comentario_gestor || "Sem comentário."}<br>
+          Substitua o PDF da NF e envie novamente.
         `;
-        renderReportTotals();
-        byId("reportDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","approvalsModule","approvalDetailModule","financeModule","financeDetailModule"].forEach(id => byId(id).classList.add("hidden"));
-        await loadServices();
-        await loadReembolsos();
-        await loadAttachments();
-      } catch (err) {
-        setMsg("relatorioMsg", `Erro ao abrir relatório: ${err.message || err}`);
+      } else if (currentReport.nf_status === "enviada") {
+        info.innerHTML = `
+          NF enviada. Aguarde a validação do gestor.
+        `;
+      } else if (currentReport.nf_status === "validada") {
+        info.innerHTML = `
+          NF validada pelo gestor. O relatório seguirá para o financeiro.
+        `;
+      } else {
+        info.innerHTML = `
+          Emitir NF no valor de <strong>${currencyBRL(currentReport.valor_nf_aprovado || currentReport.total_servicos)}</strong> para o CNPJ <strong>16.935.970/0001-19</strong>.
+        `;
       }
-    };
-
-    window.backToReports = function backToReports() {
-      currentReport = null;
-      openModule("launchModule");
-    };
+    }
 
     function renderReportTotals() {
       if (!currentReport) return;
@@ -1128,7 +1317,7 @@
       byId("detailTotalServicos").innerText = currencyBRL(currentReport.total_servicos);
       byId("detailTotalReembolsos").innerText = currencyBRL(currentReport.total_reembolsos);
       byId("detailTotalGeral").innerText = currencyBRL(currentReport.total_geral);
-      byId("detailValorNF").innerText = currencyBRL(currentReport.valor_nf_aprovado);
+      byId("detailValorNFStrong").innerText = currencyBRL(currentReport.valor_nf_aprovado || currentReport.total_servicos);
 
       const sendBtn = byId("sendForApprovalBtn");
       const backBtn = byId("backToDraftBtn");
@@ -1149,110 +1338,65 @@
       if (currentProfile.role === "prestador" && currentReport.status === "enviado") {
         backBtn.classList.remove("hidden");
       }
-    }    async function refreshCurrentReport() {
-      if (!currentReport) return;
-      currentReport = await getReport(currentReport.id);
-      renderReportTotals();
+
+      const canEdit = currentProfile.role === "prestador" && ["rascunho","devolvido"].includes(currentReport.status);
+      byId("addServiceBtn").disabled = !canEdit;
+      byId("addReembolsoBtn").disabled = !canEdit;
     }
 
-    window.addService = async function addService() {
-      if (!currentReport) return;
-      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
-        setMsg("serviceMsg", "Este relatório não pode ser editado no status atual.");
-        return;
+    window.openReport = async function openReport(reportId) {
+      try {
+        currentReport = await getReport(reportId);
+        byId("reportHeaderInfo").innerHTML = `
+          <strong>Período:</strong> ${String(currentReport.mes_referencia).padStart(2, "0")}/${currentReport.ano_referencia}<br>
+          <strong>Status:</strong> ${currentReport.status}<br>
+          <strong>NF Status:</strong> ${currentReport.nf_status || "nao_solicitada"}<br>
+          <strong>Comentário do prestador:</strong> ${currentReport.comentario_prestador || "-"}<br>
+          <strong>Comentário do gestor:</strong> ${currentReport.comentario_gestor || "-"}
+        `;
+        renderReportTotals();
+        renderPrestadorNfBox();
+        byId("reportDetailModule").classList.remove("hidden");
+        ["homeModule","teamModule","launchModule","approvalsModule","approvalDetailModule","financeModule","financeDetailModule"].forEach(id => {
+          const el = byId(id);
+          if (el) el.classList.add("hidden");
+        });
+        clearServiceForm();
+        clearReembolsoForm();
+        await loadServices();
+        await loadReembolsos();
+        await loadAttachments();
+      } catch (err) {
+        setMsg("relatorioMsg", `Erro ao abrir relatório: ${err.message || err}`);
       }
-
-      const payload = {
-        relatorio_id: currentReport.id,
-        data_execucao: byId("svcData").value,
-        cliente: byId("svcCliente").value.trim(),
-        programa: byId("svcPrograma").value.trim(),
-        descricao_servico: byId("svcDescricao").value.trim(),
-        duracao_horas: parseFloat(byId("svcDuracao").value || "0"),
-        valor_base: parseFloat(byId("svcValorBase").value || "0"),
-        qtd_pernoites: parseInt(byId("svcPernoites").value || "0", 10),
-        outro_idioma: byId("svcOutroIdioma").checked,
-        coord_4h_dias: parseInt(byId("svcCoord4").value || "0", 10),
-        coord_8h_dias: parseInt(byId("svcCoord8").value || "0", 10)
-      };
-
-      if (!payload.data_execucao || !payload.cliente || !payload.programa) {
-        setMsg("serviceMsg", "Preencha data, cliente e projeto/programa.");
-        return;
-      }
-
-      setMsg("serviceMsg", "Adicionando serviço...");
-
-      const { error } = await sb.from("relatorio_servicos").insert([payload]);
-      if (error) {
-        setMsg("serviceMsg", `Erro: ${error.message}`);
-        return;
-      }
-
-      setMsg("serviceMsg", "Serviço adicionado com sucesso.");
-      byId("svcData").value = "";
-      byId("svcCliente").value = "";
-      byId("svcPrograma").value = "";
-      byId("svcDescricao").value = "";
-      byId("svcDuracao").value = "4";
-      byId("svcValorBase").value = "0";
-      byId("svcPernoites").value = "0";
-      byId("svcOutroIdioma").checked = false;
-      byId("svcCoord4").value = "0";
-      byId("svcCoord8").value = "0";
-
-      await loadServices();
-      await refreshCurrentReport();
-      await loadMyReports();
     };
 
-    async function loadServices() {
-      if (!currentReport) return;
-      const tbody = byId("servicesTableBody");
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
-
-      const { data, error } = await sb.from("relatorio_servicos")
-        .select("data_execucao, cliente, programa, duracao_horas, subtotal_servico")
-        .eq("relatorio_id", currentReport.id)
-        .order("data_execucao", { ascending: true })
-        .order("ordem", { ascending: true });
-
-      if (error) {
-        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum serviço lançado.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = data.map(item => `
-        <tr>
-          <td>${item.data_execucao || ""}</td>
-          <td>${item.cliente || ""}</td>
-          <td>${item.programa || ""}</td>
-          <td>${item.duracao_horas || 0}h</td>
-          <td>${currencyBRL(item.subtotal_servico)}</td>
-        </tr>
-      `).join("");
-    }
-
-    window.toggleReembolsoMode = function toggleReembolsoMode() {
-      const modo = byId("rebModo").value;
-      byId("rebValorDiretoWrap").classList.toggle("hidden", modo === "km");
-      byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
-    };
-
-    async function uploadFileToReport(reportId, subfolder, file, tipoAnexo, reembolsoId = null) {
+    window.backToReports = function backToReports() {
+      currentReport = null;
+      openModule("launchModule");
+    };    async function uploadFileToReport(reportId, subfolder, file, tipoAnexo, reembolsoId = null) {
       const safeName = sanitizeFileName(file.name);
       const path = `${reportId}/${subfolder}/${Date.now()}_${safeName}`;
 
       const { error: uploadError } = await sb.storage
         .from(STORAGE_BUCKET)
-        .upload(path, file, { upsert: false });
+        .upload(path, file, { upsert: true });
 
       if (uploadError) throw uploadError;
+
+      if (tipoAnexo === "nf_pdf") {
+        const { data: oldNfs } = await sb
+          .from("relatorio_anexos")
+          .select("id, storage_path")
+          .eq("relatorio_id", reportId)
+          .eq("tipo_anexo", "nf_pdf");
+
+        for (const old of (oldNfs || [])) {
+          if (old.storage_path !== path) {
+            await sb.from("relatorio_anexos").delete().eq("id", old.id);
+          }
+        }
+      }
 
       const insertPayload = {
         relatorio_id: reportId,
@@ -1272,127 +1416,6 @@
       if (dbError) throw dbError;
 
       return path;
-    }
-
-    async function uploadComprovanteForReembolso(reembolsoId, file) {
-      return uploadFileToReport(currentReport.id, `reembolsos/${reembolsoId}`, file, "comprovante_reembolso", reembolsoId);
-    }
-
-    window.addReembolso = async function addReembolso() {
-      if (!currentReport) return;
-      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
-        setMsg("reembolsoMsg", "Este relatório não pode ser editado no status atual.");
-        return;
-      }
-
-      const modo = byId("rebModo").value;
-      const file = byId("rebComprovante").files[0] || null;
-
-      const payload = {
-        relatorio_id: currentReport.id,
-        data_despesa: byId("rebData").value,
-        cliente: byId("rebCliente").value.trim(),
-        percurso_descricao: byId("rebPercurso").value.trim(),
-        tipo_despesa: byId("rebTipo").value,
-        modo_valor: modo,
-        km_rodado: modo === "km" ? parseFloat(byId("rebKm").value || "0") : null,
-        valor_km: modo === "km" ? parseFloat(byId("rebValorKm").value || "1.2") : 1.20,
-        valor_informado: modo === "valor_direto" ? parseFloat(byId("rebValorDireto").value || "0") : null
-      };
-
-      if (!payload.data_despesa || !payload.cliente || !payload.percurso_descricao) {
-        setMsg("reembolsoMsg", "Preencha data, cliente e percurso/descrição.");
-        return;
-      }
-
-      setMsg("reembolsoMsg", "Adicionando reembolso...");
-
-      const { data, error } = await sb
-        .from("relatorio_reembolsos")
-        .insert([payload])
-        .select()
-        .single();
-
-      if (error) {
-        setMsg("reembolsoMsg", `Erro: ${error.message}`);
-        return;
-      }
-
-      try {
-        if (file) {
-          await uploadComprovanteForReembolso(data.id, file);
-        }
-      } catch (uploadErr) {
-        setMsg("reembolsoMsg", `Reembolso salvo, mas o comprovante falhou: ${uploadErr.message || uploadErr}`);
-        await loadReembolsos();
-        await refreshCurrentReport();
-        await loadMyReports();
-        await loadAttachments();
-        return;
-      }
-
-      setMsg("reembolsoMsg", file ? "Reembolso e comprovante adicionados com sucesso." : "Reembolso adicionado com sucesso.");
-      byId("rebData").value = "";
-      byId("rebCliente").value = "";
-      byId("rebPercurso").value = "";
-      byId("rebTipo").value = "alimentacao";
-      byId("rebModo").value = "valor_direto";
-      byId("rebValorDireto").value = "0";
-      byId("rebKm").value = "0";
-      byId("rebValorKm").value = "1.20";
-      byId("rebComprovante").value = "";
-      toggleReembolsoMode();
-
-      await loadReembolsos();
-      await refreshCurrentReport();
-      await loadMyReports();
-      await loadAttachments();
-    };
-
-    async function loadReembolsos() {
-      if (!currentReport) return;
-      const tbody = byId("reembolsosTableBody");
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
-
-      const { data, error } = await sb.from("relatorio_reembolsos")
-        .select(`
-          id,
-          data_despesa,
-          cliente,
-          tipo_despesa,
-          valor_final,
-          relatorio_anexos (
-            id,
-            nome_arquivo,
-            storage_path
-          )
-        `)
-        .eq("relatorio_id", currentReport.id)
-        .order("data_despesa", { ascending: true })
-        .order("ordem", { ascending: true });
-
-      if (error) {
-        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum reembolso lançado.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = data.map(item => {
-        const temComprovante = item.relatorio_anexos && item.relatorio_anexos.length > 0;
-        return `
-          <tr>
-            <td>${item.data_despesa || ""}</td>
-            <td>${item.cliente || ""}</td>
-            <td>${item.tipo_despesa || ""}</td>
-            <td>${currencyBRL(item.valor_final)}</td>
-            <td>${temComprovante ? "Sim" : "Não"}</td>
-          </tr>
-        `;
-      }).join("");
     }
 
     async function loadAttachments() {
@@ -1433,6 +1456,299 @@
       }
       window.open(data.signedUrl, "_blank");
     };
+
+    window.toggleReembolsoMode = function toggleReembolsoMode() {
+      const modo = byId("rebModo").value;
+      byId("rebValorDiretoWrap").classList.toggle("hidden", modo === "km");
+      byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
+    };
+
+    window.addService = async function addService() {
+      if (!currentReport) return;
+      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
+        setMsg("serviceMsg", "Este relatório não pode ser editado no status atual.");
+        return;
+      }
+
+      const payload = {
+        relatorio_id: currentReport.id,
+        data_execucao: byId("svcData").value,
+        cliente: byId("svcCliente").value.trim(),
+        programa: byId("svcPrograma").value.trim(),
+        descricao_servico: byId("svcDescricao").value.trim(),
+        duracao_horas: parseFloat(byId("svcDuracao").value || "0"),
+        valor_base: parseFloat(byId("svcValorBase").value || "0"),
+        qtd_pernoites: parseInt(byId("svcPernoites").value || "0", 10),
+        outro_idioma: byId("svcOutroIdioma").checked,
+        coord_4h_dias: parseInt(byId("svcCoord4").value || "0", 10),
+        coord_8h_dias: parseInt(byId("svcCoord8").value || "0", 10)
+      };
+
+      if (!payload.data_execucao || !payload.cliente || !payload.programa) {
+        setMsg("serviceMsg", "Preencha data, cliente e projeto/programa.");
+        return;
+      }
+
+      setMsg("serviceMsg", editingServiceId ? "Salvando edição..." : "Adicionando serviço...");
+
+      let error;
+      if (editingServiceId) {
+        ({ error } = await sb.from("relatorio_servicos").update(payload).eq("id", editingServiceId));
+      } else {
+        ({ error } = await sb.from("relatorio_servicos").insert([payload]));
+      }
+
+      if (error) {
+        setMsg("serviceMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      setMsg("serviceMsg", editingServiceId ? "Serviço atualizado com sucesso." : "Serviço adicionado com sucesso.");
+      clearServiceForm();
+
+      await loadServices();
+      await refreshCurrentReport();
+      await loadMyReports();
+    };
+
+    window.editService = async function editService(id) {
+      const { data, error } = await sb.from("relatorio_servicos").select("*").eq("id", id).single();
+      if (error || !data) {
+        setMsg("serviceMsg", error?.message || "Não foi possível carregar o serviço.");
+        return;
+      }
+
+      editingServiceId = id;
+      byId("svcData").value = data.data_execucao || "";
+      byId("svcCliente").value = data.cliente || "";
+      byId("svcPrograma").value = data.programa || "";
+      byId("svcDescricao").value = data.descricao_servico || "";
+      byId("svcDuracao").value = data.duracao_horas || 4;
+      byId("svcValorBase").value = data.valor_base || 0;
+      byId("svcPernoites").value = data.qtd_pernoites || 0;
+      byId("svcOutroIdioma").checked = !!data.outro_idioma;
+      byId("svcCoord4").value = data.coord_4h_dias || 0;
+      byId("svcCoord8").value = data.coord_8h_dias || 0;
+      byId("addServiceBtn").innerText = "Salvar serviço";
+      setMsg("serviceMsg", "Edite os campos e clique em Salvar serviço.");
+    };
+
+    window.deleteService = async function deleteService(id) {
+      if (!confirm("Excluir este serviço?")) return;
+
+      const { error } = await sb.from("relatorio_servicos").delete().eq("id", id);
+      if (error) {
+        setMsg("serviceMsg", error.message);
+        return;
+      }
+
+      clearServiceForm();
+      await loadServices();
+      await refreshCurrentReport();
+      await loadMyReports();
+    };
+
+    async function loadServices() {
+      if (!currentReport) return;
+      const tbody = byId("servicesTableBody");
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb.from("relatorio_servicos")
+        .select("id, data_execucao, cliente, programa, duracao_horas, subtotal_servico")
+        .eq("relatorio_id", currentReport.id)
+        .order("data_execucao", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum serviço lançado.</td></tr>`;
+        return;
+      }
+
+      const canEdit = currentProfile.role === "prestador" && ["rascunho", "devolvido"].includes(currentReport.status);
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.data_execucao || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.programa || ""}</td>
+          <td>${item.duracao_horas || 0}h</td>
+          <td>${currencyBRL(item.subtotal_servico)}</td>
+          <td>
+            ${canEdit ? `
+              <div class="row-actions">
+                <button class="btn-small btn-linkish" onclick="editService('${item.id}')">Editar</button>
+                <button class="btn-small btn-danger" onclick="deleteService('${item.id}')">Excluir</button>
+              </div>
+            ` : "-"}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.addReembolso = async function addReembolso() {
+      if (!currentReport) return;
+      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
+        setMsg("reembolsoMsg", "Este relatório não pode ser editado no status atual.");
+        return;
+      }
+
+      const modo = byId("rebModo").value;
+      const file = byId("rebComprovante").files[0] || null;
+
+      const payload = {
+        relatorio_id: currentReport.id,
+        data_despesa: byId("rebData").value,
+        cliente: byId("rebCliente").value.trim(),
+        percurso_descricao: byId("rebPercurso").value.trim(),
+        tipo_despesa: byId("rebTipo").value,
+        modo_valor: modo,
+        km_rodado: modo === "km" ? parseFloat(byId("rebKm").value || "0") : null,
+        valor_km: modo === "km" ? parseFloat(byId("rebValorKm").value || "1.2") : 1.20,
+        valor_informado: modo === "valor_direto" ? parseFloat(byId("rebValorDireto").value || "0") : null
+      };
+
+      if (!payload.data_despesa || !payload.cliente || !payload.percurso_descricao) {
+        setMsg("reembolsoMsg", "Preencha data, cliente e percurso/descrição.");
+        return;
+      }
+
+      setMsg("reembolsoMsg", editingReembolsoId ? "Salvando edição..." : "Adicionando reembolso...");
+
+      let savedId = editingReembolsoId;
+      let error;
+
+      if (editingReembolsoId) {
+        ({ error } = await sb.from("relatorio_reembolsos").update(payload).eq("id", editingReembolsoId));
+      } else {
+        const result = await sb.from("relatorio_reembolsos").insert([payload]).select().single();
+        error = result.error;
+        savedId = result.data?.id;
+      }
+
+      if (error) {
+        setMsg("reembolsoMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      try {
+        if (file && savedId) {
+          await uploadFileToReport(currentReport.id, `reembolsos/${savedId}`, file, "comprovante_reembolso", savedId);
+        }
+      } catch (uploadErr) {
+        setMsg("reembolsoMsg", `Reembolso salvo, mas o comprovante falhou: ${uploadErr.message || uploadErr}`);
+        await loadReembolsos();
+        await refreshCurrentReport();
+        await loadMyReports();
+        await loadAttachments();
+        return;
+      }
+
+      setMsg("reembolsoMsg", editingReembolsoId ? "Reembolso atualizado com sucesso." : "Reembolso adicionado com sucesso.");
+      clearReembolsoForm();
+
+      await loadReembolsos();
+      await refreshCurrentReport();
+      await loadMyReports();
+      await loadAttachments();
+    };
+
+    window.editReembolso = async function editReembolso(id) {
+      const { data, error } = await sb.from("relatorio_reembolsos").select("*").eq("id", id).single();
+      if (error || !data) {
+        setMsg("reembolsoMsg", error?.message || "Não foi possível carregar o reembolso.");
+        return;
+      }
+
+      editingReembolsoId = id;
+      byId("rebData").value = data.data_despesa || "";
+      byId("rebCliente").value = data.cliente || "";
+      byId("rebPercurso").value = data.percurso_descricao || "";
+      byId("rebTipo").value = data.tipo_despesa || "alimentacao";
+      byId("rebModo").value = data.modo_valor || "valor_direto";
+      byId("rebValorDireto").value = data.valor_informado || 0;
+      byId("rebKm").value = data.km_rodado || 0;
+      byId("rebValorKm").value = data.valor_km || 1.20;
+      byId("addReembolsoBtn").innerText = "Salvar reembolso";
+      toggleReembolsoMode();
+      setMsg("reembolsoMsg", "Edite os campos e clique em Salvar reembolso.");
+    };
+
+    window.deleteReembolso = async function deleteReembolso(id) {
+      if (!confirm("Excluir este reembolso?")) return;
+
+      const { error } = await sb.from("relatorio_reembolsos").delete().eq("id", id);
+      if (error) {
+        setMsg("reembolsoMsg", error.message);
+        return;
+      }
+
+      clearReembolsoForm();
+      await loadReembolsos();
+      await refreshCurrentReport();
+      await loadMyReports();
+      await loadAttachments();
+    };
+
+    async function loadReembolsos() {
+      if (!currentReport) return;
+      const tbody = byId("reembolsosTableBody");
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb.from("relatorio_reembolsos")
+        .select(`
+          id,
+          data_despesa,
+          cliente,
+          tipo_despesa,
+          valor_final,
+          relatorio_anexos (
+            id,
+            nome_arquivo,
+            storage_path
+          )
+        `)
+        .eq("relatorio_id", currentReport.id)
+        .order("data_despesa", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum reembolso lançado.</td></tr>`;
+        return;
+      }
+
+      const canEdit = currentProfile.role === "prestador" && ["rascunho", "devolvido"].includes(currentReport.status);
+
+      tbody.innerHTML = data.map(item => {
+        const temComprovante = item.relatorio_anexos && item.relatorio_anexos.length > 0;
+        return `
+          <tr>
+            <td>${item.data_despesa || ""}</td>
+            <td>${item.cliente || ""}</td>
+            <td>${item.tipo_despesa || ""}</td>
+            <td>${currencyBRL(item.valor_final)}</td>
+            <td>${temComprovante ? "Sim" : "Não"}</td>
+            <td>
+              ${canEdit ? `
+                <div class="row-actions">
+                  <button class="btn-small btn-linkish" onclick="editReembolso('${item.id}')">Editar</button>
+                  <button class="btn-small btn-danger" onclick="deleteReembolso('${item.id}')">Excluir</button>
+                </div>
+              ` : "-"}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
 
     window.sendReportForApproval = async function sendReportForApproval() {
       if (!currentReport) return;
@@ -1481,11 +1797,53 @@
       await loadMyReports();
     };
 
+    window.sendNfByPrestador = async function sendNfByPrestador() {
+      if (!currentReport) return;
+
+      const file = byId("prestadorNfPdf").files[0];
+      if (!file) {
+        setMsg("prestadorNfMsg", "Selecione o PDF da NF.");
+        return;
+      }
+
+      if (file.type !== "application/pdf") {
+        setMsg("prestadorNfMsg", "O arquivo precisa ser PDF.");
+        return;
+      }
+
+      setMsg("prestadorNfMsg", "Enviando NF...");
+
+      try {
+        await uploadFileToReport(currentReport.id, "nf", file, "nf_pdf");
+
+        const { error } = await sb
+          .from("relatorios")
+          .update({
+            nf_status: "enviada"
+          })
+          .eq("id", currentReport.id);
+
+        if (error) {
+          setMsg("prestadorNfMsg", error.message);
+          return;
+        }
+
+        currentReport = await getReport(currentReport.id);
+        byId("prestadorNfPdf").value = "";
+        renderPrestadorNfBox();
+        setMsg("prestadorNfMsg", "NF enviada com sucesso.");
+        await loadAttachments();
+        await loadMyReports();
+      } catch (err) {
+        setMsg("prestadorNfMsg", `Erro ao enviar NF: ${err.message || err}`);
+      }
+    };
+
     window.loadReportsForApproval = async function () {
       const tbody = byId("approvalsTableBody");
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb
         .from("relatorios")
@@ -1496,19 +1854,22 @@
           total_servicos,
           total_reembolsos,
           total_geral,
-          prestador_profile_id
+          valor_nf_aprovado,
+          nf_status,
+          prestador_profile_id,
+          status
         `)
-        .eq("status", "enviado")
+        .in("status", ["enviado", "aprovado_gestor"])
         .order("ano_referencia", { ascending: false })
         .order("mes_referencia", { ascending: false });
 
       if (error) {
-        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7">${error.message}</td></tr>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum relatório enviado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhum relatório disponível para o gestor.</td></tr>`;
         return;
       }
 
@@ -1525,7 +1886,8 @@
         <tr>
           <td>${profileMap[r.prestador_profile_id]?.nome || profileMap[r.prestador_profile_id]?.email || "-"}</td>
           <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
-          <td>${currencyBRL(r.total_servicos)}</td>
+          <td>${nfBadge(r.nf_status)}</td>
+          <td>${currencyBRL(r.valor_nf_aprovado || r.total_servicos)}</td>
           <td>${currencyBRL(r.total_reembolsos)}</td>
           <td><strong>${currencyBRL(r.total_geral)}</strong></td>
           <td><button class="btn-small" onclick="openApprovalReport('${r.id}')">Abrir</button></td>
@@ -1547,17 +1909,48 @@
           <strong>Prestador:</strong> ${prestadorData?.nome || prestadorData?.email || "-"}<br>
           <strong>Período:</strong> ${String(currentApprovalReport.mes_referencia).padStart(2,"0")}/${currentApprovalReport.ano_referencia}<br>
           <strong>Status:</strong> ${currentApprovalReport.status}<br>
-          <strong>Comentário do prestador:</strong> ${currentApprovalReport.comentario_prestador || "-"}
+          <strong>NF Status:</strong> ${currentApprovalReport.nf_status || "nao_solicitada"}<br>
+          <strong>Comentário do prestador:</strong> ${currentApprovalReport.comentario_prestador || "-"}<br>
+          <strong>Comentário do gestor:</strong> ${currentApprovalReport.comentario_gestor || "-"}
         `;
 
         byId("approvalTotalServicos").innerText = currencyBRL(currentApprovalReport.total_servicos);
         byId("approvalTotalReembolsos").innerText = currencyBRL(currentApprovalReport.total_reembolsos);
         byId("approvalTotalGeral").innerText = currencyBRL(currentApprovalReport.total_geral);
-        byId("approvalValorNF").innerText = currencyBRL(currentApprovalReport.total_servicos);
+        byId("approvalValorNF").innerText = currencyBRL(currentApprovalReport.valor_nf_aprovado || currentApprovalReport.total_servicos);
         byId("gestorComentario").value = currentApprovalReport.comentario_gestor || "";
 
+        const approveBtn = byId("approveReportBtn");
+        const returnBtn = byId("returnReportBtn");
+        const validateNfBtn = byId("validateNfBtn");
+        const rejectNfBtn = byId("rejectNfBtn");
+        const sendToFinanceBtn = byId("sendToFinanceBtn");
+
+        approveBtn.classList.add("hidden");
+        returnBtn.classList.add("hidden");
+        validateNfBtn.classList.add("hidden");
+        rejectNfBtn.classList.add("hidden");
+        sendToFinanceBtn.classList.add("hidden");
+
+        if (currentApprovalReport.status === "enviado") {
+          approveBtn.classList.remove("hidden");
+          returnBtn.classList.remove("hidden");
+        }
+
+        if (currentApprovalReport.status === "aprovado_gestor" && currentApprovalReport.nf_status === "enviada") {
+          validateNfBtn.classList.remove("hidden");
+          rejectNfBtn.classList.remove("hidden");
+        }
+
+        if (currentApprovalReport.status === "aprovado_gestor" && currentApprovalReport.nf_status === "validada") {
+          sendToFinanceBtn.classList.remove("hidden");
+        }
+
         byId("approvalDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","financeModule","financeDetailModule"].forEach(id => byId(id).classList.add("hidden"));
+        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","financeModule","financeDetailModule","nfPrestadorModule"].forEach(id => {
+          const el = byId(id);
+          if (el) el.classList.add("hidden");
+        });
 
         await loadApprovalServices();
         await loadApprovalReembolsos();
@@ -1662,7 +2055,7 @@
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="muted">Nenhum comprovante encontrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="muted">Nenhum anexo encontrado.</td></tr>`;
         return;
       }
 
@@ -1673,7 +2066,37 @@
           <td><button class="btn-small" onclick="openAttachment('${item.storage_path}')">Abrir</button></td>
         </tr>
       `).join("");
-    }
+    }    window.approveReport = async function approveReport() {
+      if (!currentApprovalReport) return;
+
+      const comentario = byId("gestorComentario").value.trim();
+
+      setMsg("approvalMsg", "Aprovando relatório...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          status: "aprovado_gestor",
+          comentario_gestor: comentario,
+          aprovado_em: new Date().toISOString(),
+          aprovado_por: currentProfile.id,
+          valor_nf_aprovado: currentApprovalReport.total_servicos,
+          nf_status: "aguardando_emissao"
+        })
+        .eq("id", currentApprovalReport.id);
+
+      if (error) {
+        setMsg("approvalMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      currentApprovalReport = await getReport(currentApprovalReport.id);
+      setMsg(
+        "approvalMsg",
+        `Relatório aprovado. O prestador deve emitir a NF no valor de ${currencyBRL(currentApprovalReport.total_servicos)} para o CNPJ 16.935.970/0001-19.`
+      );
+      await loadReportsForApproval();
+    };
 
     window.returnReport = async function returnReport() {
       if (!currentApprovalReport) return;
@@ -1706,32 +2129,80 @@
       await loadReportsForApproval();
     };
 
-    window.approveReport = async function approveReport() {
+    window.validateNfByGestor = async function validateNfByGestor() {
       if (!currentApprovalReport) return;
 
-      const comentario = byId("gestorComentario").value.trim();
-
-      setMsg("approvalMsg", "Aprovando relatório...");
+      setMsg("approvalMsg", "Validando NF...");
 
       const { error } = await sb
         .from("relatorios")
         .update({
-          status: "aprovado_gestor",
-          comentario_gestor: comentario,
-          aprovado_em: new Date().toISOString(),
-          aprovado_por: currentProfile.id,
-          valor_nf_aprovado: currentApprovalReport.total_servicos,
-          nf_status: "aguardando_emissao"
+          nf_status: "validada",
+          comentario_gestor: byId("gestorComentario").value.trim()
         })
         .eq("id", currentApprovalReport.id);
 
       if (error) {
-        setMsg("approvalMsg", `Erro: ${error.message}`);
+        setMsg("approvalMsg", error.message);
         return;
       }
 
       currentApprovalReport = await getReport(currentApprovalReport.id);
-      setMsg("approvalMsg", `Relatório aprovado. Oriente o prestador a emitir a NF no valor de ${currencyBRL(currentApprovalReport.total_servicos)} para o CNPJ 16.935.970/0001-19.`);
+      setMsg("approvalMsg", "NF validada com sucesso.");
+      await openApprovalReport(currentApprovalReport.id);
+      await loadReportsForApproval();
+    };
+
+    window.rejectNfByGestor = async function rejectNfByGestor() {
+      if (!currentApprovalReport) return;
+
+      const comentario = byId("gestorComentario").value.trim();
+      if (!comentario) {
+        setMsg("approvalMsg", "Escreva o motivo da rejeição da NF.");
+        return;
+      }
+
+      setMsg("approvalMsg", "Rejeitando NF...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          nf_status: "rejeitada",
+          comentario_gestor: comentario
+        })
+        .eq("id", currentApprovalReport.id);
+
+      if (error) {
+        setMsg("approvalMsg", error.message);
+        return;
+      }
+
+      currentApprovalReport = await getReport(currentApprovalReport.id);
+      setMsg("approvalMsg", "NF rejeitada. O prestador deverá substituir o PDF e reenviar.");
+      await openApprovalReport(currentApprovalReport.id);
+      await loadReportsForApproval();
+    };
+
+    window.sendToFinance = async function sendToFinance() {
+      if (!currentApprovalReport) return;
+
+      setMsg("approvalMsg", "Enviando para financeiro...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          enviado_financeiro_em: new Date().toISOString(),
+          enviado_financeiro_por: currentProfile.id
+        })
+        .eq("id", currentApprovalReport.id);
+
+      if (error) {
+        setMsg("approvalMsg", error.message);
+        return;
+      }
+
+      currentApprovalReport = await getReport(currentApprovalReport.id);
+      setMsg("approvalMsg", "Relatório enviado para o financeiro.");
       await loadReportsForApproval();
     };
 
@@ -1739,7 +2210,7 @@
       const tbody = byId("financeTableBody");
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="8" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb
         .from("relatorios")
@@ -1747,24 +2218,28 @@
           id,
           mes_referencia,
           ano_referencia,
+          total_servicos,
           total_reembolsos,
           total_geral,
           valor_nf_aprovado,
           nf_status,
           pago_em,
-          prestador_profile_id
+          prestador_profile_id,
+          enviado_financeiro_em
         `)
         .eq("status", "aprovado_gestor")
+        .eq("nf_status", "validada")
+        .not("enviado_financeiro_em", "is", null)
         .order("ano_referencia", { ascending: false })
         .order("mes_referencia", { ascending: false });
 
       if (error) {
-        tbody.innerHTML = `<tr><td colspan="8">${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9">${error.message}</td></tr>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="muted">Nenhum relatório aprovado pelo gestor.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="muted">Nenhum relatório disponível para pagamento.</td></tr>`;
         return;
       }
 
@@ -1781,10 +2256,11 @@
         <tr>
           <td>${profileMap[r.prestador_profile_id]?.nome || profileMap[r.prestador_profile_id]?.email || "-"}</td>
           <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
-          <td>${currencyBRL(r.valor_nf_aprovado || r.total_servicos || 0)}</td>
+          <td>${nfBadge(r.nf_status)}</td>
+          <td>${currencyBRL(r.valor_nf_aprovado || r.total_servicos)}</td>
           <td>${currencyBRL(r.total_reembolsos)}</td>
           <td><strong>${currencyBRL(r.total_geral)}</strong></td>
-          <td>${r.nf_status || "aguardando_emissao"}</td>
+          <td>${r.nf_status}</td>
           <td>${r.pago_em ? "Sim" : "Não"}</td>
           <td><button class="btn-small" onclick="openFinanceReport('${r.id}')">Abrir</button></td>
         </tr>
@@ -1804,18 +2280,20 @@
         byId("financeHeaderInfo").innerHTML = `
           <strong>Prestador:</strong> ${prestadorData?.nome || prestadorData?.email || "-"}<br>
           <strong>Período:</strong> ${String(currentFinanceReport.mes_referencia).padStart(2, "0")}/${currentFinanceReport.ano_referencia}<br>
-          <strong>Status:</strong> ${currentFinanceReport.status}<br>
-          <strong>Status NF:</strong> ${currentFinanceReport.nf_status || "aguardando_emissao"}<br>
+          <strong>Status NF:</strong> ${currentFinanceReport.nf_status}<br>
           <strong>Comentário do gestor:</strong> ${currentFinanceReport.comentario_gestor || "-"}
         `;
 
-        byId("financeValorNF").innerText = currencyBRL(currentFinanceReport.valor_nf_aprovado || currentFinanceReport.total_servicos || 0);
-        byId("financeValorReembolsos").innerText = currencyBRL(currentFinanceReport.total_reembolsos || 0);
-        byId("financeValorTotal").innerText = currencyBRL(currentFinanceReport.total_geral || 0);
+        byId("financeValorNF").innerText = currencyBRL(currentFinanceReport.valor_nf_aprovado || currentFinanceReport.total_servicos);
+        byId("financeValorReembolsos").innerText = currencyBRL(currentFinanceReport.total_reembolsos);
+        byId("financeValorTotal").innerText = currencyBRL(currentFinanceReport.total_geral);
         byId("financeObs").value = currentFinanceReport.observacao_financeiro || "";
 
         byId("financeDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","approvalDetailModule","financeModule"].forEach(id => byId(id).classList.add("hidden"));
+        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","approvalDetailModule","financeModule","nfPrestadorModule"].forEach(id => {
+          const el = byId(id);
+          if (el) el.classList.add("hidden");
+        });
 
         await loadFinanceAttachments();
       } catch (err) {
@@ -1858,84 +2336,14 @@
       `).join("");
     }
 
-    window.uploadNfPdf = async function uploadNfPdf() {
-      if (!currentFinanceReport) return;
-
-      const file = byId("nfPdf").files[0];
-      if (!file) {
-        setMsg("financeMsg", "Selecione um PDF da NF.");
-        return;
-      }
-
-      if (file.type !== "application/pdf") {
-        setMsg("financeMsg", "O arquivo precisa ser um PDF.");
-        return;
-      }
-
-      setMsg("financeMsg", "Enviando PDF da NF...");
-
-      try {
-        await uploadFileToReport(currentFinanceReport.id, "nf", file, "nf_pdf", null);
-
-        const { error } = await sb
-          .from("relatorios")
-          .update({
-            nf_status: "recebida",
-            nf_emitida_em: new Date().toISOString(),
-            nf_enviada_por: currentProfile.id,
-            observacao_financeiro: byId("financeObs").value.trim()
-          })
-          .eq("id", currentFinanceReport.id);
-
-        if (error) {
-          setMsg("financeMsg", error.message);
-          return;
-        }
-
-        currentFinanceReport = await getReport(currentFinanceReport.id);
-        byId("nfPdf").value = "";
-        setMsg("financeMsg", "PDF da NF recebido com sucesso.");
-        await loadFinanceAttachments();
-        await loadFinanceReports();
-      } catch (err) {
-        setMsg("financeMsg", `Erro ao enviar PDF: ${err.message || err}`);
-      }
-    };
-
-    window.markNfReceived = async function markNfReceived() {
-      if (!currentFinanceReport) return;
-
-      setMsg("financeMsg", "Marcando NF como recebida...");
-
-      const { error } = await sb
-        .from("relatorios")
-        .update({
-          nf_status: "recebida",
-          nf_emitida_em: new Date().toISOString(),
-          nf_enviada_por: currentProfile.id,
-          observacao_financeiro: byId("financeObs").value.trim()
-        })
-        .eq("id", currentFinanceReport.id);
-
-      if (error) {
-        setMsg("financeMsg", error.message);
-        return;
-      }
-
-      currentFinanceReport = await getReport(currentFinanceReport.id);
-      setMsg("financeMsg", "NF marcada como recebida.");
-      await loadFinanceReports();
-    };
-
     window.markAsPaid = async function markAsPaid() {
       if (!currentFinanceReport) return;
 
-      setMsg("financeMsg", "Marcando pagamento realizado...");
+      setMsg("financeMsg", "Registrando pagamento...");
 
       const { error } = await sb
         .from("relatorios")
         .update({
-          nf_status: "pago",
           pago_em: new Date().toISOString(),
           pago_por: currentProfile.id,
           observacao_financeiro: byId("financeObs").value.trim()
@@ -1948,7 +2356,7 @@
       }
 
       currentFinanceReport = await getReport(currentFinanceReport.id);
-      setMsg("financeMsg", "Pagamento marcado como realizado.");
+      setMsg("financeMsg", "Pagamento realizado registrado com sucesso.");
       await loadFinanceReports();
     };
 
