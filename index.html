@@ -9,54 +9,142 @@
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Arial, sans-serif; background: #081630; color: #fff; }
     .topbar {
-      height: 64px; background: #061124; border-bottom: 1px solid rgba(255,255,255,.08);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+      height: 64px;
+      background: #061124;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
     }
     .brand { font-size: 18px; font-weight: 800; }
     .top-actions { display: flex; align-items: center; gap: 12px; font-size: 14px; }
     .container { max-width: 1280px; margin: 32px auto; padding: 0 20px; }
-    .card { background: #0f2248; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .card {
+      background: #0f2248;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
     .login-wrap { max-width: 420px; margin: 60px auto; }
     h1, h2, h3 { margin-top: 0; }
     label {
-      display: block; margin-top: 14px; margin-bottom: 6px;
-      font-size: 13px; color: rgba(255,255,255,.8); font-weight: 700;
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: rgba(255,255,255,.8);
+      font-weight: 700;
     }
     input, select, textarea {
-      width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
     }
     textarea { min-height: 90px; resize: vertical; }
     button {
-      margin-top: 20px; padding: 12px 16px; border: none; border-radius: 8px;
-      background: #f28a3c; color: white; font-weight: bold; cursor: pointer;
+      margin-top: 20px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #f28a3c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
     button:hover { opacity: .94; }
-    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,.18); }
-    .btn-small { margin-top: 0; padding: 8px 12px; font-size: 13px; }
-    .msg { margin-top: 14px; font-size: 14px; line-height: 1.4; min-height: 20px; }
-    .menu { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .btn-danger { background: #b73b3b; }
+    .btn-small {
+      margin-top: 0;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+    .msg {
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.4;
+      min-height: 20px;
+    }
+    .menu {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
     .menu button { margin-top: 0; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
     .hidden { display: none !important; }
     .pill {
-      display: inline-block; padding: 6px 10px; border-radius: 999px;
-      background: rgba(242,138,60,.14); color: #f6a35d; font-size: 12px; font-weight: 700; margin-top: 8px;
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(242,138,60,.14);
+      color: #f6a35d;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 8px;
     }
-    .table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
     .table th, .table td {
-      border-bottom: 1px solid rgba(255,255,255,.08); padding: 10px 8px; text-align: left; vertical-align: top;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
     }
     .muted { color: rgba(255,255,255,.72); }
-    .version-badge { color: yellow; font-weight: bold; margin-top: 8px; font-size: 13px; }
-    .totals-box { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
-    .total-card { background: rgba(255,255,255,.05); border-radius: 12px; padding: 16px; }
-    .total-card .label { font-size: 12px; color: rgba(255,255,255,.72); font-weight: 700; text-transform: uppercase; }
-    .total-card .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
-    .inline-note { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75); }
-    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .info-box {
-      margin-top: 12px; padding: 12px; border-radius: 12px;
+    .version-badge {
+      color: yellow;
+      font-weight: bold;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    .totals-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .total-card {
       background: rgba(255,255,255,.05);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .total-card .label {
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .total-card .value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+    .inline-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,.75);
+    }
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     @media(max-width:900px){
       .grid, .totals-box { grid-template-columns: 1fr; }
@@ -78,7 +166,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO FINAL COM COMPROVANTES 09/03</p>
+      <p class="version-badge">VERSAO APROVACAO GESTOR 09/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -118,7 +206,7 @@
 
       <div id="homeModule" class="card" style="margin-top:20px;">
         <h2>Início</h2>
-        <p class="muted">Base do sistema pronta. Agora a Rise já consegue operar relatórios mensais com serviços, reembolsos e comprovantes.</p>
+        <p class="muted">Base do sistema pronta. Agora a Rise já consegue operar relatórios mensais com revisão do gestor.</p>
       </div>
 
       <div id="teamModule" class="hidden" style="margin-top:20px;">
@@ -407,12 +495,121 @@
         </div>
       </div>
 
-      <div id="approvalsModule" class="hidden card" style="margin-top:20px;">
-        <h2>Aprovações</h2>
-        <p class="muted">Módulo reservado para gestor e financeiro.</p>
+      <div id="approvalsModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <h2>Relatórios para aprovação</h2>
+          <button class="btn-secondary" onclick="loadReportsForApproval()" style="margin-top:0;">Atualizar lista</button>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Prestador</th>
+                <th>Período</th>
+                <th>Serviços</th>
+                <th>Reembolsos</th>
+                <th>Total</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="approvalsTableBody">
+              <tr><td colspan="6" class="muted">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </div>
+
+      <div id="approvalDetailModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <div class="row-actions">
+            <button class="btn-secondary btn-small" onclick="backToApprovals()">← Voltar</button>
+          </div>
+
+          <h2 style="margin-top:16px;">Revisão do relatório</h2>
+          <p id="approvalHeaderInfo" class="muted"></p>
+
+          <div class="totals-box">
+            <div class="total-card">
+              <div class="label">Total serviços</div>
+              <div id="approvalTotalServicos" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Total reembolsos</div>
+              <div id="approvalTotalReembolsos" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Total geral</div>
+              <div id="approvalTotalGeral" class="value">R$ 0,00</div>
+            </div>
+          </div>
+
+          <p class="inline-note">
+            Valor da NF a aprovar = <strong id="approvalValorNF">R$ 0,00</strong> • CNPJ Rise: <strong>16.935.970/0001-19</strong>
+          </p>
+
+          <label for="gestorComentario">Comentário do gestor</label>
+          <textarea id="gestorComentario" placeholder="Ex.: aprovado sem ajustes / devolver com orientação"></textarea>
+
+          <div class="row-actions">
+            <button onclick="approveReport()">Aprovar</button>
+            <button class="btn-danger" onclick="returnReport()">Devolver</button>
+          </div>
+          <div id="approvalMsg" class="msg"></div>
+        </div>
+
+        <div class="grid" style="margin-top:20px;">
+          <div class="card">
+            <h2>Serviços</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Programa</th>
+                  <th>Horas</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="approvalServicesTableBody">
+                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>Reembolsos</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Comprovante</th>
+                </tr>
+              </thead>
+              <tbody id="approvalReembolsosTableBody">
+                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h2>Comprovantes</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Arquivo</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="approvalAttachmentsTableBody">
+              <tr><td colspan="3" class="muted">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
   <script>
     const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
@@ -427,6 +624,7 @@
     let currentUser = null;
     let currentProfile = null;
     let currentReport = null;
+    let currentApprovalReport = null;
 
     function byId(id) { return document.getElementById(id); }
     function currencyBRL(v) { return `R$ ${Number(v || 0).toFixed(2)}`; }
@@ -463,6 +661,12 @@
       return data;
     }
 
+    async function getReport(reportId) {
+      const { data, error } = await sb.from("relatorios").select("*").eq("id", reportId).single();
+      if (error) throw error;
+      return data;
+    }
+
     function renderMenu() {
       const menu = byId("mainMenu");
       menu.innerHTML = "";
@@ -487,7 +691,10 @@
     }
 
     function openModule(moduleId) {
-      ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule"].forEach(id => {
+      [
+        "homeModule","teamModule","launchModule","reportDetailModule",
+        "approvalsModule","approvalDetailModule"
+      ].forEach(id => {
         byId(id).classList.add("hidden");
       });
 
@@ -495,6 +702,7 @@
 
       if (moduleId === "teamModule") loadTeam();
       if (moduleId === "launchModule") loadMyReports();
+      if (moduleId === "approvalsModule") loadReportsForApproval();
     }
 
     function renderApp() {
@@ -579,6 +787,7 @@
       currentUser = null;
       currentProfile = null;
       currentReport = null;
+      currentApprovalReport = null;
       byId("email").value = "";
       byId("password").value = "";
       byId("newPassword").value = "";
@@ -802,23 +1011,18 @@
       }
     };
 
-    async function getReport(reportId) {
-      const { data, error } = await sb.from("relatorios").select("*").eq("id", reportId).single();
-      if (error) throw error;
-      return data;
-    }
-
     window.openReport = async function openReport(reportId) {
       try {
         currentReport = await getReport(reportId);
         byId("reportHeaderInfo").innerHTML = `
           <strong>Período:</strong> ${String(currentReport.mes_referencia).padStart(2, "0")}/${currentReport.ano_referencia}<br>
           <strong>Status:</strong> ${currentReport.status}<br>
-          <strong>Comentário:</strong> ${currentReport.comentario_prestador || "-"}
+          <strong>Comentário:</strong> ${currentReport.comentario_prestador || "-"}<br>
+          <strong>Comentário do gestor:</strong> ${currentReport.comentario_gestor || "-"}
         `;
         renderReportTotals();
         byId("reportDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","approvalsModule"].forEach(id => byId(id).classList.add("hidden"));
+        ["homeModule","teamModule","launchModule","approvalsModule","approvalDetailModule"].forEach(id => byId(id).classList.add("hidden"));
         await loadServices();
         await loadReembolsos();
         await loadAttachments();
@@ -846,22 +1050,20 @@
       sendBtn.classList.add("hidden");
       backBtn.classList.add("hidden");
 
-      if (currentReport.status === "rascunho") {
+      if (currentProfile.role === "prestador" && currentReport.status === "rascunho") {
         sendBtn.innerText = "Enviar para aprovação";
         sendBtn.classList.remove("hidden");
       }
 
-      if (currentReport.status === "devolvido") {
+      if (currentProfile.role === "prestador" && currentReport.status === "devolvido") {
         sendBtn.innerText = "Reenviar para aprovação";
         sendBtn.classList.remove("hidden");
       }
 
-      if (currentReport.status === "enviado") {
+      if (currentProfile.role === "prestador" && currentReport.status === "enviado") {
         backBtn.classList.remove("hidden");
       }
-    }
-
-    async function refreshCurrentReport() {
+    }    async function refreshCurrentReport() {
       if (!currentReport) return;
       currentReport = await getReport(currentReport.id);
       renderReportTotals();
@@ -1183,6 +1385,269 @@
       await refreshCurrentReport();
       setMsg("detailMsg", "Relatório voltou para rascunho.");
       await loadMyReports();
+    };
+
+    window.loadReportsForApproval = async function () {
+      const tbody = byId("approvalsTableBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorios")
+        .select(`
+          id,
+          mes_referencia,
+          ano_referencia,
+          total_servicos,
+          total_reembolsos,
+          total_geral,
+          prestador_profile_id
+        `)
+        .eq("status", "enviado")
+        .order("ano_referencia", { ascending: false })
+        .order("mes_referencia", { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum relatório enviado.</td></tr>`;
+        return;
+      }
+
+      const profileIds = [...new Set(data.map(r => r.prestador_profile_id))];
+      const { data: profilesData } = await sb
+        .from("profiles")
+        .select("id,nome,email")
+        .in("id", profileIds);
+
+      const profileMap = {};
+      (profilesData || []).forEach(p => {
+        profileMap[p.id] = p;
+      });
+
+      tbody.innerHTML = data.map(r => `
+        <tr>
+          <td>${profileMap[r.prestador_profile_id]?.nome || profileMap[r.prestador_profile_id]?.email || "-"}</td>
+          <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
+          <td>${currencyBRL(r.total_servicos)}</td>
+          <td>${currencyBRL(r.total_reembolsos)}</td>
+          <td><strong>${currencyBRL(r.total_geral)}</strong></td>
+          <td>
+            <button class="btn-small" onclick="openApprovalReport('${r.id}')">Abrir</button>
+          </td>
+        </tr>
+      `).join("");
+    };
+
+    window.openApprovalReport = async function openApprovalReport(reportId) {
+      try {
+        currentApprovalReport = await getReport(reportId);
+
+        const { data: prestadorData } = await sb
+          .from("profiles")
+          .select("nome,email")
+          .eq("id", currentApprovalReport.prestador_profile_id)
+          .single();
+
+        byId("approvalHeaderInfo").innerHTML = `
+          <strong>Prestador:</strong> ${prestadorData?.nome || prestadorData?.email || "-"}<br>
+          <strong>Período:</strong> ${String(currentApprovalReport.mes_referencia).padStart(2,"0")}/${currentApprovalReport.ano_referencia}<br>
+          <strong>Status:</strong> ${currentApprovalReport.status}<br>
+          <strong>Comentário do prestador:</strong> ${currentApprovalReport.comentario_prestador || "-"}
+        `;
+
+        byId("approvalTotalServicos").innerText = currencyBRL(currentApprovalReport.total_servicos);
+        byId("approvalTotalReembolsos").innerText = currencyBRL(currentApprovalReport.total_reembolsos);
+        byId("approvalTotalGeral").innerText = currencyBRL(currentApprovalReport.total_geral);
+        byId("approvalValorNF").innerText = currencyBRL(currentApprovalReport.total_servicos);
+        byId("gestorComentario").value = currentApprovalReport.comentario_gestor || "";
+
+        byId("approvalDetailModule").classList.remove("hidden");
+        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule"].forEach(id => byId(id).classList.add("hidden"));
+
+        await loadApprovalServices();
+        await loadApprovalReembolsos();
+        await loadApprovalAttachments();
+      } catch (err) {
+        alert(err.message || err);
+      }
+    };
+
+    window.backToApprovals = function backToApprovals() {
+      currentApprovalReport = null;
+      openModule("approvalsModule");
+    };
+
+    async function loadApprovalServices() {
+      if (!currentApprovalReport) return;
+      const tbody = byId("approvalServicesTableBody");
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorio_servicos")
+        .select("data_execucao, cliente, programa, duracao_horas, subtotal_servico")
+        .eq("relatorio_id", currentApprovalReport.id)
+        .order("data_execucao", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum serviço encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.data_execucao || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.programa || ""}</td>
+          <td>${item.duracao_horas || 0}h</td>
+          <td>${currencyBRL(item.subtotal_servico)}</td>
+        </tr>
+      `).join("");
+    }
+
+    async function loadApprovalReembolsos() {
+      if (!currentApprovalReport) return;
+      const tbody = byId("approvalReembolsosTableBody");
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorio_reembolsos")
+        .select(`
+          id,
+          data_despesa,
+          cliente,
+          tipo_despesa,
+          valor_final,
+          relatorio_anexos (
+            id
+          )
+        `)
+        .eq("relatorio_id", currentApprovalReport.id)
+        .order("data_despesa", { ascending: true })
+        .order("ordem", { ascending: true });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum reembolso encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.data_despesa || ""}</td>
+          <td>${item.cliente || ""}</td>
+          <td>${item.tipo_despesa || ""}</td>
+          <td>${currencyBRL(item.valor_final)}</td>
+          <td>${item.relatorio_anexos && item.relatorio_anexos.length > 0 ? "Sim" : "Não"}</td>
+        </tr>
+      `).join("");
+    }
+
+    async function loadApprovalAttachments() {
+      if (!currentApprovalReport) return;
+      const tbody = byId("approvalAttachmentsTableBody");
+      tbody.innerHTML = `<tr><td colspan="3" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorio_anexos")
+        .select("id, tipo_anexo, nome_arquivo, storage_path")
+        .eq("relatorio_id", currentApprovalReport.id)
+        .order("criado_em", { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="muted">Nenhum comprovante encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.tipo_anexo}</td>
+          <td>${item.nome_arquivo}</td>
+          <td><button class="btn-small" onclick="openAttachment('${item.storage_path}')">Abrir</button></td>
+        </tr>
+      `).join("");
+    }
+
+    window.returnReport = async function returnReport() {
+      if (!currentApprovalReport) return;
+
+      const comentario = byId("gestorComentario").value.trim();
+      if (!comentario) {
+        setMsg("approvalMsg", "Escreva um comentário para devolver o relatório.");
+        return;
+      }
+
+      setMsg("approvalMsg", "Devolvendo relatório...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          status: "devolvido",
+          comentario_gestor: comentario,
+          devolvido_em: new Date().toISOString(),
+          devolvido_por: currentProfile.id
+        })
+        .eq("id", currentApprovalReport.id);
+
+      if (error) {
+        setMsg("approvalMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      currentApprovalReport = await getReport(currentApprovalReport.id);
+      setMsg("approvalMsg", "Relatório devolvido ao prestador.");
+      await loadReportsForApproval();
+    };
+
+    window.approveReport = async function approveReport() {
+      if (!currentApprovalReport) return;
+
+      const comentario = byId("gestorComentario").value.trim();
+
+      setMsg("approvalMsg", "Aprovando relatório...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          status: "aprovado_gestor",
+          comentario_gestor: comentario,
+          aprovado_em: new Date().toISOString(),
+          aprovado_por: currentProfile.id,
+          valor_nf_aprovado: currentApprovalReport.total_servicos,
+          nf_status: "aguardando_emissao"
+        })
+        .eq("id", currentApprovalReport.id);
+
+      if (error) {
+        setMsg("approvalMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      currentApprovalReport = await getReport(currentApprovalReport.id);
+      setMsg(
+        "approvalMsg",
+        `Relatório aprovado. Oriente o prestador a emitir a NF no valor de ${currencyBRL(currentApprovalReport.total_servicos)} para o CNPJ 16.935.970/0001-19.`
+      );
+      await loadReportsForApproval();
     };
 
     async function bootstrap() {
