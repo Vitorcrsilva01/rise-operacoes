@@ -14,7 +14,7 @@
     }
     .brand { font-size: 18px; font-weight: 800; }
     .top-actions { display: flex; align-items: center; gap: 12px; font-size: 14px; }
-    .container { max-width: 1200px; margin: 32px auto; padding: 0 20px; }
+    .container { max-width: 1280px; margin: 32px auto; padding: 0 20px; }
     .card { background: #0f2248; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
     .login-wrap { max-width: 420px; margin: 60px auto; }
     h1, h2, h3 { margin-top: 0; }
@@ -54,6 +54,10 @@
     .total-card .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
     .inline-note { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75); }
     .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .info-box {
+      margin-top: 12px; padding: 12px; border-radius: 12px;
+      background: rgba(255,255,255,.05);
+    }
     @media(max-width:900px){
       .grid, .totals-box { grid-template-columns: 1fr; }
       .topbar { padding: 0 14px; }
@@ -74,7 +78,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO FINAL 09/03</p>
+      <p class="version-badge">VERSAO FINAL COM COMPROVANTES 09/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -114,7 +118,7 @@
 
       <div id="homeModule" class="card" style="margin-top:20px;">
         <h2>Início</h2>
-        <p class="muted">Base do sistema pronta. Agora vamos operar os módulos reais da Rise.</p>
+        <p class="muted">Base do sistema pronta. Agora a Rise já consegue operar relatórios mensais com serviços, reembolsos e comprovantes.</p>
       </div>
 
       <div id="teamModule" class="hidden" style="margin-top:20px;">
@@ -359,6 +363,9 @@
               <input id="rebValorKm" type="number" min="0" step="0.01" value="1.20">
             </div>
 
+            <label for="rebComprovante">Comprovante</label>
+            <input id="rebComprovante" type="file" accept="image/*,.pdf">
+
             <button onclick="addReembolso()">Adicionar reembolso</button>
             <div id="reembolsoMsg" class="msg"></div>
           </div>
@@ -372,13 +379,31 @@
                   <th>Cliente</th>
                   <th>Tipo</th>
                   <th>Valor</th>
+                  <th>Comprovante</th>
                 </tr>
               </thead>
               <tbody id="reembolsosTableBody">
-                <tr><td colspan="4" class="muted">Carregando...</td></tr>
+                <tr><td colspan="5" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h2>Anexos do relatório</h2>
+          <p class="muted">Comprovantes enviados para este relatório.</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Arquivo</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="attachmentsTableBody">
+              <tr><td colspan="3" class="muted">Carregando...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -394,6 +419,7 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
     const FUNCTION_CREATE_USER_URL = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/create-user";
     const FUNCTION_RESET_PASSWORD_URL = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/clever-function";
+    const STORAGE_BUCKET = "relatorio-anexos";
 
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -422,6 +448,13 @@
         byId("topbarUser").classList.add("hidden");
         byId("topbarEmail").innerText = "";
       }
+    }
+
+    function sanitizeFileName(name) {
+      return name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9.\-_]/g, "_");
     }
 
     async function getProfile(userId) {
@@ -788,6 +821,7 @@
         ["homeModule","teamModule","launchModule","approvalsModule"].forEach(id => byId(id).classList.add("hidden"));
         await loadServices();
         await loadReembolsos();
+        await loadAttachments();
       } catch (err) {
         setMsg("relatorioMsg", `Erro ao abrir relatório: ${err.message || err}`);
       }
@@ -922,6 +956,32 @@
       byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
     };
 
+    async function uploadComprovanteForReembolso(reembolsoId, file) {
+      const safeName = sanitizeFileName(file.name);
+      const path = `${currentReport.id}/reembolsos/${reembolsoId}/${Date.now()}_${safeName}`;
+
+      const { error: uploadError } = await sb.storage
+        .from(STORAGE_BUCKET)
+        .upload(path, file, { upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await sb
+        .from("relatorio_anexos")
+        .insert([{
+          relatorio_id: currentReport.id,
+          reembolso_id: reembolsoId,
+          tipo_anexo: "comprovante_reembolso",
+          nome_arquivo: file.name,
+          storage_path: path,
+          mime_type: file.type || null,
+          tamanho_bytes: file.size || null,
+          criado_por: currentProfile.id
+        }]);
+
+      if (dbError) throw dbError;
+    }
+
     window.addReembolso = async function addReembolso() {
       if (!currentReport) return;
       if (!["rascunho", "devolvido"].includes(currentReport.status)) {
@@ -930,6 +990,8 @@
       }
 
       const modo = byId("rebModo").value;
+      const file = byId("rebComprovante").files[0] || null;
+
       const payload = {
         relatorio_id: currentReport.id,
         data_despesa: byId("rebData").value,
@@ -949,13 +1011,31 @@
 
       setMsg("reembolsoMsg", "Adicionando reembolso...");
 
-      const { error } = await sb.from("relatorio_reembolsos").insert([payload]);
+      const { data, error } = await sb
+        .from("relatorio_reembolsos")
+        .insert([payload])
+        .select()
+        .single();
+
       if (error) {
         setMsg("reembolsoMsg", `Erro: ${error.message}`);
         return;
       }
 
-      setMsg("reembolsoMsg", "Reembolso adicionado com sucesso.");
+      try {
+        if (file) {
+          await uploadComprovanteForReembolso(data.id, file);
+        }
+      } catch (uploadErr) {
+        setMsg("reembolsoMsg", `Reembolso salvo, mas o comprovante falhou: ${uploadErr.message || uploadErr}`);
+        await loadReembolsos();
+        await refreshCurrentReport();
+        await loadMyReports();
+        await loadAttachments();
+        return;
+      }
+
+      setMsg("reembolsoMsg", file ? "Reembolso e comprovante adicionados com sucesso." : "Reembolso adicionado com sucesso.");
       byId("rebData").value = "";
       byId("rebCliente").value = "";
       byId("rebPercurso").value = "";
@@ -964,43 +1044,99 @@
       byId("rebValorDireto").value = "0";
       byId("rebKm").value = "0";
       byId("rebValorKm").value = "1.20";
+      byId("rebComprovante").value = "";
       toggleReembolsoMode();
 
       await loadReembolsos();
       await refreshCurrentReport();
       await loadMyReports();
+      await loadAttachments();
     };
 
     async function loadReembolsos() {
       if (!currentReport) return;
       const tbody = byId("reembolsosTableBody");
-      tbody.innerHTML = `<tr><td colspan="4" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("relatorio_reembolsos")
-        .select("data_despesa, cliente, tipo_despesa, valor_final")
+        .select(`
+          id,
+          data_despesa,
+          cliente,
+          tipo_despesa,
+          valor_final,
+          relatorio_anexos (
+            id,
+            nome_arquivo,
+            storage_path
+          )
+        `)
         .eq("relatorio_id", currentReport.id)
         .order("data_despesa", { ascending: true })
         .order("ordem", { ascending: true });
 
       if (error) {
-        tbody.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="muted">Nenhum reembolso lançado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum reembolso lançado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => {
+        const temComprovante = item.relatorio_anexos && item.relatorio_anexos.length > 0;
+        return `
+          <tr>
+            <td>${item.data_despesa || ""}</td>
+            <td>${item.cliente || ""}</td>
+            <td>${item.tipo_despesa || ""}</td>
+            <td>${currencyBRL(item.valor_final)}</td>
+            <td>${temComprovante ? "Sim" : "Não"}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadAttachments() {
+      if (!currentReport) return;
+      const tbody = byId("attachmentsTableBody");
+      tbody.innerHTML = `<tr><td colspan="3" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorio_anexos")
+        .select("id, tipo_anexo, nome_arquivo, storage_path")
+        .eq("relatorio_id", currentReport.id)
+        .order("criado_em", { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="muted">Nenhum anexo enviado.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = data.map(item => `
         <tr>
-          <td>${item.data_despesa || ""}</td>
-          <td>${item.cliente || ""}</td>
-          <td>${item.tipo_despesa || ""}</td>
-          <td>${currencyBRL(item.valor_final)}</td>
+          <td>${item.tipo_anexo}</td>
+          <td>${item.nome_arquivo}</td>
+          <td><button class="btn-small" onclick="openAttachment('${item.storage_path}')">Abrir</button></td>
         </tr>
       `).join("");
     }
+
+    window.openAttachment = async function openAttachment(path) {
+      const { data, error } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(path, 60);
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      window.open(data.signedUrl, "_blank");
+    };
 
     window.sendReportForApproval = async function sendReportForApproval() {
       if (!currentReport) return;
