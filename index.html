@@ -1,509 +1,610 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rise Operações</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <style>
-    body{
-      margin:0;
-      background:#0b1b33;
-      font-family:'Exo', Calibri, sans-serif;
-      color:#fff;
-    }
+<title>Rise Operações</title>
 
-    .topbar{
-      background:#081426;
-      padding:16px 28px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-    }
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    .logo{
-      font-weight:800;
-      font-size:20px;
-    }
+<style>
 
-    .container{
-      max-width:1300px;
-      margin:auto;
-      padding:30px;
-    }
+body{
+font-family:Calibri, Arial;
+background:#081630;
+color:white;
+margin:0;
+}
 
-    .card{
-      background:#16294a;
-      border-radius:14px;
-      padding:28px;
-      margin-bottom:24px;
-    }
+.topbar{
+background:#0f2248;
+padding:16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-    h1{
-      font-weight:800;
-      font-size:34px;
-      margin-bottom:14px;
-    }
+.logo{
+font-weight:bold;
+font-size:20px;
+}
 
-    h2{
-      font-weight:800;
-      font-size:26px;
-      margin-top:0;
-    }
+.userBox{
+display:flex;
+gap:12px;
+align-items:center;
+}
 
-    h3{
-      font-weight:700;
-      font-size:22px;
-      margin-top:0;
-    }
+button{
+background:#f28a3c;
+border:none;
+color:white;
+padding:10px 14px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
 
-    button{
-      background:#f39b4a;
-      border:none;
-      padding:10px 18px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-      color:#fff;
-    }
+button.secondary{
+background:#3b4a6b;
+}
 
-    button.secondary{
-      background:#243c66;
-    }
+button.danger{
+background:#c0392b;
+}
 
-    button.danger{
-      background:#8b2f2f;
-    }
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px;
+}
 
-    input, select, textarea{
-      width:100%;
-      padding:10px;
-      border-radius:6px;
-      border:none;
-      margin-top:6px;
-      margin-bottom:14px;
-      font-family:Calibri, sans-serif;
-      font-size:16px;
-      box-sizing:border-box;
-    }
+.card{
+background:#0f2248;
+padding:24px;
+border-radius:10px;
+margin-bottom:20px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:20px;
-    }
+.hidden{
+display:none;
+}
 
-    .badge{
-      display:inline-block;
-      padding:4px 10px;
-      border-radius:20px;
-      background:#233c6b;
-      font-size:12px;
-      margin-bottom:10px;
-    }
+.table{
+width:100%;
+border-collapse:collapse;
+}
 
-    .table{
-      width:100%;
-      border-collapse:collapse;
-    }
+.table th,
+.table td{
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
 
-    .table th{
-      text-align:left;
-      padding:10px;
-      border-bottom:1px solid rgba(255,255,255,0.1);
-    }
+input,select,textarea{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:none;
+margin-top:6px;
+margin-bottom:12px;
+}
 
-    .table td{
-      padding:10px;
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      vertical-align:top;
-    }
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
 
-    .status{
-      padding:4px 10px;
-      border-radius:14px;
-      font-size:12px;
-      display:inline-block;
-    }
+.menu{
+display:flex;
+gap:10px;
+margin-top:16px;
+flex-wrap:wrap;
+}
 
-    .status.enviada{
-      background:#304e86;
-    }
+.status{
+padding:6px 10px;
+border-radius:6px;
+font-size:12px;
+font-weight:bold;
+}
 
-    .status.validada{
-      background:#2d7a55;
-    }
+.status.enviada{background:#f1c40f;color:black}
+.status.validada{background:#2ecc71;color:black}
+.status.rejeitada{background:#e74c3c}
+.status.nao_solicitada{background:#7f8c8d}
 
-    .status.rejeitada{
-      background:#7a2d2d;
-    }
+</style>
 
-    .status.aguardando_emissao{
-      background:#4e4a71;
-    }
-
-    .status.nao_solicitada{
-      background:#3b4766;
-    }
-
-    .status.pago{
-      background:#7b5a1d;
-    }
-
-    .totalBox{
-      background:#223b67;
-      padding:16px;
-      border-radius:10px;
-      text-align:center;
-    }
-
-    .totalBox strong{
-      display:block;
-      font-size:26px;
-      margin-top:6px;
-    }
-
-    .nfBanner{
-      border:1px solid #f39b4a;
-      padding:18px;
-      border-radius:10px;
-      margin-top:16px;
-      background:rgba(243,155,74,0.08);
-    }
-
-    .hidden{
-      display:none !important;
-    }
-
-    .rowActions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .small{
-      font-size:13px;
-      opacity:.9;
-    }
-
-    .msg{
-      margin-top:12px;
-      min-height:20px;
-    }
-
-    @media (max-width: 900px){
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .container{
-        padding:16px;
-      }
-
-      .topbar{
-        padding:14px 16px;
-      }
-
-      .table{
-        display:block;
-        overflow-x:auto;
-      }
-    }
-  </style>
 </head>
+
 <body>
 
-  <div class="topbar">
-    <div class="logo">Rise Operações</div>
-    <div id="userInfo"></div>
+<div class="topbar">
+
+<div class="logo">
+Rise Operações
+</div>
+
+<div class="userBox">
+
+<span id="userInfo"></span>
+
+<button class="secondary" onclick="logout()">
+Sair
+</button>
+
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Menu</h2>
+
+<div id="menu" class="menu"></div>
+
+</div>
+
+<div id="userData" class="card"></div><!-- SETTINGS -->
+<div id="settingsArea" class="hidden">
+
+  <div class="card">
+    <h2>Settings</h2>
+    <p>Configurações operacionais da Rise.</p>
+
+    <div class="row">
+      <div>
+        <label>Facilitação até 4h</label>
+        <input id="cfgFac4h" type="number" step="0.01">
+      </div>
+
+      <div>
+        <label>Facilitação até 8h</label>
+        <input id="cfgFac8h" type="number" step="0.01">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Adicional idioma</label>
+        <input id="cfgIdioma" type="number" step="0.01">
+      </div>
+
+      <div>
+        <label>Pernoite</label>
+        <input id="cfgPernoite" type="number" step="0.01">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Coordenação 4h</label>
+        <input id="cfgCoord4h" type="number" step="0.01">
+      </div>
+
+      <div>
+        <label>Coordenação 8h</label>
+        <input id="cfgCoord8h" type="number" step="0.01">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>KM rodado</label>
+        <input id="cfgKm" type="number" step="0.01">
+      </div>
+      <div></div>
+    </div>
+
+    <button onclick="salvarSettings()">Salvar settings</button>
+    <div id="msgSettings" style="margin-top:12px;"></div>
   </div>
 
-  <div class="container">
+</div>
 
-    <div id="homeCard" class="card">
-      <h1>Bem-vindo ao Rise Operações</h1>
-      <div id="userRole" class="badge"></div>
-      <div id="userData"></div>
-      <br>
-      <div id="menu" class="rowActions"></div>
-    </div>
+<!-- EQUIPE -->
+<div id="equipeArea" class="hidden">
 
-    <!-- EQUIPE -->
-    <div id="equipeArea" class="hidden">
-      <div class="card grid">
-        <div>
-          <h2>Adicionar usuário</h2>
+  <div class="card">
+    <h2>Equipe</h2>
 
-          <label>Nome completo</label>
-          <input id="novoNome" type="text">
+    <div class="row">
+      <div>
+        <label>Nome completo</label>
+        <input id="novoNome" type="text">
+      </div>
 
-          <label>Email</label>
-          <input id="novoEmail" type="email">
-
-          <label>Perfil</label>
-          <select id="novoPerfil">
-            <option value="prestador">Prestador</option>
-            <option value="gestor">Gestor</option>
-            <option value="financeiro">Financeiro</option>
-          </select>
-
-          <button onclick="criarUsuarioEquipe()">Criar usuário</button>
-          <p class="small">Senha inicial: <strong>Oper@coes_Rise2026</strong></p>
-          <div id="msgEquipe" class="msg"></div>
-        </div>
-
-        <div>
-          <h2>Usuários cadastrados</h2>
-          <button class="secondary" onclick="carregarEquipe()">Atualizar lista</button>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Ativo</th>
-                <th>Troca senha</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="listaEquipe"></tbody>
-          </table>
-        </div>
+      <div>
+        <label>Email</label>
+        <input id="novoEmail" type="email">
       </div>
     </div>
 
-    <!-- PRESTADOR -->
-    <div id="prestadorArea" class="hidden">
-      <div class="card grid">
-        <div>
-          <h2>Novo relatório</h2>
-
-          <label>Mês de referência</label>
-          <select id="mesRef">
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>
-
-          <label>Ano</label>
-          <input id="anoRef" type="number" value="2026">
-
-          <label>Comentário</label>
-          <textarea id="comentarioPrestador"></textarea>
-
-          <button onclick="criarRelatorio()">Criar relatório</button>
-          <div id="msgNovoRelatorio" class="msg"></div>
-        </div>
-
-        <div>
-          <h2>Meus relatórios</h2>
-          <button class="secondary" onclick="carregarRelatorios()">Atualizar lista</button>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Período</th>
-                <th>Status</th>
-                <th>NF</th>
-                <th>Serviços</th>
-                <th>Reembolsos</th>
-                <th>Total</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="listaRelatorios"></tbody>
-          </table>
-        </div>
+    <div class="row">
+      <div>
+        <label>Perfil</label>
+        <select id="novoPerfil">
+          <option value="prestador">Prestador</option>
+          <option value="gestor">Gestor</option>
+          <option value="financeiro">Financeiro</option>
+        </select>
       </div>
-    </div>    <!-- GESTOR -->
-    <div id="gestorArea" class="hidden">
-      <div class="card">
-        <h2>Relatórios para aprovação</h2>
-        <button class="secondary" onclick="carregarAprovacoes()">Atualizar lista</button>
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Prestador</th>
-              <th>Período</th>
-              <th>NF</th>
-              <th>Serviços</th>
-              <th>Reembolsos</th>
-              <th>Total</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="listaAprovacoes"></tbody>
-        </table>
+      <div></div>
+    </div>
+
+    <button onclick="criarUsuarioEquipe()">Criar usuário</button>
+    <div id="msgEquipe" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Usuários cadastrados</h3>
+
+    <button class="secondary" onclick="carregarEquipe()">Atualizar lista</button>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Perfil</th>
+          <th>Ativo</th>
+          <th>Troca senha</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaEquipe"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- PRESTADOR -->
+<div id="prestadorArea" class="hidden">
+
+  <div class="card">
+    <h2>Novo relatório</h2>
+
+    <div class="row">
+      <div>
+        <label>Mês de referência</label>
+        <select id="mesRef">
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Ano</label>
+        <input id="anoRef" type="number" value="2026">
       </div>
     </div>
 
-    <!-- FINANCEIRO -->
-    <div id="financeiroArea" class="hidden">
-      <div class="card">
-        <h2>Financeiro</h2>
-        <p>Relatórios validados e enviados ao financeiro.</p>
-        <button class="secondary" onclick="carregarFinanceiro()">Atualizar lista</button>
+    <label>Comentário</label>
+    <textarea id="comentarioPrestador"></textarea>
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Prestador</th>
-              <th>Período</th>
-              <th>NF</th>
-              <th>Reembolsos</th>
-              <th>Total</th>
-              <th>Status NF</th>
-              <th>Pago</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="listaFinanceiro"></tbody>
-        </table>
-      </div>
-    </div>
+    <button onclick="criarRelatorio()">Criar relatório</button>
+    <div id="msgNovoRelatorio" style="margin-top:12px;"></div>
+  </div>
 
-    <!-- DETALHE -->
-    <div id="relatorioDetalhe" class="hidden">
+  <div class="card">
+    <h2>Meus relatórios</h2>
 
-      <div class="card">
-        <button class="secondary" onclick="voltar()">← Voltar</button>
+    <button class="secondary" onclick="carregarRelatorios()">Atualizar lista</button>
 
-        <h2 style="margin-top:18px;">Detalhe do relatório</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Período</th>
+          <th>Status</th>
+          <th>NF</th>
+          <th>Serviços</th>
+          <th>Reembolsos</th>
+          <th>Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaRelatorios"></tbody>
+    </table>
+  </div>
 
-        <div id="infoRelatorio"></div>
+</div><!-- GESTOR -->
+<div id="gestorArea" class="hidden">
 
-        <br>
+  <div class="card">
+    <h2>Relatórios aguardando aprovação</h2>
 
-        <div class="grid">
-          <div class="totalBox">
-            TOTAL SERVIÇOS
-            <strong id="totalServicos">R$ 0,00</strong>
-          </div>
+    <button class="secondary" onclick="carregarAprovacoes()">Atualizar</button>
 
-          <div class="totalBox">
-            TOTAL REEMBOLSOS
-            <strong id="totalReembolsos">R$ 0,00</strong>
-          </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Prestador</th>
+          <th>Período</th>
+          <th>Status NF</th>
+          <th>Serviços</th>
+          <th>Reembolsos</th>
+          <th>Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
 
-          <div class="totalBox">
-            TOTAL GERAL
-            <strong id="totalGeral">R$ 0,00</strong>
-          </div>
-        </div>
+      <tbody id="listaAprovacoes"></tbody>
 
-        <!-- banner NF só prestador -->
-        <div id="nfBanner" class="nfBanner hidden">
-          <h3 style="margin:0 0 10px 0;">VALOR DA NF</h3>
-          <strong id="valorNF" style="font-size:30px;"></strong>
-          <br><br>
-          <div>CNPJ Rise 16.935.970/0001-19</div>
-          <p>A NF deve conter apenas serviços. Reembolsos são pagos fora da NF.</p>
-        </div>
+    </table>
 
-        <!-- upload NF prestador -->
-        <div id="uploadNF" class="hidden" style="margin-top:20px;">
-          <h3>Nota Fiscal</h3>
-          <p id="msgNF"></p>
-          <input type="file" id="arquivoNF" accept=".pdf">
-          <br>
-          <button id="btnEnviarNF" onclick="enviarNF()">Enviar NF</button>
-        </div>
-      </div>
+  </div>
 
-      <!-- formulário serviço -->
-      <div id="blocoServicoForm" class="card hidden">
-        <h3 id="tituloServicoForm">Adicionar serviço</h3>
+</div>
 
+
+<!-- FINANCEIRO -->
+<div id="financeiroArea" class="hidden">
+
+  <div class="card">
+    <h2>Financeiro</h2>
+
+    <button class="secondary" onclick="carregarFinanceiro()">
+      Atualizar
+    </button>
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Prestador</th>
+          <th>Período</th>
+          <th>Serviços</th>
+          <th>Reembolsos</th>
+          <th>Total</th>
+          <th>Status NF</th>
+          <th>Pago</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="listaFinanceiro"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<!-- DETALHE RELATORIO -->
+<div id="relatorioDetalhe" class="hidden">
+
+  <div class="card">
+
+    <button class="secondary" onclick="voltar()">← Voltar</button>
+
+    <h2>Relatório</h2>
+
+    <div id="infoRelatorio"></div>
+
+  </div>
+
+
+  <!-- TOTAIS -->
+  <div class="card">
+
+    <h3>Totais</h3>
+
+    <p>Total serviços: <strong id="totalServicos"></strong></p>
+    <p>Total reembolsos: <strong id="totalReembolsos"></strong></p>
+    <p>Total geral: <strong id="totalGeral"></strong></p>
+
+    <hr>
+
+    <p>
+      Valor da NF =
+      <strong id="valorNF"></strong>
+      | CNPJ Rise 16.935.970/0001-19
+    </p>
+
+  </div>
+
+
+  <!-- NF -->
+  <div id="nfBanner" class="card hidden">
+
+    <h3>Nota fiscal</h3>
+
+    <p id="msgNF"></p>
+
+  </div>
+
+
+  <div id="uploadNF" class="card hidden">
+
+    <label>PDF da NF</label>
+
+    <input type="file" id="arquivoNF" accept="application/pdf">
+
+    <button onclick="enviarNF()" id="btnEnviarNF">
+      Enviar NF
+    </button>
+
+  </div>
+
+
+  <!-- SERVIÇOS -->
+  <div class="card">
+
+    <h3>Serviços</h3>
+
+    <button id="btnNovoServico" class="secondary hidden" onclick="novoServico()">
+      Novo serviço
+    </button>
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th>Programa</th>
+          <th>Duração</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="listaServicos"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- FORM SERVIÇO -->
+  <div id="blocoServicoForm" class="card hidden">
+
+    <h3 id="tituloServicoForm">Adicionar serviço</h3>
+
+    <div class="row">
+
+      <div>
         <label>Data</label>
-        <input id="svcData" type="date">
+        <input type="date" id="svcData">
+      </div>
 
+      <div>
         <label>Cliente</label>
-        <input id="svcCliente" type="text">
+        <input type="text" id="svcCliente">
+      </div>
 
-        <label>Projeto / Programa</label>
-        <input id="svcPrograma" type="text">
+    </div>
 
-        <label>Descrição do serviço</label>
-        <input id="svcDescricao" type="text">
+    <label>Programa / Treinamento</label>
+    <input type="text" id="svcPrograma">
 
-        <label>Duração (horas)</label>
-        <input id="svcDuracao" type="number" step="0.5" min="0.5" value="4">
+    <label>Descrição</label>
+    <textarea id="svcDescricao"></textarea>
 
+    <div class="row">
+
+      <div>
+        <label>Duração</label>
+        <select id="svcDuracao">
+          <option value="4">4h</option>
+          <option value="8">8h</option>
+        </select>
+      </div>
+
+      <div>
         <label>Valor base</label>
-        <input id="svcValorBase" type="number" step="0.01" min="0" value="0">
+        <input type="number" id="svcValorBase">
+      </div>
 
+    </div>
+
+    <div class="row">
+
+      <div>
         <label>Pernoites</label>
-        <input id="svcPernoites" type="number" step="1" min="0" value="0">
+        <input type="number" id="svcPernoites" value="0">
+      </div>
 
-        <label>
-          <input id="svcOutroIdioma" type="checkbox" style="width:auto; margin-right:8px;">
-          Outro idioma (+ R$ 50,00)
-        </label>
+      <div>
+        <label>Outro idioma</label>
+        <input type="checkbox" id="svcOutroIdioma">
+      </div>
 
+    </div>
+
+    <div class="row">
+
+      <div>
         <label>Coordenação 4h (dias)</label>
-        <input id="svcCoord4" type="number" step="1" min="0" value="0">
+        <input type="number" id="svcCoord4" value="0">
+      </div>
 
+      <div>
         <label>Coordenação 8h (dias)</label>
-        <input id="svcCoord8" type="number" step="1" min="0" value="0">
-
-        <div class="rowActions">
-          <button id="btnSalvarServico" onclick="salvarServico()">Salvar serviço</button>
-          <button id="btnCancelarServico" class="secondary hidden" onclick="cancelarEdicaoServico()">Cancelar</button>
-        </div>
-
-        <div id="msgServico" class="msg"></div>
+        <input type="number" id="svcCoord8" value="0">
       </div>
 
-      <!-- serviços -->
-      <div class="card">
-        <div class="rowActions" style="justify-content:space-between; align-items:center;">
-          <h3 style="margin:0;">Serviços</h3>
-          <button id="btnNovoServico" class="secondary hidden" onclick="novoServico()">Novo serviço</button>
-        </div>
+    </div>
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Cliente</th>
-              <th>Programa</th>
-              <th>Horas</th>
-              <th>Subtotal</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="listaServicos"></tbody>
-        </table>
-      </div>
+    <button onclick="salvarServico()">Salvar</button>
+    <button class="secondary" id="btnCancelarServico" onclick="cancelarEdicaoServico()">Cancelar</button>
 
-      <!-- formulário reembolso -->
-      <div id="blocoReembolsoForm" class="card hidden">
-        <h3 id="tituloReembolsoForm">Adicionar reembolso</h3>
+    <div id="msgServico"></div>
 
+  </div>  <!-- REEMBOLSOS -->
+  <div class="card">
+
+    <h3>Reembolsos</h3>
+
+    <button id="btnNovoReembolso" class="secondary hidden" onclick="novoReembolso()">
+      Novo reembolso
+    </button>
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th>Descrição</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Comprovante</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="listaReembolsos"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- FORM REEMBOLSO -->
+  <div id="blocoReembolsoForm" class="card hidden">
+
+    <h3 id="tituloReembolsoForm">Adicionar reembolso</h3>
+
+    <div class="row">
+
+      <div>
         <label>Data</label>
-        <input id="rebData" type="date">
+        <input type="date" id="rebData">
+      </div>
 
+      <div>
         <label>Cliente</label>
-        <input id="rebCliente" type="text">
+        <input type="text" id="rebCliente">
+      </div>
 
-        <label>Percurso / Descrição</label>
-        <input id="rebPercurso" type="text">
+    </div>
 
+    <label>Percurso / Descrição</label>
+    <textarea id="rebPercurso"></textarea>
+
+    <div class="row">
+
+      <div>
         <label>Tipo de despesa</label>
         <select id="rebTipo">
           <option value="alimentacao">Alimentação</option>
@@ -516,175 +617,132 @@
           <option value="km_rodado">KM rodado</option>
           <option value="outros">Outros</option>
         </select>
+      </div>
 
+      <div>
         <label>Modo de cálculo</label>
         <select id="rebModo" onchange="alternarModoReembolso()">
           <option value="valor_direto">Valor direto</option>
           <option value="km">KM rodado</option>
         </select>
+      </div>
 
-        <div id="rebValorDiretoWrap">
-          <label>Valor</label>
-          <input id="rebValorDireto" type="number" step="0.01" min="0" value="0">
-        </div>
+    </div>
 
-        <div id="rebKmWrap" class="hidden">
+    <div id="rebValorDiretoWrap">
+      <label>Valor</label>
+      <input type="number" id="rebValorDireto" value="0">
+    </div>
+
+    <div id="rebKmWrap" class="hidden">
+      <div class="row">
+        <div>
           <label>KM rodado</label>
-          <input id="rebKm" type="number" step="0.01" min="0" value="0">
+          <input type="number" id="rebKm" value="0">
+        </div>
 
+        <div>
           <label>Valor por KM</label>
-          <input id="rebValorKm" type="number" step="0.01" min="0" value="1.20">
+          <input type="number" id="rebValorKm" value="1.20">
         </div>
+      </div>
+    </div>
 
-        <label>Comprovante</label>
-        <input id="rebComprovante" type="file" accept="image/*,.pdf">
+    <label>Comprovante</label>
+    <input type="file" id="rebComprovante" accept="image/*,.pdf">
 
-        <div class="rowActions">
-          <button id="btnSalvarReembolso" onclick="salvarReembolso()">Salvar reembolso</button>
-          <button id="btnCancelarReembolso" class="secondary hidden" onclick="cancelarEdicaoReembolso()">Cancelar</button>
-        </div>
+    <button onclick="salvarReembolso()">Salvar</button>
+    <button class="secondary" id="btnCancelarReembolso" onclick="cancelarEdicaoReembolso()">Cancelar</button>
 
-        <div id="msgReembolso" class="msg"></div>
-      </div>      <!-- REEMBOLSOS -->
-      <div class="card">
-        <div class="rowActions" style="justify-content:space-between; align-items:center;">
-          <h3 style="margin:0;">Reembolsos</h3>
-          <button id="btnNovoReembolso" class="secondary hidden" onclick="novoReembolso()">Novo reembolso</button>
-        </div>
+    <div id="msgReembolso"></div>
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Cliente</th>
-              <th>Tipo</th>
-              <th>Valor</th>
-              <th>Comprovante</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="listaReembolsos"></tbody>
-        </table>
+  </div>
+
+
+  <!-- ANEXOS -->
+  <div class="card">
+
+    <h3>Anexos</h3>
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Arquivo</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+
+      <tbody id="listaAnexos"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- AÇÕES GESTOR -->
+  <div id="acoesGestor" class="hidden">
+
+    <div class="card">
+
+      <h3>Ações do gestor</h3>
+
+      <label>Comentário do gestor</label>
+      <textarea id="comentarioGestor"></textarea>
+
+      <div class="rowActions">
+        <button onclick="aprovarRelatorio()">Aprovar relatório</button>
+        <button class="secondary" onclick="devolverRelatorio()">Devolver para ajuste</button>
       </div>
 
-      <!-- ANEXOS -->
-      <div class="card">
-        <h3>Anexos do relatório</h3>
+      <hr style="margin:20px 0;border-color:rgba(255,255,255,0.08);">
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Arquivo</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody id="listaAnexos"></tbody>
-        </table>
+      <div class="rowActions">
+        <button onclick="validarNF()">Validar NF</button>
+        <button class="danger" onclick="rejeitarNF()">Rejeitar NF</button>
       </div>
 
-      <!-- AÇÕES GESTOR -->
-      <div id="acoesGestor" class="hidden">
+    </div>
 
-        <div class="card">
+  </div>
 
-          <h3>Ações do gestor</h3>
 
-          <label>Comentário do gestor</label>
-          <textarea id="comentarioGestor"></textarea>
+  <!-- AÇÕES FINANCEIRO -->
+  <div id="acoesFinanceiro" class="hidden">
 
-          <div class="rowActions">
+    <div class="card">
 
-            <button onclick="aprovarRelatorio()">
-              Aprovar relatório
-            </button>
+      <h3>Ações do financeiro</h3>
 
-            <button class="secondary" onclick="devolverRelatorio()">
-              Devolver para ajuste
-            </button>
+      <label>Observação do financeiro</label>
+      <textarea id="obsFinanceiro"></textarea>
 
-          </div>
+      <button onclick="marcarPago()">Marcar pagamento realizado</button>
 
-          <hr style="margin:20px 0; border-color:rgba(255,255,255,0.08);">
+    </div>
 
-          <div class="rowActions">
+  </div>
 
-            <button onclick="validarNF()">
-              Validar NF
-            </button>
+</div> <!-- fim relatorioDetalhe -->
 
-            <button class="danger" onclick="rejeitarNF()">
-              Rejeitar NF
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- AÇÕES FINANCEIRO -->
-      <div id="acoesFinanceiro" class="hidden">
-
-        <div class="card">
-
-          <h3>Financeiro</h3>
-
-          <label>Observação do financeiro</label>
-          <textarea id="obsFinanceiro"></textarea>
-
-          <div class="rowActions">
-
-            <button onclick="marcarPago()">
-              Marcar pagamento realizado
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div> <!-- fim detalhe -->
-
-  </div> <!-- fim container -->
+</div> <!-- fim container -->
 
 <script>const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
-const CREATE_USER_FUNCTION = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/create-user";
-const RESET_PASSWORD_FUNCTION = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/clever-function";
-const BUCKET = "relatorio-anexos";
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let usuarioAtual = null;
 let perfilAtual = null;
-let relatorioAtual = null;
-let servicoEditandoId = null;
-let reembolsoEditandoId = null;
 
 function byId(id){
   return document.getElementById(id);
 }
 
-function brl(v){
-  return `R$ ${Number(v || 0).toFixed(2)}`;
-}
-
-function sanitize(name){
-  return name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z0-9.\-_]/g, "_");
-}
-
-function statusTag(status){
-  const st = status || "nao_solicitada";
-  return `<span class="status ${st}">${st}</span>`;
-}
-
 function esconderTudo(){
+  byId("settingsArea").classList.add("hidden");
   byId("equipeArea").classList.add("hidden");
   byId("prestadorArea").classList.add("hidden");
   byId("gestorArea").classList.add("hidden");
@@ -692,91 +750,11 @@ function esconderTudo(){
   byId("relatorioDetalhe").classList.add("hidden");
 }
 
-function abrirHome(){
-  esconderTudo();
-}
-
-function abrirEquipe(){
-  esconderTudo();
-  byId("equipeArea").classList.remove("hidden");
-  carregarEquipe();
-}
-
-function abrirPrestador(){
-  esconderTudo();
-  byId("prestadorArea").classList.remove("hidden");
-  carregarRelatorios();
-}
-
-function abrirGestor(){
-  esconderTudo();
-  byId("gestorArea").classList.remove("hidden");
-  carregarAprovacoes();
-}
-
-function abrirFinanceiro(){
-  esconderTudo();
-  byId("financeiroArea").classList.remove("hidden");
-  carregarFinanceiro();
-}
-
-function voltar(){
-  relatorioAtual = null;
-  servicoEditandoId = null;
-  reembolsoEditandoId = null;
-  limparFormularioServico();
-  limparFormularioReembolso();
-
-  if(perfilAtual.role === "prestador") abrirPrestador();
-  if(perfilAtual.role === "gestor") abrirGestor();
-  if(perfilAtual.role === "financeiro") abrirFinanceiro();
-}
-
-function definirMensagem(id, texto){
-  const el = byId(id);
-  if(el) el.innerText = texto || "";
-}
-
-function mostrarAreaPorPerfil(){
-  esconderTudo();
-
-  byId("userInfo").innerText = perfilAtual?.email || "";
-  byId("userRole").innerText = perfilAtual?.role || "";
-  byId("userData").innerHTML = `
-    <strong>Nome:</strong> ${perfilAtual?.nome || ""}<br>
-    <strong>Email:</strong> ${perfilAtual?.email || ""}<br>
-    <strong>Perfil:</strong> ${perfilAtual?.role || ""}
-  `;
-
-  if(perfilAtual.role === "prestador"){
-    byId("menu").innerHTML = `
-      <button onclick="abrirHome()">Início</button>
-      <button onclick="abrirPrestador()">Meus relatórios</button>
-    `;
-    abrirPrestador();
-  }
-
-  if(perfilAtual.role === "gestor"){
-    byId("menu").innerHTML = `
-      <button onclick="abrirHome()">Início</button>
-      <button onclick="abrirEquipe()">Equipe</button>
-      <button onclick="abrirGestor()">Aprovações</button>
-    `;
-    abrirGestor();
-  }
-
-  if(perfilAtual.role === "financeiro"){
-    byId("menu").innerHTML = `
-      <button onclick="abrirHome()">Início</button>
-      <button onclick="abrirFinanceiro()">Financeiro</button>
-    `;
-    abrirFinanceiro();
-  }
-}
-
 async function carregarPerfil(){
-  const { data: authData } = await sb.auth.getUser();
-  const user = authData?.user;
+
+  const { data } = await sb.auth.getUser();
+  const user = data.user;
+
   if(!user){
     alert("Usuário não autenticado.");
     return;
@@ -784,969 +762,227 @@ async function carregarPerfil(){
 
   usuarioAtual = user;
 
-  const { data, error } = await sb
+  const { data: profile } = await sb
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
     .single();
 
-  if(error){
-    alert(error.message);
-    return;
-  }
+  perfilAtual = profile;
 
-  perfilAtual = data;
-  mostrarAreaPorPerfil();
-}
+  byId("userInfo").innerText = profile.email;
 
-/* ===== EQUIPE ===== */
-
-async function carregarEquipe(){
-  const tbody = byId("listaEquipe");
-  tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
-
-  const { data, error } = await sb
-    .from("profiles")
-    .select("nome,email,role,ativo,must_change_password")
-    .order("criado_em", { ascending:false });
-
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="6">Nenhum usuário encontrado.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(u => `
-    <tr>
-      <td>${u.nome || ""}</td>
-      <td>${u.email || ""}</td>
-      <td>${u.role || ""}</td>
-      <td>${u.ativo ? "Sim" : "Não"}</td>
-      <td>${u.must_change_password ? "Sim" : "Não"}</td>
-      <td>
-        <button class="secondary" onclick="resetarSenhaEquipe('${u.email}')">Resetar senha</button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-async function criarUsuarioEquipe(){
-  const nome = byId("novoNome").value.trim();
-  const email = byId("novoEmail").value.trim().toLowerCase();
-  const role = byId("novoPerfil").value;
-
-  if(!nome || !email || !role){
-    definirMensagem("msgEquipe", "Preencha nome, email e perfil.");
-    return;
-  }
-
-  definirMensagem("msgEquipe", "Criando usuário...");
-
-  try{
-    const { data: sessionData } = await sb.auth.getSession();
-    const accessToken = sessionData?.session?.access_token;
-
-    if(!accessToken){
-      definirMensagem("msgEquipe", "Sessão inválida. Faça login novamente.");
-      return;
-    }
-
-    const resposta = await fetch(CREATE_USER_FUNCTION, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
-        "apikey": SUPABASE_KEY
-      },
-      body: JSON.stringify({ nome, email, role })
-    });
-
-    const texto = await resposta.text();
-    let json = {};
-    try { json = JSON.parse(texto); } catch { json = { error: texto }; }
-
-    if(!resposta.ok){
-      definirMensagem("msgEquipe", json.error || "Erro ao criar usuário.");
-      return;
-    }
-
-    definirMensagem("msgEquipe", "Usuário criado com sucesso. Senha inicial: Oper@coes_Rise2026");
-    byId("novoNome").value = "";
-    byId("novoEmail").value = "";
-    byId("novoPerfil").value = "prestador";
-    carregarEquipe();
-  } catch(err){
-    definirMensagem("msgEquipe", err.message || String(err));
-  }
-}
-
-async function resetarSenhaEquipe(email){
-  if(!confirm(`Resetar a senha de ${email} para Oper@coes_Rise2026?`)) return;
-
-  definirMensagem("msgEquipe", "Resetando senha...");
-
-  try{
-    const { data: sessionData } = await sb.auth.getSession();
-    const accessToken = sessionData?.session?.access_token;
-
-    if(!accessToken){
-      definirMensagem("msgEquipe", "Sessão inválida. Faça login novamente.");
-      return;
-    }
-
-    const resposta = await fetch(RESET_PASSWORD_FUNCTION, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
-        "apikey": SUPABASE_KEY
-      },
-      body: JSON.stringify({ email })
-    });
-
-    const texto = await resposta.text();
-    let json = {};
-    try { json = JSON.parse(texto); } catch { json = { error: texto }; }
-
-    if(!resposta.ok){
-      definirMensagem("msgEquipe", json.error || "Erro ao resetar senha.");
-      return;
-    }
-
-    definirMensagem("msgEquipe", `Senha resetada com sucesso para ${email}. Senha temporária: Oper@coes_Rise2026`);
-    carregarEquipe();
-  } catch(err){
-    definirMensagem("msgEquipe", err.message || String(err));
-  }
-}
-
-/* ===== PRESTADOR ===== */
-
-async function criarRelatorio(){
-  const mes = Number(byId("mesRef").value);
-  const ano = Number(byId("anoRef").value);
-  const comentario = byId("comentarioPrestador").value.trim();
-
-  definirMensagem("msgNovoRelatorio", "Criando relatório...");
-
-  const { error } = await sb
-    .from("relatorios")
-    .insert([{
-      prestador_profile_id: perfilAtual.id,
-      mes_referencia: mes,
-      ano_referencia: ano,
-      comentario_prestador: comentario,
-      status: "rascunho",
-      nf_status: "nao_solicitada"
-    }]);
-
-  if(error){
-    definirMensagem("msgNovoRelatorio", error.message);
-    return;
-  }
-
-  byId("comentarioPrestador").value = "";
-  definirMensagem("msgNovoRelatorio", "Relatório criado com sucesso.");
-  carregarRelatorios();
-}
-
-async function carregarRelatorios(){
-  const tbody = byId("listaRelatorios");
-  tbody.innerHTML = `<tr><td colspan="7">Carregando...</td></tr>`;
-
-  const { data, error } = await sb
-    .from("relatorios")
-    .select("*")
-    .eq("prestador_profile_id", perfilAtual.id)
-    .order("ano_referencia", { ascending:false })
-    .order("mes_referencia", { ascending:false });
-
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="7">${error.message}</td></tr>`;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="7">Nenhum relatório encontrado.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
-      <td>${r.status}</td>
-      <td>${statusTag(r.nf_status)}</td>
-      <td>${brl(r.valor_nf_aprovado || r.total_servicos)}</td>
-      <td>${brl(r.total_reembolsos)}</td>
-      <td>${brl(r.total_geral)}</td>
-      <td><button onclick="abrirRelatorio('${r.id}')">Abrir</button></td>
-    </tr>
-  `).join("");
-}
-
-/* ===== GESTOR ===== */
-
-async function carregarAprovacoes(){
-  const tbody = byId("listaAprovacoes");
-  tbody.innerHTML = `<tr><td colspan="7">Carregando...</td></tr>`;
-
-  const { data, error } = await sb
-    .from("relatorios")
-    .select(`
-      *,
-      profiles!relatorios_prestador_profile_id_fkey(nome,email)
-    `)
-    .in("status", ["enviado","aprovado_gestor"])
-    .order("ano_referencia", { ascending:false })
-    .order("mes_referencia", { ascending:false });
-
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="7">${error.message}</td></tr>`;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="7">Nenhum relatório para aprovação.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td>${r.profiles?.nome || r.profiles?.email || "-"}</td>
-      <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
-      <td>${statusTag(r.nf_status)}</td>
-      <td>${brl(r.valor_nf_aprovado || r.total_servicos)}</td>
-      <td>${brl(r.total_reembolsos)}</td>
-      <td>${brl(r.total_geral)}</td>
-      <td><button onclick="abrirRelatorio('${r.id}')">Abrir</button></td>
-    </tr>
-  `).join("");
-}
-
-/* ===== FINANCEIRO ===== */
-
-async function carregarFinanceiro(){
-  const tbody = byId("listaFinanceiro");
-  tbody.innerHTML = `<tr><td colspan="8">Carregando...</td></tr>`;
-
-  const { data, error } = await sb
-    .from("relatorios")
-    .select(`
-      *,
-      profiles!relatorios_prestador_profile_id_fkey(nome,email)
-    `)
-    .eq("status", "aprovado_gestor")
-    .eq("nf_status", "validada")
-    .not("enviado_financeiro_em", "is", null)
-    .order("ano_referencia", { ascending:false })
-    .order("mes_referencia", { ascending:false });
-
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="8">${error.message}</td></tr>`;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="8">Nenhum relatório para pagamento.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(r => `
-    <tr>
-      <td>${r.profiles?.nome || r.profiles?.email || "-"}</td>
-      <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
-      <td>${brl(r.valor_nf_aprovado || r.total_servicos)}</td>
-      <td>${brl(r.total_reembolsos)}</td>
-      <td>${brl(r.total_geral)}</td>
-      <td>${statusTag(r.nf_status)}</td>
-      <td>${r.pago_em ? "Sim" : "Não"}</td>
-      <td><button onclick="abrirRelatorio('${r.id}')">Abrir</button></td>
-    </tr>
-  `).join("");
-}async function abrirRelatorio(id){
-  const { data, error } = await sb
-    .from("relatorios")
-    .select(`
-      *,
-      profiles!relatorios_prestador_profile_id_fkey(nome,email)
-    `)
-    .eq("id", id)
-    .single();
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  relatorioAtual = data;
-  servicoEditandoId = null;
-  reembolsoEditandoId = null;
-
-  limparFormularioServico();
-  limparFormularioReembolso();
-
-  esconderTudo();
-  byId("relatorioDetalhe").classList.remove("hidden");
-
-  byId("infoRelatorio").innerHTML = `
-    <strong>Prestador:</strong> ${data.profiles?.nome || data.profiles?.email || "-"}<br>
-    <strong>Período:</strong> ${String(data.mes_referencia).padStart(2,"0")}/${data.ano_referencia}<br>
-    <strong>Status:</strong> ${data.status}<br>
-    <strong>Status NF:</strong> ${data.nf_status}<br>
-    <strong>Comentário do prestador:</strong> ${data.comentario_prestador || "-"}<br>
-    <strong>Comentário do gestor:</strong> ${data.comentario_gestor || "-"}<br>
-    <strong>Pagamento:</strong> ${data.pago_em ? "Realizado" : "Pendente"}
+  byId("userData").innerHTML = `
+    <strong>Nome:</strong> ${profile.nome}<br>
+    <strong>Email:</strong> ${profile.email}<br>
+    <strong>Perfil:</strong> ${profile.role}
   `;
 
-  byId("totalServicos").innerText = brl(data.total_servicos);
-  byId("totalReembolsos").innerText = brl(data.total_reembolsos);
-  byId("totalGeral").innerText = brl(data.total_geral);
-  byId("valorNF").innerText = brl(data.valor_nf_aprovado || data.total_servicos);
+  montarMenu();
 
-  configurarBlocosDoRelatorio();
-
-  await carregarServicos();
-  await carregarReembolsos();
-  await carregarAnexos();
 }
 
-function configurarBlocosDoRelatorio(){
-  byId("nfBanner").classList.add("hidden");
-  byId("uploadNF").classList.add("hidden");
-  byId("acoesGestor").classList.add("hidden");
-  byId("acoesFinanceiro").classList.add("hidden");
-  byId("blocoServicoForm").classList.add("hidden");
-  byId("blocoReembolsoForm").classList.add("hidden");
-  byId("btnNovoServico").classList.add("hidden");
-  byId("btnNovoReembolso").classList.add("hidden");
+function montarMenu(){
 
-  const prestadorPodeEditar = perfilAtual.role === "prestador" && ["rascunho","devolvido"].includes(relatorioAtual.status);
-  const gestorPodeEditar = perfilAtual.role === "gestor" && relatorioAtual.nf_status !== "validada";
-
-  if(prestadorPodeEditar || gestorPodeEditar){
-    byId("btnNovoServico").classList.remove("hidden");
-    byId("btnNovoReembolso").classList.remove("hidden");
-  }
+  const menu = byId("menu");
 
   if(perfilAtual.role === "prestador"){
-    byId("nfBanner").classList.remove("hidden");
 
-    if(relatorioAtual.status === "aprovado_gestor"){
-      byId("uploadNF").classList.remove("hidden");
+    menu.innerHTML = `
+      <button onclick="abrirPrestador()">Meus relatórios</button>
+    `;
 
-      if(relatorioAtual.nf_status === "rejeitada"){
-        byId("msgNF").innerText = `Sua NF foi rejeitada. Motivo: ${relatorioAtual.comentario_gestor || "Sem comentário"}. Substitua o PDF e envie novamente.`;
-        byId("btnEnviarNF").innerText = "Substituir NF";
-        byId("arquivoNF").disabled = false;
-        byId("btnEnviarNF").disabled = false;
-      } else if(relatorioAtual.nf_status === "enviada"){
-        byId("msgNF").innerText = "NF enviada. Aguarde a validação do gestor.";
-        byId("btnEnviarNF").innerText = "NF enviada";
-        byId("arquivoNF").disabled = true;
-        byId("btnEnviarNF").disabled = true;
-      } else if(relatorioAtual.nf_status === "validada"){
-        byId("msgNF").innerText = relatorioAtual.pago_em
-          ? "NF validada e pagamento realizado."
-          : "NF validada. Aguarde o pagamento.";
-        byId("btnEnviarNF").innerText = "NF validada";
-        byId("arquivoNF").disabled = true;
-        byId("btnEnviarNF").disabled = true;
-      } else {
-        byId("msgNF").innerText = "Envie o PDF da NF.";
-        byId("btnEnviarNF").innerText = "Enviar NF";
-        byId("arquivoNF").disabled = false;
-        byId("btnEnviarNF").disabled = false;
-      }
-    }
+    abrirPrestador();
   }
 
   if(perfilAtual.role === "gestor"){
-    byId("acoesGestor").classList.remove("hidden");
+
+    menu.innerHTML = `
+      <button onclick="abrirEquipe()">Equipe</button>
+      <button onclick="abrirGestor()">Aprovações</button>
+      <button onclick="abrirSettings()">Settings</button>
+    `;
+
+    abrirGestor();
   }
 
   if(perfilAtual.role === "financeiro"){
-    byId("acoesFinanceiro").classList.remove("hidden");
-  }
-}
 
-/* ===== SERVIÇOS ===== */
+    menu.innerHTML = `
+      <button onclick="abrirFinanceiro()">Financeiro</button>
+    `;
 
-function novoServico(){
-  servicoEditandoId = null;
-  byId("tituloServicoForm").innerText = "Adicionar serviço";
-  byId("blocoServicoForm").classList.remove("hidden");
-  byId("btnCancelarServico").classList.add("hidden");
-  limparFormularioServico();
-}
-
-function limparFormularioServico(){
-  byId("svcData").value = "";
-  byId("svcCliente").value = "";
-  byId("svcPrograma").value = "";
-  byId("svcDescricao").value = "";
-  byId("svcDuracao").value = 4;
-  byId("svcValorBase").value = 0;
-  byId("svcPernoites").value = 0;
-  byId("svcOutroIdioma").checked = false;
-  byId("svcCoord4").value = 0;
-  byId("svcCoord8").value = 0;
-  definirMensagem("msgServico", "");
-}
-
-function cancelarEdicaoServico(){
-  servicoEditandoId = null;
-  byId("blocoServicoForm").classList.add("hidden");
-  limparFormularioServico();
-}
-
-async function salvarServico(){
-  const payload = {
-    relatorio_id: relatorioAtual.id,
-    data_execucao: byId("svcData").value,
-    cliente: byId("svcCliente").value.trim(),
-    programa: byId("svcPrograma").value.trim(),
-    descricao_servico: byId("svcDescricao").value.trim(),
-    duracao_horas: parseFloat(byId("svcDuracao").value || "0"),
-    valor_base: parseFloat(byId("svcValorBase").value || "0"),
-    qtd_pernoites: parseInt(byId("svcPernoites").value || "0", 10),
-    outro_idioma: byId("svcOutroIdioma").checked,
-    coord_4h_dias: parseInt(byId("svcCoord4").value || "0", 10),
-    coord_8h_dias: parseInt(byId("svcCoord8").value || "0", 10)
-  };
-
-  if(!payload.data_execucao || !payload.cliente || !payload.programa){
-    definirMensagem("msgServico", "Preencha data, cliente e programa.");
-    return;
+    abrirFinanceiro();
   }
 
-  let error;
-  if(servicoEditandoId){
-    ({ error } = await sb.from("relatorio_servicos").update(payload).eq("id", servicoEditandoId));
-  } else {
-    ({ error } = await sb.from("relatorio_servicos").insert([payload]));
-  }
-
-  if(error){
-    definirMensagem("msgServico", error.message);
-    return;
-  }
-
-  servicoEditandoId = null;
-  byId("blocoServicoForm").classList.add("hidden");
-  limparFormularioServico();
-  await abrirRelatorio(relatorioAtual.id);
-  if(perfilAtual.role === "prestador") await carregarRelatorios();
-  if(perfilAtual.role === "gestor") await carregarAprovacoes();
 }
 
-async function editarServico(id){
-  const { data, error } = await sb.from("relatorio_servicos").select("*").eq("id", id).single();
-  if(error || !data){
-    alert(error?.message || "Erro ao carregar serviço.");
-    return;
-  }
+function abrirSettings(){
 
-  servicoEditandoId = id;
-  byId("tituloServicoForm").innerText = "Editar serviço";
-  byId("blocoServicoForm").classList.remove("hidden");
-  byId("btnCancelarServico").classList.remove("hidden");
+  esconderTudo();
+  byId("settingsArea").classList.remove("hidden");
+  carregarSettings();
 
-  byId("svcData").value = data.data_execucao || "";
-  byId("svcCliente").value = data.cliente || "";
-  byId("svcPrograma").value = data.programa || "";
-  byId("svcDescricao").value = data.descricao_servico || "";
-  byId("svcDuracao").value = data.duracao_horas || 4;
-  byId("svcValorBase").value = data.valor_base || 0;
-  byId("svcPernoites").value = data.qtd_pernoites || 0;
-  byId("svcOutroIdioma").checked = !!data.outro_idioma;
-  byId("svcCoord4").value = data.coord_4h_dias || 0;
-  byId("svcCoord8").value = data.coord_8h_dias || 0;
 }
 
-async function excluirServico(id){
-  if(!confirm("Excluir este serviço?")) return;
+async function carregarSettings(){
 
-  const { error } = await sb.from("relatorio_servicos").delete().eq("id", id);
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  if(perfilAtual.role === "prestador") await carregarRelatorios();
-  if(perfilAtual.role === "gestor") await carregarAprovacoes();
-}
-
-async function carregarServicos(){
-  const tbody = byId("listaServicos");
-  tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
-
-  const { data, error } = await sb
-    .from("relatorio_servicos")
+  const { data } = await sb
+    .from("configuracoes_operacionais")
     .select("*")
-    .eq("relatorio_id", relatorioAtual.id)
-    .order("data_execucao", { ascending:true })
-    .order("ordem", { ascending:true });
+    .limit(1)
+    .single();
 
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
-    return;
-  }
+  byId("cfgFac4h").value = data.valor_facilitacao_4h;
+  byId("cfgFac8h").value = data.valor_facilitacao_8h;
+  byId("cfgIdioma").value = data.adicional_idioma;
+  byId("cfgPernoite").value = data.valor_pernoite;
+  byId("cfgCoord4h").value = data.valor_coordenador_4h;
+  byId("cfgCoord8h").value = data.valor_coordenador_8h;
+  byId("cfgKm").value = data.valor_km;
 
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="6">Nenhum serviço.</td></tr>`;
-    return;
-  }
-
-  const gestorPodeEditar = perfilAtual.role === "gestor" && relatorioAtual.nf_status !== "validada";
-  const prestadorPodeEditar = perfilAtual.role === "prestador" && ["rascunho","devolvido"].includes(relatorioAtual.status);
-  const podeEditar = gestorPodeEditar || prestadorPodeEditar;
-
-  tbody.innerHTML = data.map(s => `
-    <tr>
-      <td>${s.data_execucao || ""}</td>
-      <td>${s.cliente || ""}</td>
-      <td>${s.programa || ""}</td>
-      <td>${s.duracao_horas || 0}h</td>
-      <td>${brl(s.subtotal_servico)}</td>
-      <td>
-        ${podeEditar ? `
-          <div class="rowActions">
-            <button class="secondary" onclick="editarServico('${s.id}')">Editar</button>
-            <button class="danger" onclick="excluirServico('${s.id}')">Excluir</button>
-          </div>
-        ` : "-"}
-      </td>
-    </tr>
-  `).join("");
 }
 
-/* ===== REEMBOLSOS ===== */
-
-function alternarModoReembolso(){
-  const modo = byId("rebModo").value;
-  byId("rebValorDiretoWrap").classList.toggle("hidden", modo === "km");
-  byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
-}
-
-function novoReembolso(){
-  reembolsoEditandoId = null;
-  byId("tituloReembolsoForm").innerText = "Adicionar reembolso";
-  byId("blocoReembolsoForm").classList.remove("hidden");
-  byId("btnCancelarReembolso").classList.add("hidden");
-  limparFormularioReembolso();
-}
-
-function limparFormularioReembolso(){
-  byId("rebData").value = "";
-  byId("rebCliente").value = "";
-  byId("rebPercurso").value = "";
-  byId("rebTipo").value = "alimentacao";
-  byId("rebModo").value = "valor_direto";
-  byId("rebValorDireto").value = 0;
-  byId("rebKm").value = 0;
-  byId("rebValorKm").value = 1.20;
-  byId("rebComprovante").value = "";
-  alternarModoReembolso();
-  definirMensagem("msgReembolso", "");
-}
-
-function cancelarEdicaoReembolso(){
-  reembolsoEditandoId = null;
-  byId("blocoReembolsoForm").classList.add("hidden");
-  limparFormularioReembolso();
-}
-
-async function salvarReembolso(){
-  const modo = byId("rebModo").value;
-  const arquivo = byId("rebComprovante").files[0] || null;
+async function salvarSettings(){
 
   const payload = {
-    relatorio_id: relatorioAtual.id,
-    data_despesa: byId("rebData").value,
-    cliente: byId("rebCliente").value.trim(),
-    percurso_descricao: byId("rebPercurso").value.trim(),
-    tipo_despesa: byId("rebTipo").value,
-    modo_valor: modo,
-    km_rodado: modo === "km" ? parseFloat(byId("rebKm").value || "0") : null,
-    valor_km: modo === "km" ? parseFloat(byId("rebValorKm").value || "1.2") : 1.20,
-    valor_informado: modo === "valor_direto" ? parseFloat(byId("rebValorDireto").value || "0") : null
+
+    valor_facilitacao_4h: parseFloat(byId("cfgFac4h").value),
+    valor_facilitacao_8h: parseFloat(byId("cfgFac8h").value),
+    adicional_idioma: parseFloat(byId("cfgIdioma").value),
+    valor_pernoite: parseFloat(byId("cfgPernoite").value),
+    valor_coordenador_4h: parseFloat(byId("cfgCoord4h").value),
+    valor_coordenador_8h: parseFloat(byId("cfgCoord8h").value),
+    valor_km: parseFloat(byId("cfgKm").value)
+
   };
 
-  if(!payload.data_despesa || !payload.cliente || !payload.percurso_descricao){
-    definirMensagem("msgReembolso", "Preencha data, cliente e descrição.");
-    return;
-  }
-
-  let registroId = reembolsoEditandoId;
-  let error;
-
-  if(reembolsoEditandoId){
-    ({ error } = await sb.from("relatorio_reembolsos").update(payload).eq("id", reembolsoEditandoId));
-  } else {
-    const result = await sb.from("relatorio_reembolsos").insert([payload]).select().single();
-    error = result.error;
-    registroId = result.data?.id;
-  }
+  const { error } = await sb
+    .from("configuracoes_operacionais")
+    .update(payload)
+    .neq("id","00000000-0000-0000-0000-000000000000");
 
   if(error){
-    definirMensagem("msgReembolso", error.message);
+
+    byId("msgSettings").innerText = error.message;
     return;
+
   }
 
-  if(arquivo && registroId){
-    const path = `${relatorioAtual.id}/reembolsos/${registroId}/${Date.now()}_${sanitize(arquivo.name)}`;
+  byId("msgSettings").innerText = "Settings salvos com sucesso.";
 
-    const { error: uploadError } = await sb.storage.from(BUCKET).upload(path, arquivo, { upsert:true });
-    if(uploadError){
-      definirMensagem("msgReembolso", uploadError.message);
-      return;
-    }
-
-    await sb.from("relatorio_anexos").insert([{
-      relatorio_id: relatorioAtual.id,
-      reembolso_id: registroId,
-      tipo_anexo: "comprovante_reembolso",
-      nome_arquivo: arquivo.name,
-      storage_path: path,
-      mime_type: arquivo.type || null,
-      tamanho_bytes: arquivo.size || null,
-      criado_por: perfilAtual.id
-    }]);
-  }
-
-  reembolsoEditandoId = null;
-  byId("blocoReembolsoForm").classList.add("hidden");
-  limparFormularioReembolso();
-  await abrirRelatorio(relatorioAtual.id);
-  if(perfilAtual.role === "prestador") await carregarRelatorios();
-  if(perfilAtual.role === "gestor") await carregarAprovacoes();
 }
 
-async function editarReembolso(id){
-  const { data, error } = await sb.from("relatorio_reembolsos").select("*").eq("id", id).single();
-  if(error || !data){
-    alert(error?.message || "Erro ao carregar reembolso.");
-    return;
-  }
+function abrirEquipe(){
 
-  reembolsoEditandoId = id;
-  byId("tituloReembolsoForm").innerText = "Editar reembolso";
-  byId("blocoReembolsoForm").classList.remove("hidden");
-  byId("btnCancelarReembolso").classList.remove("hidden");
+  esconderTudo();
+  byId("equipeArea").classList.remove("hidden");
+  carregarEquipe();
 
-  byId("rebData").value = data.data_despesa || "";
-  byId("rebCliente").value = data.cliente || "";
-  byId("rebPercurso").value = data.percurso_descricao || "";
-  byId("rebTipo").value = data.tipo_despesa || "alimentacao";
-  byId("rebModo").value = data.modo_valor || "valor_direto";
-  byId("rebValorDireto").value = data.valor_informado || 0;
-  byId("rebKm").value = data.km_rodado || 0;
-  byId("rebValorKm").value = data.valor_km || 1.20;
-  alternarModoReembolso();
 }
 
-async function excluirReembolso(id){
-  if(!confirm("Excluir este reembolso?")) return;
+async function carregarEquipe(){
 
-  const { error } = await sb.from("relatorio_reembolsos").delete().eq("id", id);
-  if(error){
-    alert(error.message);
-    return;
-  }
+  const tbody = byId("listaEquipe");
 
-  await abrirRelatorio(relatorioAtual.id);
-  if(perfilAtual.role === "prestador") await carregarRelatorios();
-  if(perfilAtual.role === "gestor") await carregarAprovacoes();
-}
+  const { data } = await sb
+    .from("profiles")
+    .select("id,nome,email,role,ativo,must_change_password");
 
-async function carregarReembolsos(){
-  const tbody = byId("listaReembolsos");
-  tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
+  tbody.innerHTML = data.map(u=>`
 
-  const { data, error } = await sb
-    .from("relatorio_reembolsos")
-    .select(`
-      *,
-      relatorio_anexos(id,nome_arquivo,storage_path)
-    `)
-    .eq("relatorio_id", relatorioAtual.id)
-    .order("data_despesa", { ascending:true })
-    .order("ordem", { ascending:true });
-
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="6">Nenhum reembolso.</td></tr>`;
-    return;
-  }
-
-  const gestorPodeEditar = perfilAtual.role === "gestor" && relatorioAtual.nf_status !== "validada";
-  const prestadorPodeEditar = perfilAtual.role === "prestador" && ["rascunho","devolvido"].includes(relatorioAtual.status);
-  const podeEditar = gestorPodeEditar || prestadorPodeEditar;
-
-  tbody.innerHTML = data.map(r => `
     <tr>
-      <td>${r.data_despesa || ""}</td>
-      <td>${r.cliente || ""}</td>
-      <td>${r.tipo_despesa || ""}</td>
-      <td>${brl(r.valor_final)}</td>
-      <td>${r.relatorio_anexos && r.relatorio_anexos.length > 0 ? "Sim" : "Não"}</td>
+
+      <td>${u.nome}</td>
+      <td>${u.email}</td>
+      <td>${u.role}</td>
+      <td>${u.ativo ? "Sim":"Não"}</td>
+      <td>${u.must_change_password ? "Sim":"Não"}</td>
+
       <td>
-        ${podeEditar ? `
-          <div class="rowActions">
-            <button class="secondary" onclick="editarReembolso('${r.id}')">Editar</button>
-            <button class="danger" onclick="excluirReembolso('${r.id}')">Excluir</button>
-          </div>
-        ` : "-"}
+
+        <button class="secondary" onclick="resetarSenhaEquipe('${u.email}')">
+          Resetar senha
+        </button>
+
+        <button class="secondary" onclick="desativarUsuario('${u.id}')">
+          Desativar
+        </button>
+
+        <button class="danger" onclick="excluirUsuario('${u.id}')">
+          Excluir
+        </button>
+
       </td>
+
     </tr>
+
   `).join("");
+
 }
 
-/* ===== ANEXOS ===== */
+async function desativarUsuario(id){
 
-async function carregarAnexos(){
-  const tbody = byId("listaAnexos");
-  tbody.innerHTML = `<tr><td colspan="3">Carregando...</td></tr>`;
+  if(!confirm("Desativar usuário?")) return;
 
-  const { data, error } = await sb
-    .from("relatorio_anexos")
-    .select("*")
-    .eq("relatorio_id", relatorioAtual.id)
-    .order("criado_em", { ascending:false });
+  await sb
+    .from("profiles")
+    .update({ativo:false})
+    .eq("id",id);
 
-  if(error){
-    tbody.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
-    return;
-  }
+  carregarEquipe();
 
-  if(!data || data.length === 0){
-    tbody.innerHTML = `<tr><td colspan="3">Nenhum anexo.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(a => `
-    <tr>
-      <td>${a.tipo_anexo}</td>
-      <td>${a.nome_arquivo}</td>
-      <td><button onclick="abrirAnexo('${a.storage_path}')">Abrir</button></td>
-    </tr>
-  `).join("");
 }
 
-async function abrirAnexo(path){
-  const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, 120);
-  if(error){
-    alert(error.message);
-    return;
-  }
-  window.open(data.signedUrl, "_blank");
+async function excluirUsuario(id){
+
+  if(!confirm("Excluir usuário permanentemente?")) return;
+
+  await sb
+    .from("profiles")
+    .delete()
+    .eq("id",id);
+
+  carregarEquipe();
+
 }
 
-/* ===== NF ===== */
+function abrirPrestador(){
 
-async function enviarNF(){
-  if(!relatorioAtual) return;
+  esconderTudo();
+  byId("prestadorArea").classList.remove("hidden");
 
-  const arquivo = byId("arquivoNF").files[0];
-  if(!arquivo){
-    alert("Selecione um PDF da NF.");
-    return;
-  }
-
-  const path = `${relatorioAtual.id}/nf/${Date.now()}_${sanitize(arquivo.name)}`;
-
-  const { error: uploadError } = await sb.storage.from(BUCKET).upload(path, arquivo, { upsert:true });
-  if(uploadError){
-    alert(uploadError.message);
-    return;
-  }
-
-  const { data: antigas } = await sb
-    .from("relatorio_anexos")
-    .select("id")
-    .eq("relatorio_id", relatorioAtual.id)
-    .eq("tipo_anexo", "nf_pdf");
-
-  for(const a of (antigas || [])){
-    await sb.from("relatorio_anexos").delete().eq("id", a.id);
-  }
-
-  const { error: anexoError } = await sb
-    .from("relatorio_anexos")
-    .insert([{
-      relatorio_id: relatorioAtual.id,
-      tipo_anexo: "nf_pdf",
-      nome_arquivo: arquivo.name,
-      storage_path: path,
-      mime_type: arquivo.type || null,
-      tamanho_bytes: arquivo.size || null,
-      criado_por: perfilAtual.id
-    }]);
-
-  if(anexoError){
-    alert(anexoError.message);
-    return;
-  }
-
-  const { error: relError } = await sb
-    .from("relatorios")
-    .update({ nf_status: "enviada" })
-    .eq("id", relatorioAtual.id);
-
-  if(relError){
-    alert(relError.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarRelatorios();
 }
 
-/* ===== AÇÕES GESTOR ===== */
+function abrirGestor(){
 
-async function aprovarRelatorio(){
-  if(!relatorioAtual) return;
+  esconderTudo();
+  byId("gestorArea").classList.remove("hidden");
 
-  const comentario = byId("comentarioGestor").value.trim();
-
-  const { error } = await sb
-    .from("relatorios")
-    .update({
-      status: "aprovado_gestor",
-      comentario_gestor: comentario,
-      aprovado_em: new Date().toISOString(),
-      aprovado_por: perfilAtual.id,
-      valor_nf_aprovado: relatorioAtual.total_servicos,
-      nf_status: "aguardando_emissao"
-    })
-    .eq("id", relatorioAtual.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarAprovacoes();
 }
 
-async function devolverRelatorio(){
-  if(!relatorioAtual) return;
+function abrirFinanceiro(){
 
-  const comentario = byId("comentarioGestor").value.trim();
-  if(!comentario){
-    alert("Escreva um comentário para devolver.");
-    return;
-  }
+  esconderTudo();
+  byId("financeiroArea").classList.remove("hidden");
 
-  const { error } = await sb
-    .from("relatorios")
-    .update({
-      status: "devolvido",
-      comentario_gestor: comentario,
-      devolvido_em: new Date().toISOString(),
-      devolvido_por: perfilAtual.id
-    })
-    .eq("id", relatorioAtual.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarAprovacoes();
 }
 
-async function validarNF(){
-  if(!relatorioAtual) return;
+async function logout(){
 
-  const comentario = byId("comentarioGestor").value.trim();
+  await sb.auth.signOut();
+  location.reload();
 
-  const { error } = await sb
-    .from("relatorios")
-    .update({
-      nf_status: "validada",
-      comentario_gestor: comentario,
-      enviado_financeiro_em: new Date().toISOString(),
-      enviado_financeiro_por: perfilAtual.id
-    })
-    .eq("id", relatorioAtual.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarAprovacoes();
 }
-
-async function rejeitarNF(){
-  if(!relatorioAtual) return;
-
-  const comentario = byId("comentarioGestor").value.trim();
-  if(!comentario){
-    alert("Escreva o motivo da rejeição.");
-    return;
-  }
-
-  const { error } = await sb
-    .from("relatorios")
-    .update({
-      nf_status: "rejeitada",
-      comentario_gestor: comentario
-    })
-    .eq("id", relatorioAtual.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarAprovacoes();
-}
-
-/* ===== FINANCEIRO ===== */
-
-async function marcarPago(){
-  if(!relatorioAtual) return;
-
-  const { error } = await sb
-    .from("relatorios")
-    .update({
-      pago_em: new Date().toISOString(),
-      pago_por: perfilAtual.id,
-      observacao_financeiro: byId("obsFinanceiro").value.trim()
-    })
-    .eq("id", relatorioAtual.id);
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  await abrirRelatorio(relatorioAtual.id);
-  await carregarFinanceiro();
-}
-
-/* ===== START ===== */
 
 async function start(){
+
   await carregarPerfil();
+
 }
 
 start();
 </script>
+
 </body>
 </html>
