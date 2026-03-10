@@ -360,41 +360,6 @@
         </div>
       </div>
 
-      <div id="settingsModule" class="hidden" style="margin-top:20px;">
-        <div class="card">
-          <h2>Settings operacionais</h2>
-          <div class="grid">
-            <div>
-              <label for="cfgFac4h">Facilitação até 4h</label>
-              <input id="cfgFac4h" type="number" min="0" step="0.01">
-
-              <label for="cfgFac8h">Facilitação até 8h</label>
-              <input id="cfgFac8h" type="number" min="0" step="0.01">
-
-              <label for="cfgIdioma">Adicional idioma</label>
-              <input id="cfgIdioma" type="number" min="0" step="0.01">
-
-              <label for="cfgPernoite">Pernoite</label>
-              <input id="cfgPernoite" type="number" min="0" step="0.01">
-            </div>
-            <div>
-              <label for="cfgCoord4h">Coordenação até 4h</label>
-              <input id="cfgCoord4h" type="number" min="0" step="0.01">
-
-              <label for="cfgCoord8h">Coordenação até 8h</label>
-              <input id="cfgCoord8h" type="number" min="0" step="0.01">
-
-              <label for="cfgKm">KM rodado</label>
-              <input id="cfgKm" type="number" min="0" step="0.01">
-            </div>
-          </div>
-          <div class="row-actions">
-            <button onclick="saveSettings()">Salvar settings</button>
-          </div>
-          <div id="settingsMsg" class="msg"></div>
-        </div>
-      </div>
-
       <div id="launchModule" class="hidden" style="margin-top:20px;">
         <div class="grid">
           <div class="card">
@@ -567,9 +532,6 @@
 
             <label for="rebData">Data</label>
             <input id="rebData" type="date">
-
-            <label for="rebCliente">Cliente</label>
-            <input id="rebCliente" placeholder="Cliente">
 
             <label for="rebPercurso">Percurso/Descrição</label>
             <input id="rebPercurso" placeholder="Percurso/Descrição">
@@ -775,6 +737,42 @@
         </div>
       </div>
 
+      <div id="settingsModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <h2>Configurações operacionais</h2>
+          <p class="muted">Valores utilizados no cálculo automático dos serviços.</p>
+
+          <div class="grid">
+            <div>
+              <label for="cfgFac4h">Facilitação até 4h (R$)</label>
+              <input id="cfgFac4h" type="number" step="0.01" min="0" value="0">
+
+              <label for="cfgFac8h">Facilitação até 8h (R$)</label>
+              <input id="cfgFac8h" type="number" step="0.01" min="0" value="0">
+
+              <label for="cfgIdioma">Adicional outro idioma (R$)</label>
+              <input id="cfgIdioma" type="number" step="0.01" min="0" value="0">
+
+              <label for="cfgPernoite">Pernoite (R$)</label>
+              <input id="cfgPernoite" type="number" step="0.01" min="0" value="0">
+            </div>
+            <div>
+              <label for="cfgCoord4h">Coordenação 4h (R$)</label>
+              <input id="cfgCoord4h" type="number" step="0.01" min="0" value="0">
+
+              <label for="cfgCoord8h">Coordenação 8h (R$)</label>
+              <input id="cfgCoord8h" type="number" step="0.01" min="0" value="0">
+
+              <label for="cfgKm">KM rodado (R$/km)</label>
+              <input id="cfgKm" type="number" step="0.01" min="0" value="1.20">
+            </div>
+          </div>
+
+          <button onclick="saveOperationalSettings()">Salvar configurações</button>
+          <div id="settingsMsg" class="msg"></div>
+        </div>
+      </div>
+
       <div id="financeModule" class="hidden" style="margin-top:20px;">
         <div class="card">
           <h2>Financeiro</h2>
@@ -790,7 +788,6 @@
                 <th>Serviços</th>
                 <th>Reembolsos</th>
                 <th>Total</th>
-                <th>Status NF</th>
                 <th>Pago</th>
                 <th>Ações</th>
               </tr>
@@ -868,6 +865,7 @@
     let currentReport = null;
     let currentApprovalReport = null;
     let currentFinanceReport = null;
+    let currentSettings = null;
     let editingServiceId = null;
     let editingReembolsoId = null;    function byId(id) { return document.getElementById(id); }
     function currencyBRL(v) { return `R$ ${Number(v || 0).toFixed(2)}`; }
@@ -928,7 +926,6 @@
     function clearReembolsoForm() {
       editingReembolsoId = null;
       byId("rebData").value = "";
-      byId("rebCliente").value = "";
       byId("rebPercurso").value = "";
       byId("rebTipo").value = "alimentacao";
       byId("rebModo").value = "valor_direto";
@@ -991,7 +988,7 @@
       if (target) target.classList.remove("hidden");
 
       if (moduleId === "teamModule") loadTeam();
-      if (moduleId === "settingsModule") loadSettings();
+      if (moduleId === "settingsModule") loadOperationalSettings();
       if (moduleId === "launchModule") loadMyReports();
       if (moduleId === "approvalsModule") loadReportsForApproval();
       if (moduleId === "financeModule") loadFinanceReports();
@@ -1025,10 +1022,9 @@
 
       try {
         currentProfile = await getProfile(currentUser.id);
-        if (!currentProfile.ativo) {
+        if (currentProfile.ativo === false) {
           await sb.auth.signOut();
           setMsg("loginMsg", "Seu perfil está desativado. Fale com a Rise.");
-          showOnly("loginView");
           return;
         }
         if (currentProfile.must_change_password) {
@@ -1209,7 +1205,7 @@
       tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("profiles")
-        .select("id,user_id,nome,email,role,ativo,must_change_password")
+        .select("id,nome,email,role,ativo,must_change_password")
         .order("criado_em", { ascending: false });
 
       if (error) {
@@ -1232,85 +1228,129 @@
           <td>
             <div class="row-actions">
               <button class="btn-small" onclick="resetUserPassword('${item.email}')">Resetar senha</button>
-              <button class="btn-small btn-secondary" onclick="toggleUserActive('${item.id}', ${item.ativo ? 'false' : 'true'})">${item.ativo ? 'Desativar' : 'Ativar'}</button>
-              <button class="btn-small btn-danger" onclick="deleteProfile('${item.id}', '${item.email}')">Excluir perfil</button>
+              <button class="btn-small btn-linkish" onclick="toggleUserActive('${item.id}', ${item.ativo ? 'false' : 'true'})">${item.ativo ? 'Desativar' : 'Ativar'}</button>
+              <button class="btn-small btn-danger" onclick="deleteProfileOnly('${item.id}', '${item.email || ''}')">Excluir</button>
             </div>
           </td>
         </tr>
       `).join("");
     };
 
-    async function getOperationalSettings() {
+
+    window.toggleUserActive = async function toggleUserActive(profileId, nextActive) {
+      const acao = nextActive ? "ativar" : "desativar";
+      const confirmar = confirm(`Deseja ${acao} este perfil?`);
+      if (!confirmar) return;
+
+      setMsg("teamMsg", `Tentando ${acao} perfil...`);
+
+      const { error } = await sb
+        .from("profiles")
+        .update({ ativo: nextActive })
+        .eq("id", profileId);
+
+      if (error) {
+        setMsg("teamMsg", error.message);
+        return;
+      }
+
+      setMsg("teamMsg", `Perfil ${nextActive ? "ativado" : "desativado"} com sucesso.`);
+      loadTeam();
+    };
+
+    window.deleteProfileOnly = async function deleteProfileOnly(profileId, email) {
+      const confirmar = confirm(`Excluir o perfil de ${email}? Isso remove apenas da tabela de perfis.`);
+      if (!confirmar) return;
+
+      setMsg("teamMsg", "Excluindo perfil...");
+
+      const { error } = await sb
+        .from("profiles")
+        .delete()
+        .eq("id", profileId);
+
+      if (error) {
+        setMsg("teamMsg", error.message);
+        return;
+      }
+
+      setMsg("teamMsg", "Perfil excluído com sucesso.");
+      loadTeam();
+    };
+
+    window.loadOperationalSettings = async function loadOperationalSettings() {
+      setMsg("settingsMsg", "Carregando settings...");
+
       const { data, error } = await sb
         .from("configuracoes_operacionais")
         .select("*")
         .limit(1)
         .single();
-      if (error) throw error;
-      return data;
-    }
 
-    window.loadSettings = async function loadSettings() {
-      setMsg("settingsMsg", "Carregando settings...");
-      try {
-        const cfg = await getOperationalSettings();
-        byId("cfgFac4h").value = cfg.valor_facilitacao_4h ?? 400;
-        byId("cfgFac8h").value = cfg.valor_facilitacao_8h ?? 600;
-        byId("cfgIdioma").value = cfg.adicional_idioma ?? 50;
-        byId("cfgPernoite").value = cfg.valor_pernoite ?? 70;
-        byId("cfgCoord4h").value = cfg.valor_coordenador_4h ?? 80;
-        byId("cfgCoord8h").value = cfg.valor_coordenador_8h ?? 120;
-        byId("cfgKm").value = cfg.valor_km ?? 1.2;
-        setMsg("settingsMsg", "");
-      } catch (err) {
-        setMsg("settingsMsg", `Erro: ${err.message || err}`);
+      if (error) {
+        setMsg("settingsMsg", error.message);
+        return;
       }
+
+      currentSettings = data;
+      byId("cfgFac4h").value = Number(data.valor_facilitacao_4h || 0);
+      byId("cfgFac8h").value = Number(data.valor_facilitacao_8h || 0);
+      byId("cfgIdioma").value = Number(data.adicional_idioma || 0);
+      byId("cfgPernoite").value = Number(data.valor_pernoite || 0);
+      byId("cfgCoord4h").value = Number(data.valor_coordenador_4h || 0);
+      byId("cfgCoord8h").value = Number(data.valor_coordenador_8h || 0);
+      byId("cfgKm").value = Number(data.valor_km || 0);
+      setMsg("settingsMsg", "");
     };
 
-    window.saveSettings = async function saveSettings() {
+    window.saveOperationalSettings = async function saveOperationalSettings() {
+      if (!currentProfile || currentProfile.role !== "gestor") {
+        setMsg("settingsMsg", "Apenas gestor pode alterar settings.");
+        return;
+      }
+
+      const payload = {
+        valor_facilitacao_4h: parseFloat(byId("cfgFac4h").value || "0"),
+        valor_facilitacao_8h: parseFloat(byId("cfgFac8h").value || "0"),
+        adicional_idioma: parseFloat(byId("cfgIdioma").value || "0"),
+        valor_pernoite: parseFloat(byId("cfgPernoite").value || "0"),
+        valor_coordenador_4h: parseFloat(byId("cfgCoord4h").value || "0"),
+        valor_coordenador_8h: parseFloat(byId("cfgCoord8h").value || "0"),
+        valor_km: parseFloat(byId("cfgKm").value || "0"),
+        updated_at: new Date().toISOString()
+      };
+
       setMsg("settingsMsg", "Salvando settings...");
-      try {
-        const cfg = await getOperationalSettings();
-        const payload = {
-          valor_facilitacao_4h: parseFloat(byId("cfgFac4h").value || "0"),
-          valor_facilitacao_8h: parseFloat(byId("cfgFac8h").value || "0"),
-          adicional_idioma: parseFloat(byId("cfgIdioma").value || "0"),
-          valor_pernoite: parseFloat(byId("cfgPernoite").value || "0"),
-          valor_coordenador_4h: parseFloat(byId("cfgCoord4h").value || "0"),
-          valor_coordenador_8h: parseFloat(byId("cfgCoord8h").value || "0"),
-          valor_km: parseFloat(byId("cfgKm").value || "0")
-        };
-        const { error } = await sb.from("configuracoes_operacionais").update(payload).eq("id", cfg.id);
-        if (error) throw error;
-        setMsg("settingsMsg", "Settings salvos com sucesso.");
-      } catch (err) {
-        setMsg("settingsMsg", `Erro: ${err.message || err}`);
-      }
-    };
 
-    window.toggleUserActive = async function toggleUserActive(profileId, nextActive) {
-      const label = nextActive ? "ativar" : "desativar";
-      if (!confirm(`Deseja ${label} este perfil?`)) return;
-      setMsg("teamMsg", `Tentando ${label} perfil...`);
-      const { error } = await sb.from("profiles").update({ ativo: nextActive }).eq("id", profileId);
-      if (error) {
-        setMsg("teamMsg", `Erro: ${error.message}`);
+      const { data: existing } = await sb
+        .from("configuracoes_operacionais")
+        .select("id")
+        .limit(1)
+        .single();
+
+      let result;
+      if (existing?.id) {
+        result = await sb
+          .from("configuracoes_operacionais")
+          .update(payload)
+          .eq("id", existing.id)
+          .select()
+          .single();
+      } else {
+        result = await sb
+          .from("configuracoes_operacionais")
+          .insert([payload])
+          .select()
+          .single();
+      }
+
+      if (result.error) {
+        setMsg("settingsMsg", result.error.message);
         return;
       }
-      setMsg("teamMsg", `Perfil ${nextActive ? 'ativado' : 'desativado'} com sucesso.`);
-      loadTeam();
-    };
 
-    window.deleteProfile = async function deleteProfile(profileId, email) {
-      if (!confirm(`Excluir o perfil de ${email}? Esta ação remove apenas o perfil operacional.`)) return;
-      setMsg("teamMsg", "Excluindo perfil...");
-      const { error } = await sb.from("profiles").delete().eq("id", profileId);
-      if (error) {
-        setMsg("teamMsg", `Erro: ${error.message}`);
-        return;
-      }
-      setMsg("teamMsg", `Perfil de ${email} excluído com sucesso.`);
-      loadTeam();
+      currentSettings = result.data;
+      setMsg("settingsMsg", "Settings salvos com sucesso.");
     };
 
     window.createReport = async function createReport() {
@@ -1604,8 +1644,8 @@
         coord_8h_dias: parseInt(byId("svcCoord8").value || "0", 10)
       };
 
-      if (!payload.data_execucao || !payload.cliente || !payload.programa) {
-        setMsg("serviceMsg", "Preencha data, cliente e projeto/programa.");
+      if (!payload.data_execucao || !payload.programa) {
+        setMsg("serviceMsg", "Preencha data e projeto/programa.");
         return;
       }
 
@@ -1625,10 +1665,8 @@
 
       setMsg("serviceMsg", editingServiceId ? "Serviço atualizado com sucesso." : "Serviço adicionado com sucesso.");
       clearServiceForm();
-
       await loadServices();
       await refreshCurrentReport();
-      await loadMyReports();
     };
 
     window.editService = async function editService(id) {
@@ -1665,7 +1703,6 @@
       clearServiceForm();
       await loadServices();
       await refreshCurrentReport();
-      await loadMyReports();
     };
 
     async function loadServices() {
@@ -1723,7 +1760,7 @@
       const payload = {
         relatorio_id: currentReport.id,
         data_despesa: byId("rebData").value,
-        cliente: byId("rebCliente").value.trim(),
+        cliente: "",
         percurso_descricao: byId("rebPercurso").value.trim(),
         tipo_despesa: byId("rebTipo").value,
         modo_valor: modo,
@@ -1732,8 +1769,8 @@
         valor_informado: modo === "valor_direto" ? parseFloat(byId("rebValorDireto").value || "0") : null
       };
 
-      if (!payload.data_despesa || !payload.cliente || !payload.percurso_descricao) {
-        setMsg("reembolsoMsg", "Preencha data, cliente e percurso/descrição.");
+      if (!payload.data_despesa || !payload.percurso_descricao) {
+        setMsg("reembolsoMsg", "Preencha data e percurso/descrição.");
         return;
       }
 
@@ -1763,17 +1800,14 @@
         setMsg("reembolsoMsg", `Reembolso salvo, mas o comprovante falhou: ${uploadErr.message || uploadErr}`);
         await loadReembolsos();
         await refreshCurrentReport();
-        await loadMyReports();
         await loadAttachments();
         return;
       }
 
       setMsg("reembolsoMsg", editingReembolsoId ? "Reembolso atualizado com sucesso." : "Reembolso adicionado com sucesso.");
       clearReembolsoForm();
-
       await loadReembolsos();
       await refreshCurrentReport();
-      await loadMyReports();
       await loadAttachments();
     };
 
@@ -1786,7 +1820,6 @@
 
       editingReembolsoId = id;
       byId("rebData").value = data.data_despesa || "";
-      byId("rebCliente").value = data.cliente || "";
       byId("rebPercurso").value = data.percurso_descricao || "";
       byId("rebTipo").value = data.tipo_despesa || "alimentacao";
       byId("rebModo").value = data.modo_valor || "valor_direto";
@@ -1810,7 +1843,6 @@
       clearReembolsoForm();
       await loadReembolsos();
       await refreshCurrentReport();
-      await loadMyReports();
       await loadAttachments();
     };
 
@@ -2330,7 +2362,7 @@
       const tbody = byId("financeTableBody");
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="9" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb
         .from("relatorios")
@@ -2349,17 +2381,16 @@
         `)
         .eq("status", "aprovado_gestor")
         .eq("nf_status", "validada")
-        .not("enviado_financeiro_em", "is", null)
         .order("ano_referencia", { ascending: false })
         .order("mes_referencia", { ascending: false });
 
       if (error) {
-        tbody.innerHTML = `<tr><td colspan="9">${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8">${error.message}</td></tr>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="muted">Nenhum relatório disponível para pagamento.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="muted">Nenhum relatório disponível para pagamento.</td></tr>`;
         return;
       }
 
@@ -2380,8 +2411,7 @@
           <td>${currencyBRL(r.valor_nf_aprovado || r.total_servicos)}</td>
           <td>${currencyBRL(r.total_reembolsos)}</td>
           <td><strong>${currencyBRL(r.total_geral)}</strong></td>
-          <td>${r.nf_status}</td>
-          <td>${r.pago_em ? "Sim" : "Não"}</td>
+          <td>${r.pago_em ? `<span class="badge-ok">Pago</span>` : `<span class="badge-neutral">Pendente</span>`}</td>
           <td><button class="btn-small" onclick="openFinanceReport('${r.id}')">Abrir</button></td>
         </tr>
       `).join("");
@@ -2495,11 +2525,10 @@
       try {
         currentProfile = await getProfile(currentUser.id);
 
-        if (!currentProfile.ativo) {
+        if (currentProfile.ativo === false) {
           await sb.auth.signOut();
           updateTopbar();
           showOnly("loginView");
-          setMsg("loginMsg", "Seu perfil está desativado. Fale com a Rise.");
           return;
         }
 
