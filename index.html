@@ -166,7 +166,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO APROVACAO GESTOR 09/03</p>
+      <p class="version-badge">VERSAO FINANCEIRO 09/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -206,7 +206,7 @@
 
       <div id="homeModule" class="card" style="margin-top:20px;">
         <h2>Início</h2>
-        <p class="muted">Base do sistema pronta. Agora a Rise já consegue operar relatórios mensais com revisão do gestor.</p>
+        <p class="muted">Fluxo completo: prestador, gestor e financeiro.</p>
       </div>
 
       <div id="teamModule" class="hidden" style="margin-top:20px;">
@@ -611,6 +611,88 @@
         </div>
       </div>
 
+      <div id="financeModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <h2>Financeiro</h2>
+          <p class="muted">Relatórios aprovados pelo gestor aguardando NF e pagamento.</p>
+          <button class="btn-secondary" onclick="loadFinanceReports()" style="margin-top:0;">Atualizar lista</button>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Prestador</th>
+                <th>Período</th>
+                <th>NF</th>
+                <th>Reembolsos</th>
+                <th>Total</th>
+                <th>Status NF</th>
+                <th>Pago</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="financeTableBody">
+              <tr><td colspan="8" class="muted">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="financeDetailModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <div class="row-actions">
+            <button class="btn-secondary btn-small" onclick="backToFinance()">← Voltar</button>
+          </div>
+
+          <h2 style="margin-top:16px;">Revisão financeira</h2>
+          <p id="financeHeaderInfo" class="muted"></p>
+
+          <div class="totals-box">
+            <div class="total-card">
+              <div class="label">Valor NF</div>
+              <div id="financeValorNF" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Reembolsos</div>
+              <div id="financeValorReembolsos" class="value">R$ 0,00</div>
+            </div>
+            <div class="total-card">
+              <div class="label">Total</div>
+              <div id="financeValorTotal" class="value">R$ 0,00</div>
+            </div>
+          </div>
+
+          <label for="financeObs">Observação do financeiro</label>
+          <textarea id="financeObs" placeholder="Observações internas do financeiro"></textarea>
+
+          <label for="nfPdf">PDF da NF</label>
+          <input id="nfPdf" type="file" accept=".pdf">
+
+          <div class="row-actions">
+            <button onclick="uploadNfPdf()">Receber PDF da NF</button>
+            <button class="btn-secondary" onclick="markNfReceived()">Marcar NF recebida</button>
+            <button onclick="markAsPaid()">Marcar pagamento realizado</button>
+          </div>
+
+          <div id="financeMsg" class="msg"></div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h2>Anexos do relatório</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Arquivo</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="financeAttachmentsTableBody">
+              <tr><td colspan="3" class="muted">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
   <script>
     const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
@@ -625,6 +707,7 @@
     let currentProfile = null;
     let currentReport = null;
     let currentApprovalReport = null;
+    let currentFinanceReport = null;
 
     function byId(id) { return document.getElementById(id); }
     function currencyBRL(v) { return `R$ ${Number(v || 0).toFixed(2)}`; }
@@ -680,7 +763,7 @@
       } else if (currentProfile.role === "financeiro") {
         menu.innerHTML = `
           <button onclick="openModule('homeModule')">Início</button>
-          <button onclick="openModule('approvalsModule')">Aprovações</button>
+          <button onclick="openModule('financeModule')">Financeiro</button>
         `;
       } else {
         menu.innerHTML = `
@@ -693,7 +776,8 @@
     function openModule(moduleId) {
       [
         "homeModule","teamModule","launchModule","reportDetailModule",
-        "approvalsModule","approvalDetailModule"
+        "approvalsModule","approvalDetailModule",
+        "financeModule","financeDetailModule"
       ].forEach(id => {
         byId(id).classList.add("hidden");
       });
@@ -703,6 +787,7 @@
       if (moduleId === "teamModule") loadTeam();
       if (moduleId === "launchModule") loadMyReports();
       if (moduleId === "approvalsModule") loadReportsForApproval();
+      if (moduleId === "financeModule") loadFinanceReports();
     }
 
     function renderApp() {
@@ -788,6 +873,7 @@
       currentProfile = null;
       currentReport = null;
       currentApprovalReport = null;
+      currentFinanceReport = null;
       byId("email").value = "";
       byId("password").value = "";
       byId("newPassword").value = "";
@@ -1022,7 +1108,7 @@
         `;
         renderReportTotals();
         byId("reportDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","approvalsModule","approvalDetailModule"].forEach(id => byId(id).classList.add("hidden"));
+        ["homeModule","teamModule","launchModule","approvalsModule","approvalDetailModule","financeModule","financeDetailModule"].forEach(id => byId(id).classList.add("hidden"));
         await loadServices();
         await loadReembolsos();
         await loadAttachments();
@@ -1158,9 +1244,9 @@
       byId("rebKmWrap").classList.toggle("hidden", modo !== "km");
     };
 
-    async function uploadComprovanteForReembolso(reembolsoId, file) {
+    async function uploadFileToReport(reportId, subfolder, file, tipoAnexo, reembolsoId = null) {
       const safeName = sanitizeFileName(file.name);
-      const path = `${currentReport.id}/reembolsos/${reembolsoId}/${Date.now()}_${safeName}`;
+      const path = `${reportId}/${subfolder}/${Date.now()}_${safeName}`;
 
       const { error: uploadError } = await sb.storage
         .from(STORAGE_BUCKET)
@@ -1168,20 +1254,28 @@
 
       if (uploadError) throw uploadError;
 
+      const insertPayload = {
+        relatorio_id: reportId,
+        reembolso_id: reembolsoId,
+        tipo_anexo: tipoAnexo,
+        nome_arquivo: file.name,
+        storage_path: path,
+        mime_type: file.type || null,
+        tamanho_bytes: file.size || null,
+        criado_por: currentProfile.id
+      };
+
       const { error: dbError } = await sb
         .from("relatorio_anexos")
-        .insert([{
-          relatorio_id: currentReport.id,
-          reembolso_id: reembolsoId,
-          tipo_anexo: "comprovante_reembolso",
-          nome_arquivo: file.name,
-          storage_path: path,
-          mime_type: file.type || null,
-          tamanho_bytes: file.size || null,
-          criado_por: currentProfile.id
-        }]);
+        .insert([insertPayload]);
 
       if (dbError) throw dbError;
+
+      return path;
+    }
+
+    async function uploadComprovanteForReembolso(reembolsoId, file) {
+      return uploadFileToReport(currentReport.id, `reembolsos/${reembolsoId}`, file, "comprovante_reembolso", reembolsoId);
     }
 
     window.addReembolso = async function addReembolso() {
@@ -1332,7 +1426,7 @@
     }
 
     window.openAttachment = async function openAttachment(path) {
-      const { data, error } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(path, 60);
+      const { data, error } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(path, 120);
       if (error) {
         alert(error.message);
         return;
@@ -1425,9 +1519,7 @@
         .in("id", profileIds);
 
       const profileMap = {};
-      (profilesData || []).forEach(p => {
-        profileMap[p.id] = p;
-      });
+      (profilesData || []).forEach(p => { profileMap[p.id] = p; });
 
       tbody.innerHTML = data.map(r => `
         <tr>
@@ -1436,9 +1528,7 @@
           <td>${currencyBRL(r.total_servicos)}</td>
           <td>${currencyBRL(r.total_reembolsos)}</td>
           <td><strong>${currencyBRL(r.total_geral)}</strong></td>
-          <td>
-            <button class="btn-small" onclick="openApprovalReport('${r.id}')">Abrir</button>
-          </td>
+          <td><button class="btn-small" onclick="openApprovalReport('${r.id}')">Abrir</button></td>
         </tr>
       `).join("");
     };
@@ -1467,7 +1557,7 @@
         byId("gestorComentario").value = currentApprovalReport.comentario_gestor || "";
 
         byId("approvalDetailModule").classList.remove("hidden");
-        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule"].forEach(id => byId(id).classList.add("hidden"));
+        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","financeModule","financeDetailModule"].forEach(id => byId(id).classList.add("hidden"));
 
         await loadApprovalServices();
         await loadApprovalReembolsos();
@@ -1528,9 +1618,7 @@
           cliente,
           tipo_despesa,
           valor_final,
-          relatorio_anexos (
-            id
-          )
+          relatorio_anexos ( id )
         `)
         .eq("relatorio_id", currentApprovalReport.id)
         .order("data_despesa", { ascending: true })
@@ -1643,11 +1731,225 @@
       }
 
       currentApprovalReport = await getReport(currentApprovalReport.id);
-      setMsg(
-        "approvalMsg",
-        `Relatório aprovado. Oriente o prestador a emitir a NF no valor de ${currencyBRL(currentApprovalReport.total_servicos)} para o CNPJ 16.935.970/0001-19.`
-      );
+      setMsg("approvalMsg", `Relatório aprovado. Oriente o prestador a emitir a NF no valor de ${currencyBRL(currentApprovalReport.total_servicos)} para o CNPJ 16.935.970/0001-19.`);
       await loadReportsForApproval();
+    };
+
+    window.loadFinanceReports = async function loadFinanceReports() {
+      const tbody = byId("financeTableBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = `<tr><td colspan="8" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorios")
+        .select(`
+          id,
+          mes_referencia,
+          ano_referencia,
+          total_reembolsos,
+          total_geral,
+          valor_nf_aprovado,
+          nf_status,
+          pago_em,
+          prestador_profile_id
+        `)
+        .eq("status", "aprovado_gestor")
+        .order("ano_referencia", { ascending: false })
+        .order("mes_referencia", { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="8">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="muted">Nenhum relatório aprovado pelo gestor.</td></tr>`;
+        return;
+      }
+
+      const profileIds = [...new Set(data.map(r => r.prestador_profile_id))];
+      const { data: profilesData } = await sb
+        .from("profiles")
+        .select("id,nome,email")
+        .in("id", profileIds);
+
+      const profileMap = {};
+      (profilesData || []).forEach(p => { profileMap[p.id] = p; });
+
+      tbody.innerHTML = data.map(r => `
+        <tr>
+          <td>${profileMap[r.prestador_profile_id]?.nome || profileMap[r.prestador_profile_id]?.email || "-"}</td>
+          <td>${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}</td>
+          <td>${currencyBRL(r.valor_nf_aprovado || r.total_servicos || 0)}</td>
+          <td>${currencyBRL(r.total_reembolsos)}</td>
+          <td><strong>${currencyBRL(r.total_geral)}</strong></td>
+          <td>${r.nf_status || "aguardando_emissao"}</td>
+          <td>${r.pago_em ? "Sim" : "Não"}</td>
+          <td><button class="btn-small" onclick="openFinanceReport('${r.id}')">Abrir</button></td>
+        </tr>
+      `).join("");
+    };
+
+    window.openFinanceReport = async function openFinanceReport(reportId) {
+      try {
+        currentFinanceReport = await getReport(reportId);
+
+        const { data: prestadorData } = await sb
+          .from("profiles")
+          .select("nome,email")
+          .eq("id", currentFinanceReport.prestador_profile_id)
+          .single();
+
+        byId("financeHeaderInfo").innerHTML = `
+          <strong>Prestador:</strong> ${prestadorData?.nome || prestadorData?.email || "-"}<br>
+          <strong>Período:</strong> ${String(currentFinanceReport.mes_referencia).padStart(2, "0")}/${currentFinanceReport.ano_referencia}<br>
+          <strong>Status:</strong> ${currentFinanceReport.status}<br>
+          <strong>Status NF:</strong> ${currentFinanceReport.nf_status || "aguardando_emissao"}<br>
+          <strong>Comentário do gestor:</strong> ${currentFinanceReport.comentario_gestor || "-"}
+        `;
+
+        byId("financeValorNF").innerText = currencyBRL(currentFinanceReport.valor_nf_aprovado || currentFinanceReport.total_servicos || 0);
+        byId("financeValorReembolsos").innerText = currencyBRL(currentFinanceReport.total_reembolsos || 0);
+        byId("financeValorTotal").innerText = currencyBRL(currentFinanceReport.total_geral || 0);
+        byId("financeObs").value = currentFinanceReport.observacao_financeiro || "";
+
+        byId("financeDetailModule").classList.remove("hidden");
+        ["homeModule","teamModule","launchModule","reportDetailModule","approvalsModule","approvalDetailModule","financeModule"].forEach(id => byId(id).classList.add("hidden"));
+
+        await loadFinanceAttachments();
+      } catch (err) {
+        alert(err.message || err);
+      }
+    };
+
+    window.backToFinance = function backToFinance() {
+      currentFinanceReport = null;
+      openModule("financeModule");
+    };
+
+    async function loadFinanceAttachments() {
+      if (!currentFinanceReport) return;
+      const tbody = byId("financeAttachmentsTableBody");
+      tbody.innerHTML = `<tr><td colspan="3" class="muted">Carregando...</td></tr>`;
+
+      const { data, error } = await sb
+        .from("relatorio_anexos")
+        .select("id, tipo_anexo, nome_arquivo, storage_path")
+        .eq("relatorio_id", currentFinanceReport.id)
+        .order("criado_em", { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="3">${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="muted">Nenhum anexo encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.tipo_anexo}</td>
+          <td>${item.nome_arquivo}</td>
+          <td><button class="btn-small" onclick="openAttachment('${item.storage_path}')">Abrir</button></td>
+        </tr>
+      `).join("");
+    }
+
+    window.uploadNfPdf = async function uploadNfPdf() {
+      if (!currentFinanceReport) return;
+
+      const file = byId("nfPdf").files[0];
+      if (!file) {
+        setMsg("financeMsg", "Selecione um PDF da NF.");
+        return;
+      }
+
+      if (file.type !== "application/pdf") {
+        setMsg("financeMsg", "O arquivo precisa ser um PDF.");
+        return;
+      }
+
+      setMsg("financeMsg", "Enviando PDF da NF...");
+
+      try {
+        await uploadFileToReport(currentFinanceReport.id, "nf", file, "nf_pdf", null);
+
+        const { error } = await sb
+          .from("relatorios")
+          .update({
+            nf_status: "recebida",
+            nf_emitida_em: new Date().toISOString(),
+            nf_enviada_por: currentProfile.id,
+            observacao_financeiro: byId("financeObs").value.trim()
+          })
+          .eq("id", currentFinanceReport.id);
+
+        if (error) {
+          setMsg("financeMsg", error.message);
+          return;
+        }
+
+        currentFinanceReport = await getReport(currentFinanceReport.id);
+        byId("nfPdf").value = "";
+        setMsg("financeMsg", "PDF da NF recebido com sucesso.");
+        await loadFinanceAttachments();
+        await loadFinanceReports();
+      } catch (err) {
+        setMsg("financeMsg", `Erro ao enviar PDF: ${err.message || err}`);
+      }
+    };
+
+    window.markNfReceived = async function markNfReceived() {
+      if (!currentFinanceReport) return;
+
+      setMsg("financeMsg", "Marcando NF como recebida...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          nf_status: "recebida",
+          nf_emitida_em: new Date().toISOString(),
+          nf_enviada_por: currentProfile.id,
+          observacao_financeiro: byId("financeObs").value.trim()
+        })
+        .eq("id", currentFinanceReport.id);
+
+      if (error) {
+        setMsg("financeMsg", error.message);
+        return;
+      }
+
+      currentFinanceReport = await getReport(currentFinanceReport.id);
+      setMsg("financeMsg", "NF marcada como recebida.");
+      await loadFinanceReports();
+    };
+
+    window.markAsPaid = async function markAsPaid() {
+      if (!currentFinanceReport) return;
+
+      setMsg("financeMsg", "Marcando pagamento realizado...");
+
+      const { error } = await sb
+        .from("relatorios")
+        .update({
+          nf_status: "pago",
+          pago_em: new Date().toISOString(),
+          pago_por: currentProfile.id,
+          observacao_financeiro: byId("financeObs").value.trim()
+        })
+        .eq("id", currentFinanceReport.id);
+
+      if (error) {
+        setMsg("financeMsg", error.message);
+        return;
+      }
+
+      currentFinanceReport = await getReport(currentFinanceReport.id);
+      setMsg("financeMsg", "Pagamento marcado como realizado.");
+      await loadFinanceReports();
     };
 
     async function bootstrap() {
