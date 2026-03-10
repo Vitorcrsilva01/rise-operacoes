@@ -18,7 +18,10 @@
     .card { background: #0f2248; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
     .login-wrap { max-width: 420px; margin: 60px auto; }
     h1, h2, h3 { margin-top: 0; }
-    label { display: block; margin-top: 14px; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.8); font-weight: 700; }
+    label {
+      display: block; margin-top: 14px; margin-bottom: 6px;
+      font-size: 13px; color: rgba(255,255,255,.8); font-weight: 700;
+    }
     input, select, textarea {
       width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px;
     }
@@ -34,7 +37,6 @@
     .menu { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
     .menu button { margin-top: 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; }
     .hidden { display: none !important; }
     .pill {
       display: inline-block; padding: 6px 10px; border-radius: 999px;
@@ -46,20 +48,14 @@
     }
     .muted { color: rgba(255,255,255,.72); }
     .version-badge { color: yellow; font-weight: bold; margin-top: 8px; font-size: 13px; }
-    .totals-box {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px;
-    }
-    .total-card {
-      background: rgba(255,255,255,.05); border-radius: 12px; padding: 16px;
-    }
+    .totals-box { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .total-card { background: rgba(255,255,255,.05); border-radius: 12px; padding: 16px; }
     .total-card .label { font-size: 12px; color: rgba(255,255,255,.72); font-weight: 700; text-transform: uppercase; }
     .total-card .value { font-size: 24px; font-weight: 800; margin-top: 6px; }
-    .inline-note {
-      margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75);
-    }
+    .inline-note { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75); }
     .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     @media(max-width:900px){
-      .grid, .grid-3, .totals-box { grid-template-columns: 1fr; }
+      .grid, .totals-box { grid-template-columns: 1fr; }
       .topbar { padding: 0 14px; }
       .container { padding: 0 14px; }
     }
@@ -78,7 +74,7 @@
   <div id="loginView" class="login-wrap">
     <div class="card">
       <h1>Entrar</h1>
-      <p class="version-badge">VERSAO GITHUB RELATORIO ABERTO 09/03</p>
+      <p class="version-badge">VERSAO FINAL 09/03</p>
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="Email">
@@ -159,10 +155,11 @@
                   <th>Perfil</th>
                   <th>Ativo</th>
                   <th>Troca senha</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody id="teamTableBody">
-                <tr><td colspan="5" class="muted">Carregando...</td></tr>
+                <tr><td colspan="6" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -253,6 +250,7 @@
 
           <div class="row-actions">
             <button id="sendForApprovalBtn" onclick="sendReportForApproval()">Enviar para aprovação</button>
+            <button id="backToDraftBtn" class="btn-secondary hidden" onclick="backToDraft()">Voltar para rascunho</button>
           </div>
           <div id="detailMsg" class="msg"></div>
         </div>
@@ -395,6 +393,7 @@
     const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
     const FUNCTION_CREATE_USER_URL = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/create-user";
+    const FUNCTION_RESET_PASSWORD_URL = "https://wilanwotjokiqlrokgtj.supabase.co/functions/v1/reset-user-password";
 
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -404,9 +403,7 @@
     let currentReport = null;
 
     function byId(id) { return document.getElementById(id); }
-    function currencyBRL(v) {
-      return `R$ ${Number(v || 0).toFixed(2)}`;
-    }
+    function currencyBRL(v) { return `R$ ${Number(v || 0).toFixed(2)}`; }
 
     function showOnly(viewId) {
       byId("loginView").classList.add("hidden");
@@ -614,22 +611,71 @@
       }
     };
 
+    window.resetUserPassword = async function resetUserPassword(email) {
+      if (!email) return;
+
+      const confirmar = confirm(`Resetar a senha de ${email} para Oper@coes_Rise2026?`);
+      if (!confirmar) return;
+
+      setMsg("teamMsg", "Resetando senha...");
+
+      try {
+        const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+
+        if (sessionError) {
+          setMsg("teamMsg", `Erro de sessão: ${sessionError.message}`);
+          return;
+        }
+
+        const accessToken = sessionData?.session?.access_token;
+        if (!accessToken) {
+          setMsg("teamMsg", "Sessão inválida. Saia e entre novamente.");
+          return;
+        }
+
+        const res = await fetch(FUNCTION_RESET_PASSWORD_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+            "apikey": SUPABASE_KEY
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const text = await res.text();
+        let result = {};
+        try { result = text ? JSON.parse(text) : {}; }
+        catch { result = { error: text || "Resposta inválida da function." }; }
+
+        if (!res.ok) {
+          setMsg("teamMsg", `Erro ${res.status}: ${result.error || "Erro ao resetar senha."}`);
+          return;
+        }
+
+        setMsg("teamMsg", `Senha resetada com sucesso para ${email}. Senha temporária: Oper@coes_Rise2026`);
+        loadTeam();
+      } catch (err) {
+        setMsg("teamMsg", `Falha de rede: ${err.message || err}`);
+      }
+    };
+
     window.loadTeam = async function loadTeam() {
       const tbody = byId("teamTableBody");
       if (!tbody) return;
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("profiles")
         .select("nome,email,role,ativo,must_change_password")
         .order("criado_em", { ascending: false });
 
       if (error) {
-        tbody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6">${error.message}</td></tr>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="muted">Nenhum usuário encontrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum usuário encontrado.</td></tr>`;
         return;
       }
 
@@ -640,6 +686,9 @@
           <td>${item.role || ""}</td>
           <td>${item.ativo ? "Sim" : "Não"}</td>
           <td>${item.must_change_password ? "Sim" : "Não"}</td>
+          <td>
+            <button class="btn-small" onclick="resetUserPassword('${item.email}')">Resetar senha</button>
+          </td>
         </tr>
       `).join("");
     };
@@ -666,6 +715,10 @@
         }]);
 
         if (error) {
+          if ((error.message || "").includes("relatorios_unico_periodo_por_prestador")) {
+            setMsg("relatorioMsg", `Já existe um relatório para ${String(mes).padStart(2,"0")}/${ano}. Abra o relatório existente para continuar lançando.`);
+            return;
+          }
           setMsg("relatorioMsg", `Erro: ${error.message}`);
           return;
         }
@@ -708,9 +761,7 @@
             <td>${currencyBRL(item.total_servicos)}</td>
             <td>${currencyBRL(item.total_reembolsos)}</td>
             <td><strong>${currencyBRL(item.total_geral)}</strong></td>
-            <td>
-              <button class="btn-small" onclick="openReport('${item.id}')">Abrir</button>
-            </td>
+            <td><button class="btn-small" onclick="openReport('${item.id}')">Abrir</button></td>
           </tr>
         `).join("");
       } catch (err) {
@@ -749,14 +800,31 @@
 
     function renderReportTotals() {
       if (!currentReport) return;
+
       byId("detailTotalServicos").innerText = currencyBRL(currentReport.total_servicos);
       byId("detailTotalReembolsos").innerText = currencyBRL(currentReport.total_reembolsos);
       byId("detailTotalGeral").innerText = currencyBRL(currentReport.total_geral);
       byId("detailValorNF").innerText = currencyBRL(currentReport.valor_nf_aprovado);
 
-      const btn = byId("sendForApprovalBtn");
-      btn.disabled = currentReport.status !== "rascunho" && currentReport.status !== "devolvido";
-      btn.style.opacity = btn.disabled ? "0.6" : "1";
+      const sendBtn = byId("sendForApprovalBtn");
+      const backBtn = byId("backToDraftBtn");
+
+      sendBtn.classList.add("hidden");
+      backBtn.classList.add("hidden");
+
+      if (currentReport.status === "rascunho") {
+        sendBtn.innerText = "Enviar para aprovação";
+        sendBtn.classList.remove("hidden");
+      }
+
+      if (currentReport.status === "devolvido") {
+        sendBtn.innerText = "Reenviar para aprovação";
+        sendBtn.classList.remove("hidden");
+      }
+
+      if (currentReport.status === "enviado") {
+        backBtn.classList.remove("hidden");
+      }
     }
 
     async function refreshCurrentReport() {
@@ -767,6 +835,10 @@
 
     window.addService = async function addService() {
       if (!currentReport) return;
+      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
+        setMsg("serviceMsg", "Este relatório não pode ser editado no status atual.");
+        return;
+      }
 
       const payload = {
         relatorio_id: currentReport.id,
@@ -852,6 +924,10 @@
 
     window.addReembolso = async function addReembolso() {
       if (!currentReport) return;
+      if (!["rascunho", "devolvido"].includes(currentReport.status)) {
+        setMsg("reembolsoMsg", "Este relatório não pode ser editado no status atual.");
+        return;
+      }
 
       const modo = byId("rebModo").value;
       const payload = {
@@ -950,6 +1026,26 @@
 
       await refreshCurrentReport();
       setMsg("detailMsg", "Relatório enviado para aprovação.");
+      await loadMyReports();
+    };
+
+    window.backToDraft = async function backToDraft() {
+      if (!currentReport) return;
+
+      setMsg("detailMsg", "Voltando relatório para rascunho...");
+
+      const { error } = await sb.from("relatorios")
+        .update({ status: "rascunho" })
+        .eq("id", currentReport.id)
+        .eq("prestador_profile_id", currentProfile.id);
+
+      if (error) {
+        setMsg("detailMsg", `Erro: ${error.message}`);
+        return;
+      }
+
+      await refreshCurrentReport();
+      setMsg("detailMsg", "Relatório voltou para rascunho.");
       await loadMyReports();
     };
 
