@@ -963,11 +963,22 @@
               <div style="flex:1; min-width:220px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
                 <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Histórico por Prestador</div>
                 <div class="muted" style="font-size:13px; margin-top:6px;">Quanto cada prestador recebeu mês a mês.</div>
-                <div style="margin-top:16px;">
+                <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px;">
                   <select id="rptPrestadorId" style="width:100%;">
                     <option value="">Todos os prestadores</option>
                   </select>
-                  <input id="rptAnoHist" type="number" value="2026" style="width:100%; margin-top:8px;">
+                  <div style="display:flex; gap:8px;">
+                    <select id="rptMesHist" style="flex:1;">
+                      <option value="">Todos os meses</option>
+                    <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                    <option value="3">Março</option><option value="4">Abril</option>
+                    <option value="5">Maio</option><option value="6">Junho</option>
+                    <option value="7">Julho</option><option value="8">Agosto</option>
+                    <option value="9">Setembro</option><option value="10">Outubro</option>
+                    <option value="11">Novembro</option><option value="12">Dezembro</option>
+                    </select>
+                    <input id="rptAnoHist" type="number" value="2026" style="width:90px;">
+                  </div>
                 </div>
                 <button onclick="generateHistorico()" style="margin-top:12px; width:100%;">Gerar PDF</button>
               </div>
@@ -2786,9 +2797,11 @@
         }
         // Set current month
         const now = new Date();
-        ["rptMes","rptMes"].forEach(id => { const el = byId(id); if(el) el.value = now.getMonth()+1; });
-        if(byId("rptAno")) byId("rptAno").value = now.getFullYear();
-        if(byId("rptAnoHist")) byId("rptAnoHist").value = now.getFullYear();
+        const nowM = now.getMonth()+1, nowY = now.getFullYear();
+        if(byId("rptMes")) byId("rptMes").value = nowM;
+        if(byId("rptMesComp")) byId("rptMesComp").value = nowM;
+        if(byId("rptMesHist")) byId("rptMesHist").value = ""; // default: todos os meses
+        ["rptAno","rptAnoHist","rptAnoComp"].forEach(id => { const el = byId(id); if(el) el.value = nowY; });
       } else if (role === "financeiro") {
         byId("reportsModeFinanceiro").classList.remove("hidden");
         const now = new Date();
@@ -2972,11 +2985,13 @@
       const ano = parseInt(byId("rptAnoHist").value);
       setMsg("rptMsg","Gerando PDF...");
       try {
+        const mesHist = byId("rptMesHist") ? parseInt(byId("rptMesHist").value) || null : null;
         let query = sb.from("relatorios")
           .select("id,mes_referencia,ano_referencia,status,total_servicos,total_reembolsos,total_geral,pago_em,prestador_profile_id")
           .eq("ano_referencia", ano)
           .order("prestador_profile_id").order("mes_referencia");
         if (prestadorId) query = query.eq("prestador_profile_id", prestadorId);
+        if (mesHist) query = query.eq("mes_referencia", mesHist);
         const { data, error } = await query;
         if (error) throw error;
         if (!data || data.length === 0) throw new Error("Nenhum dado encontrado.");
@@ -2987,7 +3002,8 @@
 
         loadJsPDF(JsPDF => {
           const doc = new JsPDF();
-          let y = pdfHeader(doc, `Histórico por Prestador — ${ano}`, `Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+          const mesLabel = mesHist ? MESES[mesHist] + " " : "";
+          let y = pdfHeader(doc, `Histórico por Prestador — ${mesLabel}${ano}`, `Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
 
           // Group by prestador
           const grouped = {};
