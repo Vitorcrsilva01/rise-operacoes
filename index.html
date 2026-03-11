@@ -384,10 +384,12 @@
 
   <div id="appView" class="hidden">
     <div class="container">
-      <div class="card">
-        <h1 style="font-family:'Exo',Arial,sans-serif; font-size:26px; font-weight:800;">Rise Operações</h1>
-        <div id="roleBadge" class="pill"></div>
-        <p id="profileInfo" class="muted" style="margin-top:12px; font-size:14px;"></p>
+      <div class="card" style="padding:20px 24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <span id="roleBadge" style="font-family:'Exo',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:.1em; text-transform:uppercase; background:rgba(242,138,60,.15); color:#F28A3C; border:1px solid rgba(242,138,60,.3); padding:5px 12px; border-radius:999px;"></span>
+        </div>
+        <h1 id="welcomeName" style="font-family:'Exo',Arial,sans-serif; font-size:22px; font-weight:800; margin:0 0 4px 0;"></h1>
+        <p id="profileInfo" class="muted" style="margin:0; font-size:13px;"></p>
         <div id="mainMenu" class="menu"></div>
       </div>
 
@@ -935,6 +937,107 @@
         </div>
       </div>
 
+      <div id="reportsModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <h2>Relatórios</h2>
+
+          <div id="reportsModeGestor" class="hidden">
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
+              <div style="flex:1; min-width:220px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px; cursor:pointer;" onclick="generateConsolidado()">
+                <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Resumo Mensal Consolidado</div>
+                <div class="muted" style="font-size:13px; margin-top:6px;">Todos os prestadores, valores e status de pagamento do mês.</div>
+                <div style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+                  <select id="rptMes" style="flex:1; min-width:120px;">
+                    <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                    <option value="3">Março</option><option value="4">Abril</option>
+                    <option value="5">Maio</option><option value="6">Junho</option>
+                    <option value="7">Julho</option><option value="8">Agosto</option>
+                    <option value="9">Setembro</option><option value="10">Outubro</option>
+                    <option value="11">Novembro</option><option value="12">Dezembro</option>
+                  </select>
+                  <input id="rptAno" type="number" value="2026" style="width:90px;">
+                </div>
+                <button onclick="event.stopPropagation(); generateConsolidado()" style="margin-top:12px; width:100%;">Gerar PDF</button>
+              </div>
+
+              <div style="flex:1; min-width:220px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+                <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Histórico por Prestador</div>
+                <div class="muted" style="font-size:13px; margin-top:6px;">Quanto cada prestador recebeu mês a mês.</div>
+                <div style="margin-top:16px;">
+                  <select id="rptPrestadorId" style="width:100%;">
+                    <option value="">Todos os prestadores</option>
+                  </select>
+                  <input id="rptAnoHist" type="number" value="2026" style="width:100%; margin-top:8px;">
+                </div>
+                <button onclick="generateHistorico()" style="margin-top:12px; width:100%;">Gerar PDF</button>
+              </div>
+            </div>
+
+            <div style="margin-top:20px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+              <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Pagamentos Pendentes</div>
+              <div class="muted" style="font-size:13px; margin-top:6px;">Prestadores com relatórios aprovados ainda não pagos.</div>
+              <button onclick="generatePendentes()" style="margin-top:12px;">Gerar PDF</button>
+            </div>
+          </div>
+
+          <div id="reportsModeFinanceiro" class="hidden">
+            <div style="margin-top:16px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+              <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Pagamentos Pendentes do Mês</div>
+              <div class="muted" style="font-size:13px; margin-top:6px;">Relatórios aprovados com NF validada ainda não pagos.</div>
+              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <select id="rptMesFin" style="flex:1; min-width:120px;">
+                  <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                  <option value="3">Março</option><option value="4">Abril</option>
+                  <option value="5">Maio</option><option value="6">Junho</option>
+                  <option value="7">Julho</option><option value="8">Agosto</option>
+                  <option value="9">Setembro</option><option value="10">Outubro</option>
+                  <option value="11">Novembro</option><option value="12">Dezembro</option>
+                </select>
+                <input id="rptAnoFin" type="number" value="2026" style="width:90px;">
+              </div>
+              <button onclick="generatePendentesFin()" style="margin-top:12px;">Gerar PDF</button>
+            </div>
+
+            <div style="margin-top:16px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+              <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Resumo Mensal Consolidado</div>
+              <div class="muted" style="font-size:13px; margin-top:6px;">Visão de todos os prestadores do mês.</div>
+              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <select id="rptMesFinCons" style="flex:1; min-width:120px;">
+                  <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                  <option value="3">Março</option><option value="4">Abril</option>
+                  <option value="5">Maio</option><option value="6">Junho</option>
+                  <option value="7">Julho</option><option value="8">Agosto</option>
+                  <option value="9">Setembro</option><option value="10">Outubro</option>
+                  <option value="11">Novembro</option><option value="12">Dezembro</option>
+                </select>
+                <input id="rptAnoFinCons" type="number" value="2026" style="width:90px;">
+              </div>
+              <button onclick="generateConsolidadoFin()" style="margin-top:12px;">Gerar PDF</button>
+            </div>
+          </div>
+
+          <div id="reportsModePresatdor" class="hidden">
+            <div style="margin-top:16px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+              <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Meu Comprovante Mensal</div>
+              <div class="muted" style="font-size:13px; margin-top:6px;">PDF com seus serviços, reembolsos, valor da NF e status.</div>
+              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <select id="rptMesPrest" style="flex:1; min-width:120px;">
+                  <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                  <option value="3">Março</option><option value="4">Abril</option>
+                  <option value="5">Maio</option><option value="6">Junho</option>
+                  <option value="7">Julho</option><option value="8">Agosto</option>
+                  <option value="9">Setembro</option><option value="10">Outubro</option>
+                  <option value="11">Novembro</option><option value="12">Dezembro</option>
+                </select>
+                <input id="rptAnoPrest" type="number" value="2026" style="width:90px;">
+              </div>
+              <button onclick="generateComprovante()" style="margin-top:12px;">Gerar PDF</button>
+            </div>
+          </div>
+
+          <div id="rptMsg" class="msg" style="margin-top:16px;"></div>
+        </div>
+      </div>
   <script>
     const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
@@ -1045,16 +1148,19 @@
           <button onclick="openModule('teamModule')">Equipe</button>
           <button onclick="openModule('settingsModule')">Settings</button>
           <button onclick="openModule('approvalsModule')">Aprovações</button>
+          <button onclick="openModule('reportsModule')">Relatórios</button>
         `;
       } else if (currentProfile.role === "financeiro") {
         menu.innerHTML = `
           <button onclick="openModule('homeModule')">Início</button>
           <button onclick="openModule('financeModule')">Financeiro</button>
+          <button onclick="openModule('reportsModule')">Relatórios</button>
         `;
       } else {
         menu.innerHTML = `
           <button onclick="openModule('homeModule')">Início</button>
           <button onclick="openModule('launchModule')">Meus relatórios</button>
+          <button onclick="openModule('reportsModule')">Meu comprovante</button>
         `;
       }
     }
@@ -1063,7 +1169,7 @@
       [
         "homeModule","teamModule","settingsModule","launchModule","reportDetailModule",
         "approvalsModule","approvalDetailModule",
-        "financeModule","financeDetailModule","nfPrestadorModule"
+        "financeModule","financeDetailModule","nfPrestadorModule","reportsModule"
       ].forEach(id => {
         const el = byId(id);
         if (el) el.classList.add("hidden");
@@ -1081,15 +1187,14 @@
       }
       if (moduleId === "approvalsModule") loadReportsForApproval();
       if (moduleId === "financeModule") loadFinanceReports();
+      if (moduleId === "reportsModule") loadReportsModule();
     }
 
     function renderApp() {
       byId("roleBadge").innerText = currentProfile.role;
-      byId("profileInfo").innerHTML = `
-        <strong>Nome:</strong> ${currentProfile.nome}<br>
-        <strong>Email:</strong> ${currentProfile.email}<br>
-        <strong>Perfil:</strong> ${currentProfile.role}<br>
-      `;
+      const welcomeEl = byId("welcomeName");
+      if (welcomeEl) welcomeEl.innerText = "Olá, " + (currentProfile.nome || currentProfile.email);
+      byId("profileInfo").innerHTML = currentProfile.email;
       renderMenu();
       openModule("homeModule");
       showOnly("appView");
@@ -2631,6 +2736,564 @@
         showOnly("loginView");
       }
     }
+
+
+    // ══════════════════════════════════════
+    // REPORTS MODULE
+    // ══════════════════════════════════════
+
+    const MESES = ["","Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+                   "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+    function brl(v) { return "R$ " + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+    window.loadReportsModule = async function() {
+      // Show correct panel based on role
+      const role = currentProfile.role;
+      ["reportsModeGestor","reportsModeFinanceiro","reportsModePresatdor"].forEach(id => {
+        const el = byId(id); if(el) el.classList.add("hidden");
+      });
+      if (role === "gestor") {
+        byId("reportsModeGestor").classList.remove("hidden");
+        // Load prestadores for dropdown
+        const { data } = await sb.from("profiles").select("id,nome,email").eq("role","prestador").order("nome");
+        const sel = byId("rptPrestadorId");
+        if (sel && data) {
+          sel.innerHTML = '<option value="">Todos os prestadores</option>' +
+            data.map(p => `<option value="${p.id}">${p.nome || p.email}</option>`).join("");
+        }
+        // Set current month
+        const now = new Date();
+        ["rptMes","rptMes"].forEach(id => { const el = byId(id); if(el) el.value = now.getMonth()+1; });
+        if(byId("rptAno")) byId("rptAno").value = now.getFullYear();
+        if(byId("rptAnoHist")) byId("rptAnoHist").value = now.getFullYear();
+      } else if (role === "financeiro") {
+        byId("reportsModeFinanceiro").classList.remove("hidden");
+        const now = new Date();
+        ["rptMesFin","rptMesFinCons"].forEach(id => { const el = byId(id); if(el) el.value = now.getMonth()+1; });
+        ["rptAnoFin","rptAnoFinCons"].forEach(id => { const el = byId(id); if(el) el.value = now.getFullYear(); });
+      } else {
+        byId("reportsModePresatdor").classList.remove("hidden");
+        const now = new Date();
+        if(byId("rptMesPrest")) byId("rptMesPrest").value = now.getMonth()+1;
+        if(byId("rptAnoPrest")) byId("rptAnoPrest").value = now.getFullYear();
+      }
+    };
+
+    function pdfHeader(doc, titulo, subtitulo) {
+      // Orange header bar
+      doc.setFillColor(242, 138, 60);
+      doc.rect(0, 0, 210, 22, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(14);
+      doc.text("RISE DESENVOLVIMENTO HUMANO", 14, 10);
+      doc.setFontSize(10);
+      doc.text("Operações Internas — Documento Confidencial", 14, 16);
+      // Title bar
+      doc.setFillColor(30,30,30);
+      doc.rect(0, 22, 210, 14, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(13);
+      doc.text(titulo, 14, 32);
+      if(subtitulo) {
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(9);
+        doc.setTextColor(180,180,180);
+        doc.text(subtitulo, 14, 38);
+      }
+      doc.setTextColor(50,50,50);
+      return subtitulo ? 46 : 40;
+    }
+
+    function pdfFooter(doc) {
+      const pages = doc.internal.getNumberOfPages();
+      for(let i=1;i<=pages;i++){
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150,150,150);
+        doc.text(`Rise Desenvolvimento Humano — CNPJ 16.935.970/0001-19`, 14, 290);
+        doc.text(`Página ${i} de ${pages}`, 196, 290, {align:"right"});
+        doc.setDrawColor(242,138,60);
+        doc.setLineWidth(0.5);
+        doc.line(14, 286, 196, 286);
+      }
+    }
+
+    function loadJsPDF(callback) {
+      if (window.jspdf) { callback(window.jspdf.jsPDF); return; }
+      if (window._jspdfLoading) { setTimeout(() => loadJsPDF(callback), 200); return; }
+      window._jspdfLoading = true;
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = () => {
+        window._jspdfLoading = false;
+        callback(window.jspdf.jsPDF);
+      };
+      s.onerror = () => { window._jspdfLoading = false; setMsg("rptMsg","Erro ao carregar biblioteca PDF."); };
+      document.head.appendChild(s);
+    }
+
+    // ── Consolidado (Gestor / Financeiro) ──
+    async function buildConsolidado(mes, ano) {
+      const { data, error } = await sb.from("relatorios")
+        .select("id,mes_referencia,ano_referencia,status,nf_status,total_servicos,total_reembolsos,total_geral,pago_em,prestador_profile_id")
+        .eq("mes_referencia", mes).eq("ano_referencia", ano)
+        .order("prestador_profile_id");
+      if (error) throw error;
+      if (!data || data.length === 0) throw new Error("Nenhum relatório encontrado para este período.");
+
+      const ids = [...new Set(data.map(r => r.prestador_profile_id))];
+      const { data: profiles } = await sb.from("profiles").select("id,nome,email").in("id", ids);
+      const pm = {}; (profiles||[]).forEach(p => { pm[p.id] = p; });
+      return { data, pm, mes, ano };
+    }
+
+    window.generateConsolidado = async function() {
+      const mes = parseInt(byId("rptMes").value);
+      const ano = parseInt(byId("rptAno").value);
+      setMsg("rptMsg", "Gerando PDF...");
+      try {
+        const { data, pm } = await buildConsolidado(mes, ano);
+        loadJsPDF(JsPDF => {
+          const doc = new JsPDF();
+          let y = pdfHeader(doc, `Resumo Mensal — ${MESES[mes]} ${ano}`, `Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+          
+          let totalServicos = 0, totalReembolsos = 0, totalGeral = 0, totalPagos = 0;
+
+          // Table header
+          doc.setFillColor(50,50,50);
+          doc.rect(14, y, 182, 8, 'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(8);
+          doc.text("PRESTADOR", 16, y+5.5);
+          doc.text("SERVIÇOS", 90, y+5.5);
+          doc.text("REEMBOLSOS", 115, y+5.5);
+          doc.text("TOTAL", 145, y+5.5);
+          doc.text("STATUS NF", 165, y+5.5);
+          doc.text("PAGO", 190, y+5.5);
+          y += 10;
+
+          data.forEach((r, i) => {
+            if (y > 270) { doc.addPage(); y = 20; }
+            const p = pm[r.prestador_profile_id];
+            const nome = p?.nome || p?.email || "-";
+            doc.setFillColor(i%2===0 ? 248 : 255, i%2===0 ? 248 : 255, i%2===0 ? 248 : 255);
+            doc.rect(14, y-1, 182, 8, 'F');
+            doc.setTextColor(30,30,30);
+            doc.setFont("helvetica","normal");
+            doc.setFontSize(8);
+            doc.text(nome.substring(0,30), 16, y+5);
+            doc.text(brl(r.total_servicos), 90, y+5);
+            doc.text(brl(r.total_reembolsos), 115, y+5);
+            doc.setFont("helvetica","bold");
+            doc.text(brl(r.total_geral), 145, y+5);
+            doc.setFont("helvetica","normal");
+            doc.text(r.nf_status || "-", 165, y+5);
+            doc.setTextColor(r.pago_em ? 34:180, r.pago_em ? 150:30, 30);
+            doc.text(r.pago_em ? "Sim" : "Não", 190, y+5);
+            doc.setTextColor(30,30,30);
+            y += 8;
+            totalServicos += Number(r.total_servicos||0);
+            totalReembolsos += Number(r.total_reembolsos||0);
+            totalGeral += Number(r.total_geral||0);
+            if(r.pago_em) totalPagos++;
+          });
+
+          // Totals row
+          y += 4;
+          doc.setFillColor(242,138,60);
+          doc.rect(14, y, 182, 9, 'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(9);
+          doc.text("TOTAL GERAL", 16, y+6);
+          doc.text(brl(totalServicos), 90, y+6);
+          doc.text(brl(totalReembolsos), 115, y+6);
+          doc.text(brl(totalGeral), 145, y+6);
+          doc.text(`${totalPagos}/${data.length} pagos`, 165, y+6);
+
+          pdfFooter(doc);
+          doc.save(`Rise_Consolidado_${String(mes).padStart(2,"0")}_${ano}.pdf`);
+          setMsg("rptMsg", "PDF gerado com sucesso.");
+        });
+      } catch(e) { setMsg("rptMsg", "Erro: " + e.message); }
+    };
+
+    window.generateConsolidadoFin = async function() {
+      const mes = parseInt(byId("rptMesFinCons").value);
+      const ano = parseInt(byId("rptAnoFinCons").value);
+      setMsg("rptMsg","Gerando...");
+      byId("rptMes") || (document.getElementById("rptMes") || {value:mes});
+      // Reuse same logic
+      try {
+        const { data, pm } = await buildConsolidado(mes, ano);
+        // Same PDF generation - call generateConsolidado logic inline
+        byId("rptMes") && (byId("rptMes").value = mes);
+        byId("rptAno") && (byId("rptAno").value = ano);
+        generateConsolidado();
+      } catch(e) { setMsg("rptMsg","Erro: "+e.message); }
+    };
+
+    // ── Histórico por prestador ──
+    window.generateHistorico = async function() {
+      const prestadorId = byId("rptPrestadorId").value;
+      const ano = parseInt(byId("rptAnoHist").value);
+      setMsg("rptMsg","Gerando PDF...");
+      try {
+        let query = sb.from("relatorios")
+          .select("id,mes_referencia,ano_referencia,status,total_servicos,total_reembolsos,total_geral,pago_em,prestador_profile_id")
+          .eq("ano_referencia", ano)
+          .order("prestador_profile_id").order("mes_referencia");
+        if (prestadorId) query = query.eq("prestador_profile_id", prestadorId);
+        const { data, error } = await query;
+        if (error) throw error;
+        if (!data || data.length === 0) throw new Error("Nenhum dado encontrado.");
+
+        const ids = [...new Set(data.map(r => r.prestador_profile_id))];
+        const { data: profiles } = await sb.from("profiles").select("id,nome,email").in("id", ids);
+        const pm = {}; (profiles||[]).forEach(p => { pm[p.id] = p; });
+
+        loadJsPDF(JsPDF => {
+          const doc = new JsPDF();
+          let y = pdfHeader(doc, `Histórico por Prestador — ${ano}`, `Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+
+          // Group by prestador
+          const grouped = {};
+          data.forEach(r => {
+            if (!grouped[r.prestador_profile_id]) grouped[r.prestador_profile_id] = [];
+            grouped[r.prestador_profile_id].push(r);
+          });
+
+          Object.entries(grouped).forEach(([pid, rows]) => {
+            if (y > 240) { doc.addPage(); y = 20; }
+            const p = pm[pid];
+            // Prestador header
+            doc.setFillColor(50,50,50);
+            doc.rect(14, y, 182, 8, 'F');
+            doc.setTextColor(255,255,255);
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(9);
+            doc.text((p?.nome || p?.email || "-").toUpperCase(), 16, y+5.5);
+            y += 10;
+
+            // Column headers
+            doc.setFillColor(230,230,230);
+            doc.rect(14, y, 182, 7, 'F');
+            doc.setTextColor(80,80,80);
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(8);
+            doc.text("MÊS", 16, y+5);
+            doc.text("SERVIÇOS", 70, y+5);
+            doc.text("REEMBOLSOS", 105, y+5);
+            doc.text("TOTAL", 145, y+5);
+            doc.text("STATUS", 172, y+5);
+            y += 8;
+
+            let subtotal = 0;
+            rows.forEach((r,i) => {
+              if(y>270){doc.addPage();y=20;}
+              doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+              doc.rect(14,y-1,182,7,'F');
+              doc.setTextColor(30,30,30);
+              doc.setFont("helvetica","normal");
+              doc.setFontSize(8);
+              doc.text(MESES[r.mes_referencia], 16, y+4.5);
+              doc.text(brl(r.total_servicos), 70, y+4.5);
+              doc.text(brl(r.total_reembolsos), 105, y+4.5);
+              doc.setFont("helvetica","bold");
+              doc.text(brl(r.total_geral), 145, y+4.5);
+              doc.setFont("helvetica","normal");
+              doc.setTextColor(r.pago_em?34:180, r.pago_em?150:30, 30);
+              doc.text(r.pago_em?"Pago":"Pendente", 172, y+4.5);
+              doc.setTextColor(30,30,30);
+              subtotal += Number(r.total_geral||0);
+              y += 7;
+            });
+
+            // Subtotal
+            doc.setFillColor(242,138,60,0.3);
+            doc.setTextColor(180,80,0);
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(8);
+            doc.text(`Total ${ano}: ${brl(subtotal)}`, 145, y+4);
+            y += 14;
+          });
+
+          pdfFooter(doc);
+          doc.save(`Rise_Historico_${ano}.pdf`);
+          setMsg("rptMsg","PDF gerado com sucesso.");
+        });
+      } catch(e) { setMsg("rptMsg","Erro: "+e.message); }
+    };
+
+    // ── Pendentes (Gestor) ──
+    window.generatePendentes = async function() {
+      setMsg("rptMsg","Gerando PDF...");
+      try {
+        const { data, error } = await sb.from("relatorios")
+          .select("id,mes_referencia,ano_referencia,status,nf_status,total_geral,prestador_profile_id")
+          .eq("status","aprovado_gestor")
+          .is("pago_em", null)
+          .order("ano_referencia",{ascending:false})
+          .order("mes_referencia",{ascending:false});
+        if(error) throw error;
+        if(!data||data.length===0) throw new Error("Nenhum pagamento pendente encontrado.");
+
+        const ids = [...new Set(data.map(r=>r.prestador_profile_id))];
+        const {data:profiles} = await sb.from("profiles").select("id,nome,email").in("id",ids);
+        const pm={}; (profiles||[]).forEach(p=>{pm[p.id]=p;});
+
+        loadJsPDF(JsPDF => {
+          const doc = new JsPDF();
+          let y = pdfHeader(doc,"Pagamentos Pendentes",`Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+
+          doc.setFillColor(50,50,50);
+          doc.rect(14,y,182,8,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(8);
+          doc.text("PRESTADOR",16,y+5.5);
+          doc.text("PERÍODO",90,y+5.5);
+          doc.text("NF",130,y+5.5);
+          doc.text("TOTAL A PAGAR",155,y+5.5);
+          y+=10;
+
+          let grand=0;
+          data.forEach((r,i)=>{
+            if(y>270){doc.addPage();y=20;}
+            const p=pm[r.prestador_profile_id];
+            doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+            doc.rect(14,y-1,182,8,'F');
+            doc.setTextColor(30,30,30);
+            doc.setFont("helvetica","normal");
+            doc.setFontSize(8);
+            doc.text((p?.nome||p?.email||"-").substring(0,32),16,y+5);
+            doc.text(`${String(r.mes_referencia).padStart(2,"0")}/${r.ano_referencia}`,90,y+5);
+            doc.text(r.nf_status||"-",130,y+5);
+            doc.setFont("helvetica","bold");
+            doc.setTextColor(180,60,30);
+            doc.text(brl(r.total_geral),155,y+5);
+            doc.setTextColor(30,30,30);
+            grand+=Number(r.total_geral||0);
+            y+=8;
+          });
+
+          y+=4;
+          doc.setFillColor(242,138,60);
+          doc.rect(14,y,182,9,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(9);
+          doc.text("TOTAL PENDENTE",16,y+6);
+          doc.text(brl(grand),155,y+6);
+
+          pdfFooter(doc);
+          doc.save(`Rise_Pendentes_${new Date().toISOString().slice(0,10)}.pdf`);
+          setMsg("rptMsg","PDF gerado com sucesso.");
+        });
+      } catch(e){setMsg("rptMsg","Erro: "+e.message);}
+    };
+
+    window.generatePendentesFin = async function() {
+      const mes = parseInt(byId("rptMesFin").value);
+      const ano = parseInt(byId("rptAnoFin").value);
+      setMsg("rptMsg","Gerando PDF...");
+      try {
+        const { data, error } = await sb.from("relatorios")
+          .select("id,mes_referencia,ano_referencia,status,nf_status,total_geral,prestador_profile_id")
+          .eq("status","aprovado_gestor")
+          .eq("mes_referencia",mes)
+          .eq("ano_referencia",ano)
+          .is("pago_em",null);
+        if(error) throw error;
+        if(!data||data.length===0) throw new Error("Nenhum pagamento pendente para este mês.");
+
+        const ids=[...new Set(data.map(r=>r.prestador_profile_id))];
+        const {data:profiles}=await sb.from("profiles").select("id,nome,email").in("id",ids);
+        const pm={}; (profiles||[]).forEach(p=>{pm[p.id]=p;});
+
+        loadJsPDF(JsPDF=>{
+          const doc=new JsPDF();
+          let y=pdfHeader(doc,`Pendentes — ${MESES[mes]} ${ano}`,`Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+
+          doc.setFillColor(50,50,50);
+          doc.rect(14,y,182,8,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(8);
+          doc.text("PRESTADOR",16,y+5.5);
+          doc.text("NF",120,y+5.5);
+          doc.text("TOTAL",160,y+5.5);
+          y+=10;
+
+          let grand=0;
+          data.forEach((r,i)=>{
+            if(y>270){doc.addPage();y=20;}
+            const p=pm[r.prestador_profile_id];
+            doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+            doc.rect(14,y-1,182,8,'F');
+            doc.setTextColor(30,30,30);
+            doc.setFont("helvetica","normal");
+            doc.setFontSize(8);
+            doc.text((p?.nome||p?.email||"-").substring(0,40),16,y+5);
+            doc.text(r.nf_status||"-",120,y+5);
+            doc.setFont("helvetica","bold");
+            doc.text(brl(r.total_geral),160,y+5);
+            grand+=Number(r.total_geral||0);
+            y+=8;
+          });
+          y+=4;
+          doc.setFillColor(242,138,60);
+          doc.rect(14,y,182,9,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.text("TOTAL",16,y+6);
+          doc.text(brl(grand),160,y+6);
+          pdfFooter(doc);
+          doc.save(`Rise_Pendentes_${String(mes).padStart(2,"0")}_${ano}.pdf`);
+          setMsg("rptMsg","PDF gerado com sucesso.");
+        });
+      } catch(e){setMsg("rptMsg","Erro: "+e.message);}
+    };
+
+    // ── Comprovante do Prestador ──
+    window.generateComprovante = async function() {
+      const mes = parseInt(byId("rptMesPrest").value);
+      const ano = parseInt(byId("rptAnoPrest").value);
+      setMsg("rptMsg","Gerando PDF...");
+      try {
+        const {data:rel,error} = await sb.from("relatorios")
+          .select("*")
+          .eq("prestador_profile_id",currentProfile.id)
+          .eq("mes_referencia",mes)
+          .eq("ano_referencia",ano)
+          .single();
+        if(error||!rel) throw new Error("Relatório não encontrado para este período.");
+
+        const [{data:servicos},{data:reembolsos}] = await Promise.all([
+          sb.from("relatorio_servicos").select("*").eq("relatorio_id",rel.id).order("data_execucao"),
+          sb.from("relatorio_reembolsos").select("*").eq("relatorio_id",rel.id).order("data_despesa"),
+        ]);
+
+        loadJsPDF(JsPDF=>{
+          const doc=new JsPDF();
+          let y=pdfHeader(doc,`Comprovante — ${MESES[mes]} ${ano}`,`${currentProfile.nome} — Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+
+          // Status badge
+          const statusColors = {rascunho:[150,150,150],enviado:[100,150,255],aprovado_gestor:[34,150,80],devolvido:[200,100,30]};
+          const sc = statusColors[rel.status]||[150,150,150];
+          doc.setFillColor(...sc);
+          doc.roundedRect(14,y,40,8,2,2,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(8);
+          doc.text((rel.status||"").toUpperCase(),16,y+5.5);
+          y+=14;
+
+          // Totals summary
+          doc.setFillColor(245,245,245);
+          doc.rect(14,y,182,24,'F');
+          doc.setTextColor(80,80,80);
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.text("Total Serviços",16,y+8);
+          doc.text("Total Reembolsos",75,y+8);
+          doc.text("Total Geral",145,y+8);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(12);
+          doc.setTextColor(30,30,30);
+          doc.text(brl(rel.total_servicos),16,y+18);
+          doc.text(brl(rel.total_reembolsos),75,y+18);
+          doc.setTextColor(242,138,60);
+          doc.text(brl(rel.total_geral),145,y+18);
+          y+=30;
+
+          // NF box
+          doc.setFillColor(242,138,60);
+          doc.rect(14,y,182,12,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(10);
+          doc.text(`Valor da NF: ${brl(rel.valor_nf_aprovado||rel.total_servicos)}  —  CNPJ Rise: 16.935.970/0001-19`,16,y+8);
+          y+=18;
+
+          // Services table
+          if(servicos&&servicos.length>0){
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(10);
+            doc.setTextColor(30,30,30);
+            doc.text("SERVIÇOS REALIZADOS",14,y);
+            y+=6;
+            doc.setFillColor(50,50,50);
+            doc.rect(14,y,182,7,'F');
+            doc.setTextColor(255,255,255);
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(8);
+            doc.text("DATA",16,y+5);
+            doc.text("CLIENTE",42,y+5);
+            doc.text("PROGRAMA",90,y+5);
+            doc.text("HORAS",145,y+5);
+            doc.text("VALOR",170,y+5);
+            y+=8;
+            servicos.forEach((s,i)=>{
+              if(y>270){doc.addPage();y=20;}
+              doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+              doc.rect(14,y-1,182,7,'F');
+              doc.setTextColor(30,30,30);
+              doc.setFont("helvetica","normal");
+              doc.setFontSize(8);
+              doc.text((s.data_execucao||"").slice(0,10),16,y+4.5);
+              doc.text((s.cliente||"").substring(0,20),42,y+4.5);
+              doc.text((s.programa||"").substring(0,25),90,y+4.5);
+              doc.text(`${s.duracao_horas||0}h`,145,y+4.5);
+              doc.text(brl(s.subtotal_servico),170,y+4.5);
+              y+=7;
+            });
+            y+=6;
+          }
+
+          // Reembolsos table
+          if(reembolsos&&reembolsos.length>0){
+            if(y>230){doc.addPage();y=20;}
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(10);
+            doc.setTextColor(30,30,30);
+            doc.text("REEMBOLSOS",14,y);
+            y+=6;
+            doc.setFillColor(50,50,50);
+            doc.rect(14,y,182,7,'F');
+            doc.setTextColor(255,255,255);
+            doc.setFont("helvetica","bold");
+            doc.setFontSize(8);
+            doc.text("DATA",16,y+5);
+            doc.text("TIPO",50,y+5);
+            doc.text("DESCRIÇÃO",90,y+5);
+            doc.text("VALOR",170,y+5);
+            y+=8;
+            reembolsos.forEach((r,i)=>{
+              if(y>270){doc.addPage();y=20;}
+              doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+              doc.rect(14,y-1,182,7,'F');
+              doc.setTextColor(30,30,30);
+              doc.setFont("helvetica","normal");
+              doc.setFontSize(8);
+              doc.text((r.data_despesa||"").slice(0,10),16,y+4.5);
+              doc.text((r.tipo_despesa||"").substring(0,18),50,y+4.5);
+              doc.text((r.percurso_descricao||"").substring(0,30),90,y+4.5);
+              doc.text(brl(r.valor_final),170,y+4.5);
+              y+=7;
+            });
+          }
+
+          pdfFooter(doc);
+          doc.save(`Rise_Comprovante_${String(mes).padStart(2,"0")}_${ano}_${(currentProfile.nome||"prestador").replace(/\s/g,"_")}.pdf`);
+          setMsg("rptMsg","PDF gerado com sucesso.");
+        });
+      } catch(e){setMsg("rptMsg","Erro: "+e.message);}
+    };
 
     bootstrap();
     toggleReembolsoMode();
