@@ -1014,6 +1014,26 @@
               </div>
               <button onclick="generateConsolidadoFin()" style="margin-top:12px;">Gerar PDF</button>
             </div>
+
+            <div style="margin-top:16px; background:rgba(242,138,60,.07); border:1px solid rgba(242,138,60,.2); border-radius:12px; padding:20px;">
+              <div style="font-family:'Exo',Arial,sans-serif; font-weight:800; font-size:16px;">Comprovante por Prestador</div>
+              <div class="muted" style="font-size:13px; margin-top:6px;">PDF completo de um prestador: serviços, reembolsos, NF e status.</div>
+              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <select id="rptPrestadorCompFin" style="flex:1; min-width:160px;">
+                  <option value="">Selecione o prestador...</option>
+                </select>
+                <select id="rptMesCompFin" style="min-width:120px;">
+                  <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                  <option value="3">Março</option><option value="4">Abril</option>
+                  <option value="5">Maio</option><option value="6">Junho</option>
+                  <option value="7">Julho</option><option value="8">Agosto</option>
+                  <option value="9">Setembro</option><option value="10">Outubro</option>
+                  <option value="11">Novembro</option><option value="12">Dezembro</option>
+                </select>
+                <input id="rptAnoCompFin" type="number" value="2026" style="width:90px;">
+              </div>
+              <button onclick="generateComprovanteFinanceiro()" style="margin-top:12px;">Gerar PDF</button>
+            </div>
           </div>
 
           <div id="reportsModePresatdor" class="hidden">
@@ -2755,12 +2775,14 @@
       });
       if (role === "gestor") {
         byId("reportsModeGestor").classList.remove("hidden");
-        // Load prestadores for dropdown
+        // Load prestadores for dropdowns
         const { data } = await sb.from("profiles").select("id,nome,email").eq("role","prestador").order("nome");
-        const sel = byId("rptPrestadorId");
-        if (sel && data) {
-          sel.innerHTML = '<option value="">Todos os prestadores</option>' +
-            data.map(p => `<option value="${p.id}">${p.nome || p.email}</option>`).join("");
+        if (data) {
+          const opts = data.map(p => `<option value="${p.id}">${p.nome || p.email}</option>`).join("");
+          const selHist = byId("rptPrestadorId");
+          if (selHist) selHist.innerHTML = '<option value="">Todos os prestadores</option>' + opts;
+          const selComp = byId("rptPrestadorComp");
+          if (selComp) selComp.innerHTML = '<option value="">Selecione o prestador...</option>' + opts;
         }
         // Set current month
         const now = new Date();
@@ -2770,8 +2792,15 @@
       } else if (role === "financeiro") {
         byId("reportsModeFinanceiro").classList.remove("hidden");
         const now = new Date();
-        ["rptMesFin","rptMesFinCons"].forEach(id => { const el = byId(id); if(el) el.value = now.getMonth()+1; });
-        ["rptAnoFin","rptAnoFinCons"].forEach(id => { const el = byId(id); if(el) el.value = now.getFullYear(); });
+        ["rptMesFin","rptMesFinCons","rptMesCompFin"].forEach(id => { const el = byId(id); if(el) el.value = now.getMonth()+1; });
+        ["rptAnoFin","rptAnoFinCons","rptAnoCompFin"].forEach(id => { const el = byId(id); if(el) el.value = now.getFullYear(); });
+        // Load prestadores for financeiro comprovante dropdown
+        const { data: prestFin } = await sb.from("profiles").select("id,nome,email").eq("role","prestador").order("nome");
+        if (prestFin) {
+          const selFin = byId("rptPrestadorCompFin");
+          if (selFin) selFin.innerHTML = '<option value="">Selecione o prestador...</option>' + 
+            prestFin.map(p => `<option value="${p.id}">${p.nome || p.email}</option>`).join("");
+        }
       } else {
         byId("reportsModePresatdor").classList.remove("hidden");
         const now = new Date();
@@ -3159,11 +3188,14 @@
       } catch(e){setMsg("rptMsg","Erro: "+e.message);}
     };
 
-    // ── Comprovante do Prestador ──
+    // ── Comprovante do Prestador (self) ──
     window.generateComprovante = async function() {
       const mes = parseInt(byId("rptMesPrest").value);
       const ano = parseInt(byId("rptAnoPrest").value);
-      setMsg("rptMsg","Gerando PDF...");
+      await _generateComprovanteParaPrestador(currentProfile.id, mes, ano);
+    };
+    window._generateComprovanteParaPrestador_OLD = async function() {
+      const mes = 0; const ano = 0;
       try {
         const {data:rel,error} = await sb.from("relatorios")
           .select("*")
@@ -3293,6 +3325,132 @@
           setMsg("rptMsg","PDF gerado com sucesso.");
         });
       } catch(e){setMsg("rptMsg","Erro: "+e.message);}
+    };
+
+
+    // ── Comprovante para gestor (por prestador selecionado) ──
+    window.generateComprovanteGestor = async function() {
+      const prestadorId = byId("rptPrestadorComp")?.value;
+      const mes = parseInt(byId("rptMesComp")?.value || new Date().getMonth()+1);
+      const ano = parseInt(byId("rptAnoComp")?.value || new Date().getFullYear());
+      if (!prestadorId) { setMsg("rptMsg","Selecione um prestador."); return; }
+      await _generateComprovanteParaPrestador(prestadorId, mes, ano);
+    };
+
+    // ── Comprovante para financeiro (por prestador selecionado) ──
+    window.generateComprovanteFinanceiro = async function() {
+      const prestadorId = byId("rptPrestadorCompFin")?.value;
+      const mes = parseInt(byId("rptMesCompFin")?.value || new Date().getMonth()+1);
+      const ano = parseInt(byId("rptAnoCompFin")?.value || new Date().getFullYear());
+      if (!prestadorId) { setMsg("rptMsg","Selecione um prestador."); return; }
+      await _generateComprovanteParaPrestador(prestadorId, mes, ano);
+    };
+
+    // ── Shared comprovante logic (works for self, gestor, financeiro) ──
+    window._generateComprovanteParaPrestador = async function(prestadorId, mes, ano) {
+      setMsg("rptMsg","Gerando PDF...");
+      try {
+        const {data:rel,error} = await sb.from("relatorios")
+          .select("*")
+          .eq("prestador_profile_id", prestadorId)
+          .eq("mes_referencia", mes)
+          .eq("ano_referencia", ano)
+          .single();
+        if (error || !rel) throw new Error("Relatório não encontrado para este prestador/período.");
+
+        // Get prestador name
+        const {data:prest} = await sb.from("profiles").select("nome,email").eq("id",prestadorId).single();
+        const nomePrest = prest?.nome || prest?.email || "prestador";
+
+        const [{data:servicos},{data:reembolsos}] = await Promise.all([
+          sb.from("relatorio_servicos").select("*").eq("relatorio_id",rel.id).order("data_execucao"),
+          sb.from("relatorio_reembolsos").select("*").eq("relatorio_id",rel.id).order("data_despesa"),
+        ]);
+
+        loadJsPDF(JsPDF => {
+          const doc = new JsPDF();
+          let y = pdfHeader(doc, `Comprovante — ${MESES[mes]} ${ano}`, `${nomePrest} — Gerado em ${new Date().toLocaleDateString('pt-BR')}`);
+
+          const statusColors = {rascunho:[150,150,150],enviado:[100,150,255],aprovado_gestor:[34,150,80],devolvido:[200,100,30]};
+          const sc = statusColors[rel.status]||[150,150,150];
+          doc.setFillColor(...sc);
+          doc.roundedRect(14,y,60,8,2,2,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(8);
+          doc.text((rel.status||"").toUpperCase().replace("_"," "),16,y+5.5);
+          y += 14;
+
+          doc.setFillColor(245,245,245);
+          doc.rect(14,y,182,24,'F');
+          doc.setTextColor(80,80,80);
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(9);
+          doc.text("Total Serviços",16,y+8);
+          doc.text("Total Reembolsos",75,y+8);
+          doc.text("Total Geral",145,y+8);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(12);
+          doc.setTextColor(30,30,30);
+          doc.text(brl(rel.total_servicos),16,y+18);
+          doc.text(brl(rel.total_reembolsos),75,y+18);
+          doc.setTextColor(242,138,60);
+          doc.text(brl(rel.total_geral),145,y+18);
+          y += 30;
+
+          doc.setFillColor(242,138,60);
+          doc.rect(14,y,182,12,'F');
+          doc.setTextColor(255,255,255);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(10);
+          doc.text(`Valor da NF: ${brl(rel.valor_nf_aprovado||rel.total_servicos)}  —  CNPJ Rise: 16.935.970/0001-19`,16,y+8);
+          y += 18;
+
+          if(servicos&&servicos.length>0){
+            doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(30,30,30);
+            doc.text("SERVIÇOS REALIZADOS",14,y); y+=6;
+            doc.setFillColor(50,50,50); doc.rect(14,y,182,7,'F');
+            doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(8);
+            doc.text("DATA",16,y+5); doc.text("CLIENTE",42,y+5); doc.text("PROGRAMA",90,y+5);
+            doc.text("HORAS",145,y+5); doc.text("VALOR",170,y+5); y+=8;
+            servicos.forEach((s,i)=>{
+              if(y>270){doc.addPage();y=20;}
+              doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+              doc.rect(14,y-1,182,7,'F');
+              doc.setTextColor(30,30,30); doc.setFont("helvetica","normal"); doc.setFontSize(8);
+              doc.text((s.data_execucao||"").slice(0,10),16,y+4.5);
+              doc.text((s.cliente||"").substring(0,20),42,y+4.5);
+              doc.text((s.programa||"").substring(0,25),90,y+4.5);
+              doc.text(`${s.duracao_horas||0}h`,145,y+4.5);
+              doc.text(brl(s.subtotal_servico),170,y+4.5); y+=7;
+            }); y+=6;
+          }
+
+          if(reembolsos&&reembolsos.length>0){
+            if(y>230){doc.addPage();y=20;}
+            doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(30,30,30);
+            doc.text("REEMBOLSOS",14,y); y+=6;
+            doc.setFillColor(50,50,50); doc.rect(14,y,182,7,'F');
+            doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(8);
+            doc.text("DATA",16,y+5); doc.text("TIPO",50,y+5); doc.text("DESCRIÇÃO",90,y+5);
+            doc.text("VALOR",170,y+5); y+=8;
+            reembolsos.forEach((r,i)=>{
+              if(y>270){doc.addPage();y=20;}
+              doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);
+              doc.rect(14,y-1,182,7,'F');
+              doc.setTextColor(30,30,30); doc.setFont("helvetica","normal"); doc.setFontSize(8);
+              doc.text((r.data_despesa||"").slice(0,10),16,y+4.5);
+              doc.text((r.tipo_despesa||"").substring(0,18),50,y+4.5);
+              doc.text((r.percurso_descricao||"").substring(0,30),90,y+4.5);
+              doc.text(brl(r.valor_final),170,y+4.5); y+=7;
+            });
+          }
+
+          pdfFooter(doc);
+          doc.save(`Rise_Comprovante_${String(mes).padStart(2,"0")}_${ano}_${nomePrest.replace(/\s/g,"_")}.pdf`);
+          setMsg("rptMsg","PDF gerado com sucesso.");
+        });
+      } catch(e) { setMsg("rptMsg","Erro: "+e.message); }
     };
 
     bootstrap();
