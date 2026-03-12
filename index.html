@@ -3748,7 +3748,10 @@
         (relatorios||[]).forEach(r => { relMap[r.id] = r; });
 
         // Get prestador profiles
-        const prestIds = [...new Set((relatorios||[]).map(r=>r.prestador_profile_id))];
+        // Collect all profile IDs: from relatorios AND from previsao_equipe
+        const prestIdsRel = (relatorios||[]).map(r=>r.prestador_profile_id);
+        const prestIdsPrev = (previsoes||[]).map(p=>p.prestador_profile_id).filter(Boolean);
+        const prestIds = [...new Set([...prestIdsRel, ...prestIdsPrev])];
         let profileMap = {};
         if (prestIds.length > 0) {
           const { data: profs } = await sb.from("profiles").select("id,nome,email").in("id", prestIds);
@@ -3777,7 +3780,9 @@
         const equipeMap = {};
         (previsoes||[]).forEach(p => {
           const key = p.prestador_profile_id || p.nome_livre || 'desconhecido';
-          if (!equipeMap[key]) equipeMap[key] = { nome: p.nome_livre || key, tipo: p.tipo, previsto: 0, lancado: 0, status: '-' };
+          const prof = profileMap[key];
+          const nome = prof?.nome || prof?.email || p.nome_livre || key;
+          if (!equipeMap[key]) equipeMap[key] = { nome, tipo: p.tipo, previsto: 0, lancado: 0, status: '-' };
           equipeMap[key].previsto += Number(p.valor_previsto||0) + Number(p.valor_idioma||0) + Number(p.valor_coordenacao||0);
         });
         (relatorios||[]).forEach(r => {
@@ -3800,7 +3805,7 @@
             const statusBadge = { rascunho:'#888', enviado:'#60a5fa', aprovado_gestor:'#34d399', devolvido:'#f87171' }[d.status] || '#888';
             return `<tr>
               <td>${d.nome}</td>
-              <td><span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(242,138,60,.1); color:#F28A3C;">${d.tipo||'-'}</span></td>
+              <td><span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(242,138,60,.1); color:#F28A3C;">${{facilitador:'Facilitador',assistencia:'Assistência',montagem:'Montagem'}[d.tipo]||d.tipo||'-'}</span></td>
               <td>${d.previsto > 0 ? `R$ ${d.previsto.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : '<span class="muted">—</span>'}</td>
               <td>${d.lancado > 0 ? `R$ ${d.lancado.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : '<span class="muted">—</span>'}</td>
               <td style="color:${diffColor}; font-weight:${diff!==0?'700':'400'};">${diffStr}</td>
