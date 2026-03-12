@@ -3718,10 +3718,21 @@
         }
 
         // 2. Previsão de equipe do mês
-        const { data: previsoes } = await sb.from("previsao_equipe")
-          .select(`*, previsao_eventos!inner(mes_referencia, ano_referencia, cliente, programa, data_inicio)`)
-          .filter('previsao_eventos.data_inicio', 'gte', `${ano}-${String(mes).padStart(2,'0')}-01`)
-          .filter('previsao_eventos.data_inicio', 'lte', `${ano}-${String(mes).padStart(2,'0')}-${new Date(ano, mes, 0).getDate()}`);
+        // Get event IDs for the month first, then get equipe
+        const mesStr = String(mes).padStart(2,'0');
+        const lastDayDash = new Date(ano, mes, 0).getDate();
+        const { data: eventosDoMes } = await sb.from("previsao_eventos")
+          .select("id")
+          .gte("data_inicio", `${ano}-${mesStr}-01`)
+          .lte("data_inicio", `${ano}-${mesStr}-${lastDayDash}`);
+        const eventosIds = (eventosDoMes||[]).map(e => e.id);
+        let previsoes = [];
+        if (eventosIds.length > 0) {
+          const { data: prevData } = await sb.from("previsao_equipe")
+            .select("*")
+            .in("evento_id", eventosIds);
+          previsoes = prevData || [];
+        }
 
         // 3. Relatórios e serviços lançados no mês (todos status)
         const { data: relatorios } = await sb.from("relatorios")
