@@ -4032,15 +4032,29 @@
         eventoId = data.id;
       }
 
-      // Insert equipe
-      const equipe = equipePrevisaoItems.filter(m => m.prestador_id).map(m => ({
-        evento_id: eventoId,
-        prestador_profile_id: m.prestador_id,
-        tipo: m.tipo,
-        valor_previsto: parseFloat(m.valor_previsto||0),
-        valor_idioma: parseFloat(m.valor_idioma||0),
-        valor_coordenacao: parseFloat(m.valor_coordenacao||0),
-      }));
+      // Insert equipe — lê valores direto do DOM para garantir que estão atualizados
+      const list = byId("equipePrevisaoList");
+      const blocos = list ? list.querySelectorAll(':scope > div') : [];
+      const equipe = [];
+      blocos.forEach((bloco, i) => {
+        const selects = bloco.querySelectorAll('select');
+        const inputs = bloco.querySelectorAll('input[type="number"]');
+        const prestadorId = selects[0]?.value || '';
+        const tipo = selects[1]?.value || 'facilitador';
+        const valorPrevisto = parseFloat(inputs[0]?.value || 0);
+        const valorIdioma = parseFloat(inputs[1]?.value || 0);
+        const valorCoordenacao = parseFloat(inputs[2]?.value || 0);
+        if (prestadorId) {
+          equipe.push({
+            evento_id: eventoId,
+            prestador_profile_id: prestadorId,
+            tipo,
+            valor_previsto: valorPrevisto,
+            valor_idioma: valorIdioma,
+            valor_coordenacao: valorCoordenacao,
+          });
+        }
+      });
       if (equipe.length > 0) {
         const { error } = await sb.from("previsao_equipe").insert(equipe);
         if (error) { setMsg("eventoFormMsg","Aviso equipe: "+error.message); }
