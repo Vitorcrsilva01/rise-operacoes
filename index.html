@@ -3941,21 +3941,30 @@
             </div>
             <div>
               <label style="font-size:12px;">Valor previsto (R$)</label>
-              <input type="number" value="${m.valor_previsto||0}" oninput="updateMembro(${i},'valor_previsto',this.value)" style="width:100%;">
+              <input type="number" value="${m.valor_previsto||0}" step="50" min="0"
+                onchange="updateMembro(${i},'valor_previsto',this.value)"
+                onblur="updateMembro(${i},'valor_previsto',this.value)"
+                style="width:100%;">
             </div>
             <div>
               <label style="font-size:12px;">Adicional idioma (R$)</label>
-              <input type="number" value="${m.valor_idioma||0}" oninput="updateMembro(${i},'valor_idioma',this.value)" style="width:100%;">
+              <input type="number" value="${m.valor_idioma||0}" step="50" min="0"
+                onchange="updateMembro(${i},'valor_idioma',this.value)"
+                onblur="updateMembro(${i},'valor_idioma',this.value)"
+                style="width:100%;">
             </div>
             <div>
               <label style="font-size:12px;">Adicional coord./liderança (R$)</label>
-              <input type="number" value="${m.valor_coordenacao||0}" oninput="updateMembro(${i},'valor_coordenacao',this.value)" style="width:100%;">
+              <input type="number" value="${m.valor_coordenacao||0}" step="50" min="0"
+                onchange="updateMembro(${i},'valor_coordenacao',this.value)"
+                onblur="updateMembro(${i},'valor_coordenacao',this.value)"
+                style="width:100%;">
             </div>
             <div style="display:flex; align-items:flex-end;">
               <button onclick="removeMembro(${i})" style="margin-top:0; padding:8px 12px; font-size:12px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); color:#f87171; width:100%;">Remover</button>
             </div>
           </div>
-          <div style="font-size:12px; color:#F28A3C; font-weight:700;">
+          <div id="membroTotal_${i}" style="font-size:12px; color:#F28A3C; font-weight:700;">
             Total: R$ ${(Number(m.valor_previsto||0)+Number(m.valor_idioma||0)+Number(m.valor_coordenacao||0)).toLocaleString('pt-BR',{minimumFractionDigits:2})}
           </div>
         </div>`).join('');
@@ -3969,8 +3978,17 @@
 
     window.updateMembro = function(i, field, value) {
       equipePrevisaoItems[i][field] = value;
-      if (['valor_previsto','valor_idioma','valor_coordenacao'].includes(field)) {
+      // Only re-render for non-value fields (selects)
+      if (!['valor_previsto','valor_idioma','valor_coordenacao'].includes(field)) {
         renderEquipePrevisao();
+      } else {
+        // Just update the total display without re-rendering
+        const totalEl = document.getElementById('membroTotal_' + i);
+        if (totalEl) {
+          const m = equipePrevisaoItems[i];
+          const tot = Number(m.valor_previsto||0) + Number(m.valor_idioma||0) + Number(m.valor_coordenacao||0);
+          totalEl.innerText = 'Total: R$ ' + tot.toLocaleString('pt-BR',{minimumFractionDigits:2});
+        }
       }
     };
 
