@@ -440,7 +440,7 @@
                 </tr>
               </thead>
               <tbody id="teamTableBody">
-                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+                <tr><td colspan="7" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -566,8 +566,14 @@
             <label for="svcPrograma">Projeto/Programa</label>
             <input id="svcPrograma" placeholder="Projeto/Programa">
 
-            <label for="svcDescricao">Serviço executado</label>
-            <input id="svcDescricao" placeholder="Serviço executado">
+            <label for="svcTipo">Tipo de serviço</label>
+            <select id="svcTipo">
+              <option value="facilitacao">Facilitação</option>
+              <option value="montagem">Montagem</option>
+            </select>
+
+            <label for="svcDescricao">Descrição</label>
+            <input id="svcDescricao" placeholder="Descreva o serviço executado">
 
             <label for="svcDuracao">Duração (horas)</label>
             <input id="svcDuracao" type="number" min="0.5" step="0.5" value="4">
@@ -607,7 +613,7 @@
                 </tr>
               </thead>
               <tbody id="servicesTableBody">
-                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+                <tr><td colspan="7" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -676,7 +682,7 @@
                 </tr>
               </thead>
               <tbody id="reembolsosTableBody">
-                <tr><td colspan="6" class="muted">Carregando...</td></tr>
+                <tr><td colspan="7" class="muted">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1069,6 +1075,169 @@
           <div id="rptMsg" class="msg" style="margin-top:16px;"></div>
         </div>
       </div>
+      <!-- ══ DASHBOARD ══ -->
+      <div id="dashboardModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <h2 style="margin:0;">Dashboard</h2>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <select id="dashMes" style="width:130px;">
+                <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+                <option value="3">Março</option><option value="4">Abril</option>
+                <option value="5">Maio</option><option value="6">Junho</option>
+                <option value="7">Julho</option><option value="8">Agosto</option>
+                <option value="9">Setembro</option><option value="10">Outubro</option>
+                <option value="11">Novembro</option><option value="12">Dezembro</option>
+              </select>
+              <input id="dashAno" type="number" value="2026" style="width:85px;">
+              <button onclick="loadDashboard()" style="margin-top:0; padding:10px 16px;">Atualizar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div id="dashKpis" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:12px;"></div>
+
+        <!-- Próximos eventos -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0 0 12px 0;">📅 Próximos Eventos</h3>
+          <div id="dashEventos" class="muted">Carregando...</div>
+        </div>
+
+        <!-- Previsão vs Realizado -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0 0 12px 0;">👥 Previsão vs Realizado — Equipe</h3>
+          <div style="overflow-x:auto;">
+            <table class="table" id="dashEquipeTable">
+              <thead><tr>
+                <th>Prestador</th>
+                <th>Tipo</th>
+                <th>Previsto</th>
+                <th>Lançado</th>
+                <th>Diferença</th>
+                <th>Status</th>
+              </tr></thead>
+              <tbody id="dashEquipeBody"><tr><td colspan="6" class="muted">Carregando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Lançamentos recentes (todos, sem submissão) -->
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin:0 0 12px 0;">🕐 Lançamentos do Mês (tempo real)</h3>
+          <div style="overflow-x:auto;">
+            <table class="table">
+              <thead><tr>
+                <th>Prestador</th><th>Data</th><th>Cliente</th><th>Tipo</th><th>Valor</th><th>Status Rel.</th>
+              </tr></thead>
+              <tbody id="dashLancamentosBody"><tr><td colspan="6" class="muted">Carregando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EVENTOS / PREVISÃO ══ -->
+      <div id="eventosModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <h2 style="margin:0;">Previsão de Eventos</h2>
+            <button onclick="openNovoEvento()" style="margin-top:0;">+ Novo Evento</button>
+          </div>
+          <div id="eventosMsg" class="msg" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- Novo/Editar Evento Form -->
+        <div id="eventoFormCard" class="card hidden" style="margin-top:12px;">
+          <h3 id="eventoFormTitle" style="margin:0 0 16px 0;">Novo Evento</h3>
+          <div class="grid" style="grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label>Cliente *</label>
+              <input id="evCliente" placeholder="Nome do cliente">
+            </div>
+            <div>
+              <label>Programa/Treinamento *</label>
+              <input id="evPrograma" placeholder="Ex: EVEREST, Sales Meeting...">
+            </div>
+            <div>
+              <label>Data início *</label>
+              <input id="evDataInicio" type="date">
+            </div>
+            <div>
+              <label>Data fim</label>
+              <input id="evDataFim" type="date">
+            </div>
+            <div>
+              <label>Horário</label>
+              <input id="evHorario" placeholder="Ex: 08h30 - 18h">
+            </div>
+            <div>
+              <label>Nº de participantes</label>
+              <input id="evNoPax" type="number" placeholder="0">
+            </div>
+            <div style="grid-column:1/-1;">
+              <label>Local</label>
+              <input id="evLocal" placeholder="Endereço do evento">
+            </div>
+            <div>
+              <label>Idioma</label>
+              <select id="evIdioma">
+                <option value="portugues">Português</option>
+                <option value="espanhol">Espanhol</option>
+                <option value="ingles">Inglês</option>
+              </select>
+            </div>
+            <div>
+              <label>Facilitador principal</label>
+              <input id="evFacilitador" placeholder="Nome do facilitador">
+            </div>
+            <div style="grid-column:1/-1;">
+              <label>Observações</label>
+              <input id="evObs" placeholder="Informações adicionais">
+            </div>
+          </div>
+
+          <!-- Equipe prevista -->
+          <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,.08); padding-top:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <h4 style="margin:0;">Equipe Prevista</h4>
+              <button onclick="addMembroPrevisao()" style="margin-top:0; padding:8px 14px; font-size:13px;">+ Adicionar</button>
+            </div>
+            <div id="equipePrevisaoList"></div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
+            <button onclick="saveEvento()">Salvar Evento</button>
+            <button class="btn-secondary" onclick="cancelEvento()">Cancelar</button>
+          </div>
+          <div id="eventoFormMsg" class="msg" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- Lista de eventos -->
+        <div id="eventosListCard" class="card" style="margin-top:12px;">
+          <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
+            <select id="evFiltroMes" style="width:130px;">
+              <option value="">Todos os meses</option>
+              <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+              <option value="3">Março</option><option value="4">Abril</option>
+              <option value="5">Maio</option><option value="6">Junho</option>
+              <option value="7">Julho</option><option value="8">Agosto</option>
+              <option value="9">Setembro</option><option value="10">Outubro</option>
+              <option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+            <input id="evFiltroAno" type="number" value="2026" style="width:85px;">
+            <button onclick="loadEventos()" style="margin-top:0; padding:10px 14px;">Filtrar</button>
+          </div>
+          <div id="eventosListBody">Carregando...</div>
+        </div>
+      </div>
+
+      <!-- ══ DETALHE EVENTO ══ -->
+      <div id="eventoDetailModule" class="hidden" style="margin-top:20px;">
+        <div class="card">
+          <button class="btn-secondary" onclick="openModule('eventosModule')" style="margin-bottom:12px; margin-top:0;">← Voltar</button>
+          <div id="eventoDetailContent">Carregando...</div>
+        </div>
+      </div>
   <script>
     const SUPABASE_URL = "https://wilanwotjokiqlrokgtj.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbGFud290am9raXFscm9rZ3RqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NzEyMTQsImV4cCI6MjA4ODI0NzIxNH0.9e-FIhYavy-Zo25OJLye-yv2j-Qh7H4yBiWD6outvXw";
@@ -1131,6 +1300,7 @@
       byId("svcData").value = "";
       byId("svcCliente").value = "";
       byId("svcPrograma").value = "";
+      if(byId("svcTipo")) byId("svcTipo").value = "facilitacao";
       byId("svcDescricao").value = "";
       byId("svcDuracao").value = "4";
       byId("svcValorBase").value = "0";
@@ -1176,6 +1346,8 @@
       if (currentProfile.role === "gestor") {
         menu.innerHTML = `
           <button onclick="openModule('homeModule')">Início</button>
+          <button onclick="openModule('dashboardModule')">Dashboard</button>
+          <button onclick="openModule('eventosModule')">Eventos</button>
           <button onclick="openModule('teamModule')">Equipe</button>
           <button onclick="openModule('settingsModule')">Settings</button>
           <button onclick="openModule('approvalsModule')">Aprovações</button>
@@ -1184,6 +1356,7 @@
       } else if (currentProfile.role === "financeiro") {
         menu.innerHTML = `
           <button onclick="openModule('homeModule')">Início</button>
+          <button onclick="openModule('dashboardModule')">Dashboard</button>
           <button onclick="openModule('financeModule')">Financeiro</button>
           <button onclick="openModule('reportsModule')">Relatórios</button>
         `;
@@ -1200,7 +1373,8 @@
       [
         "homeModule","teamModule","settingsModule","launchModule","reportDetailModule",
         "approvalsModule","approvalDetailModule",
-        "financeModule","financeDetailModule","nfPrestadorModule","reportsModule"
+        "financeModule","financeDetailModule","nfPrestadorModule","reportsModule",
+        "dashboardModule","eventosModule","eventoDetailModule"
       ].forEach(id => {
         const el = byId(id);
         if (el) el.classList.add("hidden");
@@ -1219,6 +1393,8 @@
       if (moduleId === "approvalsModule") loadReportsForApproval();
       if (moduleId === "financeModule") loadFinanceReports();
       if (moduleId === "reportsModule") loadReportsModule();
+      if (moduleId === "dashboardModule") loadDashboard();
+      if (moduleId === "eventosModule") loadEventos();
     }
 
     function renderApp() {
@@ -1426,7 +1602,7 @@
     window.loadTeam = async function loadTeam() {
       const tbody = byId("teamTableBody");
       if (!tbody) return;
-      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("profiles")
         .select("id,nome,email,role,ativo,must_change_password")
@@ -1856,6 +2032,7 @@
         data_execucao: byId("svcData").value,
         cliente: byId("svcCliente").value.trim(),
         programa: byId("svcPrograma").value.trim(),
+        tipo_servico: byId("svcTipo")?.value || "facilitacao",
         descricao_servico: byId("svcDescricao").value.trim(),
         duracao_horas: parseFloat(byId("svcDuracao").value || "0"),
         valor_base: parseFloat(byId("svcValorBase").value || "0"),
@@ -1901,6 +2078,7 @@
       byId("svcData").value = data.data_execucao || "";
       byId("svcCliente").value = data.cliente || "";
       byId("svcPrograma").value = data.programa || "";
+      if(byId("svcTipo")) byId("svcTipo").value = data.tipo_servico || "facilitacao";
       byId("svcDescricao").value = data.descricao_servico || "";
       byId("svcDuracao").value = data.duracao_horas || 4;
       byId("svcValorBase").value = data.valor_base || 0;
@@ -1929,7 +2107,7 @@
     async function loadServices() {
       if (!currentReport) return;
       const tbody = byId("servicesTableBody");
-      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("relatorio_servicos")
         .select("id, data_execucao, cliente, programa, duracao_horas, subtotal_servico")
@@ -1943,7 +2121,7 @@
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhum serviço lançado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhum serviço lançado.</td></tr>`;
         return;
       }
 
@@ -1954,6 +2132,7 @@
           <td>${item.data_execucao || ""}</td>
           <td>${item.cliente || ""}</td>
           <td>${item.programa || ""}</td>
+          <td><span style="font-size:11px; padding:2px 7px; border-radius:999px; background:${item.tipo_servico==='montagem'?'rgba(100,180,255,.12)':'rgba(242,138,60,.12)'}; color:${item.tipo_servico==='montagem'?'#7ec8f7':'#F28A3C'};">${item.tipo_servico==='montagem'?'Montagem':'Facilitação'}</span></td>
           <td>${item.duracao_horas || 0}h</td>
           <td>${currencyBRL(item.subtotal_servico)}</td>
           <td>
@@ -2070,7 +2249,7 @@
     async function loadReembolsos() {
       if (!currentReport) return;
       const tbody = byId("reembolsosTableBody");
-      tbody.innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="muted">Carregando...</td></tr>`;
 
       const { data, error } = await sb.from("relatorio_reembolsos")
         .select(`
@@ -3469,6 +3648,461 @@
       } catch(e) { setMsg("rptMsg","Erro: "+e.message); }
     };
 
+    // ══════════════════════════════════════════════════════
+    // DASHBOARD
+    // ══════════════════════════════════════════════════════
+
+    window.loadDashboard = async function() {
+      const now = new Date();
+      const mes = parseInt(byId("dashMes")?.value || now.getMonth()+1);
+      const ano = parseInt(byId("dashAno")?.value || now.getFullYear());
+      if(byId("dashMes")) byId("dashMes").value = mes;
+      if(byId("dashAno")) byId("dashAno").value = ano;
+
+      // KPIs
+      byId("dashKpis").innerHTML = `<div class="card" style="text-align:center;"><div class="muted" style="font-size:12px;">Carregando...</div></div>`;
+      byId("dashEquipeBody").innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      byId("dashLancamentosBody").innerHTML = `<tr><td colspan="6" class="muted">Carregando...</td></tr>`;
+      byId("dashEventos").innerHTML = `<span class="muted">Carregando...</span>`;
+
+      try {
+        // 1. Próximos eventos
+        const today = new Date().toISOString().slice(0,10);
+        const { data: eventos } = await sb.from("previsao_eventos")
+          .select("id,cliente,programa,data_inicio,data_fim,idioma,no_pax,facilitador_principal")
+          .gte("data_inicio", today)
+          .order("data_inicio")
+          .limit(6);
+
+        if (!eventos || eventos.length === 0) {
+          byId("dashEventos").innerHTML = `<span class="muted">Nenhum evento futuro cadastrado.</span>`;
+        } else {
+          byId("dashEventos").innerHTML = eventos.map(e => `
+            <div style="display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06);">
+              <div style="min-width:52px; text-align:center; background:rgba(242,138,60,.1); border:1px solid rgba(242,138,60,.25); border-radius:8px; padding:6px 4px;">
+                <div style="font-size:18px; font-weight:800; font-family:'Exo',Arial,sans-serif; color:#F28A3C; line-height:1;">${new Date(e.data_inicio+'T12:00:00').getDate()}</div>
+                <div style="font-size:10px; color:rgba(255,255,255,.5); text-transform:uppercase;">${new Date(e.data_inicio+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'})}</div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:700; font-size:14px;">${e.cliente}</div>
+                <div style="font-size:13px; color:rgba(255,255,255,.7);">${e.programa}</div>
+                <div style="font-size:12px; color:rgba(255,255,255,.45); margin-top:2px;">
+                  ${e.facilitador_principal ? `Facilitador: ${e.facilitador_principal}` : ''}
+                  ${e.idioma !== 'portugues' ? ` · ${e.idioma}` : ''}
+                  ${e.no_pax ? ` · ${e.no_pax} pax` : ''}
+                </div>
+              </div>
+            </div>`).join('');
+        }
+
+        // 2. Previsão de equipe do mês
+        const { data: previsoes } = await sb.from("previsao_equipe")
+          .select(`*, previsao_eventos!inner(mes_referencia, ano_referencia, cliente, programa, data_inicio)`)
+          .filter('previsao_eventos.data_inicio', 'gte', `${ano}-${String(mes).padStart(2,'0')}-01`)
+          .filter('previsao_eventos.data_inicio', 'lte', `${ano}-${String(mes).padStart(2,'0')}-31`);
+
+        // 3. Relatórios e serviços lançados no mês (todos status)
+        const { data: relatorios } = await sb.from("relatorios")
+          .select("id,status,total_servicos,total_reembolsos,total_geral,prestador_profile_id")
+          .eq("mes_referencia", mes)
+          .eq("ano_referencia", ano);
+
+        const { data: servicos } = await sb.from("relatorio_servicos")
+          .select("id,relatorio_id,data_execucao,cliente,programa,tipo_servico,duracao_horas,subtotal_servico");
+
+        // Map relatorio_id -> prestador
+        const relMap = {};
+        (relatorios||[]).forEach(r => { relMap[r.id] = r; });
+
+        // Get prestador profiles
+        const prestIds = [...new Set((relatorios||[]).map(r=>r.prestador_profile_id))];
+        let profileMap = {};
+        if (prestIds.length > 0) {
+          const { data: profs } = await sb.from("profiles").select("id,nome,email").in("id", prestIds);
+          (profs||[]).forEach(p => { profileMap[p.id] = p; });
+        }
+
+        // ── KPIs ──
+        const totalPrevisto = (previsoes||[]).reduce((s,p) => s + Number(p.valor_previsto||0) + Number(p.valor_idioma||0) + Number(p.valor_coordenacao||0), 0);
+        const totalLancado = (relatorios||[]).reduce((s,r) => s + Number(r.total_geral||0), 0);
+        const totalAprovado = (relatorios||[]).filter(r=>r.status==='aprovado_gestor').reduce((s,r) => s + Number(r.total_geral||0), 0);
+        const nEventos = eventos?.length || 0;
+
+        byId("dashKpis").innerHTML = [
+          { label: "Eventos futuros", value: nEventos, unit: "eventos", color: "#F28A3C" },
+          { label: "Previsão do mês", value: `R$ ${Number(totalPrevisto).toLocaleString('pt-BR',{minimumFractionDigits:2})}`, unit: "", color: "#60a5fa" },
+          { label: "Lançado (todos)", value: `R$ ${Number(totalLancado).toLocaleString('pt-BR',{minimumFractionDigits:2})}`, unit: "", color: "#34d399" },
+          { label: "Aprovado gestor", value: `R$ ${Number(totalAprovado).toLocaleString('pt-BR',{minimumFractionDigits:2})}`, unit: "", color: "#a78bfa" },
+        ].map(k => `
+          <div class="card" style="text-align:center; padding:16px;">
+            <div class="muted" style="font-size:12px; text-transform:uppercase; letter-spacing:.06em;">${k.label}</div>
+            <div style="font-family:'Exo',Arial,sans-serif; font-size:22px; font-weight:800; color:${k.color}; margin-top:6px;">${k.value}</div>
+          </div>`).join('');
+
+        // ── Previsão vs Realizado por prestador ──
+        // Build map: prestadorId -> { previsto, lancado, status }
+        const equipeMap = {};
+        (previsoes||[]).forEach(p => {
+          const key = p.prestador_profile_id || p.nome_livre || 'desconhecido';
+          if (!equipeMap[key]) equipeMap[key] = { nome: p.nome_livre || key, tipo: p.tipo, previsto: 0, lancado: 0, status: '-' };
+          equipeMap[key].previsto += Number(p.valor_previsto||0) + Number(p.valor_idioma||0) + Number(p.valor_coordenacao||0);
+        });
+        (relatorios||[]).forEach(r => {
+          const key = r.prestador_profile_id;
+          const prof = profileMap[key];
+          if (!equipeMap[key]) equipeMap[key] = { nome: prof?.nome || prof?.email || key, tipo: '-', previsto: 0, lancado: 0, status: r.status };
+          equipeMap[key].lancado += Number(r.total_geral||0);
+          equipeMap[key].status = r.status;
+          if (prof && !equipeMap[key].nome.includes('@')) equipeMap[key].nome = prof.nome || prof.email;
+        });
+
+        const equipeRows = Object.entries(equipeMap);
+        if (equipeRows.length === 0) {
+          byId("dashEquipeBody").innerHTML = `<tr><td colspan="6" class="muted">Nenhum dado para este mês.</td></tr>`;
+        } else {
+          byId("dashEquipeBody").innerHTML = equipeRows.map(([key, d]) => {
+            const diff = d.lancado - d.previsto;
+            const diffColor = diff > 0 ? '#fbbf24' : diff < 0 ? '#60a5fa' : '#34d399';
+            const diffStr = diff === 0 ? '—' : (diff > 0 ? '+' : '') + `R$ ${Math.abs(diff).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+            const statusBadge = { rascunho:'#888', enviado:'#60a5fa', aprovado_gestor:'#34d399', devolvido:'#f87171' }[d.status] || '#888';
+            return `<tr>
+              <td>${d.nome}</td>
+              <td><span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(242,138,60,.1); color:#F28A3C;">${d.tipo||'-'}</span></td>
+              <td>${d.previsto > 0 ? `R$ ${d.previsto.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : '<span class="muted">—</span>'}</td>
+              <td>${d.lancado > 0 ? `R$ ${d.lancado.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : '<span class="muted">—</span>'}</td>
+              <td style="color:${diffColor}; font-weight:${diff!==0?'700':'400'};">${diffStr}</td>
+              <td><span style="font-size:11px; padding:2px 8px; border-radius:999px; background:${statusBadge}22; color:${statusBadge};">${d.status||'-'}</span></td>
+            </tr>`;
+          }).join('');
+        }
+
+        // ── Lançamentos recentes (todos os serviços do mês) ──
+        const relIds = (relatorios||[]).map(r=>r.id);
+        const svcsDoMes = relIds.length > 0
+          ? (servicos||[]).filter(s => relIds.includes(s.relatorio_id))
+          : [];
+
+        if (svcsDoMes.length === 0) {
+          byId("dashLancamentosBody").innerHTML = `<tr><td colspan="6" class="muted">Nenhum lançamento este mês.</td></tr>`;
+        } else {
+          byId("dashLancamentosBody").innerHTML = svcsDoMes.sort((a,b) => (b.data_execucao||'').localeCompare(a.data_execucao||'')).map(s => {
+            const rel = relMap[s.relatorio_id];
+            const prof = rel ? profileMap[rel.prestador_profile_id] : null;
+            const statusColor = { rascunho:'#888', enviado:'#60a5fa', aprovado_gestor:'#34d399', devolvido:'#f87171' }[rel?.status] || '#888';
+            return `<tr>
+              <td>${prof?.nome || prof?.email || '-'}</td>
+              <td>${s.data_execucao || '-'}</td>
+              <td>${s.cliente || '-'}</td>
+              <td><span style="font-size:11px; padding:2px 7px; border-radius:999px; background:${s.tipo_servico==='montagem'?'rgba(100,180,255,.1)':'rgba(242,138,60,.1)'}; color:${s.tipo_servico==='montagem'?'#7ec8f7':'#F28A3C'};">${s.tipo_servico==='montagem'?'Montagem':'Facilitação'}</span></td>
+              <td>R$ ${Number(s.subtotal_servico||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+              <td><span style="font-size:11px; padding:2px 8px; border-radius:999px; background:${statusColor}22; color:${statusColor};">${rel?.status||'-'}</span></td>
+            </tr>`;
+          }).join('');
+        }
+
+      } catch(e) {
+        byId("dashKpis").innerHTML = `<div class="card" style="color:#f87171;">Erro: ${e.message}</div>`;
+      }
+    };
+
+    // ══════════════════════════════════════════════════════
+    // EVENTOS / PREVISÃO
+    // ══════════════════════════════════════════════════════
+
+    let editingEventoId = null;
+    let equipePrevisaoItems = [];
+
+    window.loadEventos = async function() {
+      const mes = byId("evFiltroMes")?.value || "";
+      const ano = parseInt(byId("evFiltroAno")?.value || new Date().getFullYear());
+
+      byId("eventosListBody").innerHTML = `<span class="muted">Carregando...</span>`;
+
+      let query = sb.from("previsao_eventos")
+        .select("id,cliente,programa,data_inicio,data_fim,idioma,no_pax,facilitador_principal,local_evento")
+        .order("data_inicio", {ascending: false});
+
+      if (mes) {
+        const pad = String(mes).padStart(2,'0');
+        query = query.gte("data_inicio", `${ano}-${pad}-01`).lte("data_inicio", `${ano}-${pad}-31`);
+      } else {
+        query = query.gte("data_inicio", `${ano}-01-01`).lte("data_inicio", `${ano}-12-31`);
+      }
+
+      const { data, error } = await query;
+      if (error) { byId("eventosListBody").innerHTML = `<span style="color:#f87171;">Erro: ${error.message}</span>`; return; }
+      if (!data || data.length === 0) { byId("eventosListBody").innerHTML = `<span class="muted">Nenhum evento encontrado.</span>`; return; }
+
+      byId("eventosListBody").innerHTML = data.map(e => {
+        const dtInicio = new Date(e.data_inicio+'T12:00:00');
+        const dtFim = e.data_fim ? new Date(e.data_fim+'T12:00:00') : null;
+        const idiomaLabel = { espanhol:'🌐 Espanhol', ingles:'🌐 Inglês' }[e.idioma] || '';
+        return `
+        <div style="border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:14px 16px; margin-bottom:10px; display:flex; align-items:flex-start; gap:14px;">
+          <div style="min-width:48px; text-align:center; background:rgba(242,138,60,.1); border:1px solid rgba(242,138,60,.2); border-radius:8px; padding:6px 4px;">
+            <div style="font-size:20px; font-weight:800; font-family:'Exo',Arial,sans-serif; color:#F28A3C; line-height:1;">${dtInicio.getDate()}</div>
+            <div style="font-size:10px; color:rgba(255,255,255,.5); text-transform:uppercase;">${dtInicio.toLocaleDateString('pt-BR',{month:'short'})}</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:15px;">${e.cliente}</div>
+            <div style="font-size:13px; color:rgba(255,255,255,.75);">${e.programa}</div>
+            <div style="font-size:12px; color:rgba(255,255,255,.45); margin-top:3px;">
+              ${dtFim ? `até ${dtFim.getDate()}/${dtFim.getMonth()+1}` : ''}
+              ${e.facilitador_principal ? ` · ${e.facilitador_principal}` : ''}
+              ${idiomaLabel}
+              ${e.no_pax ? ` · ${e.no_pax} pax` : ''}
+              ${e.local_evento ? `<br><span style="color:rgba(255,255,255,.35);">📍 ${e.local_evento}</span>` : ''}
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button onclick="viewEvento('${e.id}')" style="margin-top:0; padding:7px 12px; font-size:12px; background:transparent; border:1px solid rgba(255,255,255,.2);">Ver</button>
+            <button onclick="editEvento('${e.id}')" style="margin-top:0; padding:7px 12px; font-size:12px; background:rgba(242,138,60,.15); border:1px solid rgba(242,138,60,.3); color:#F28A3C;">Editar</button>
+            <button onclick="deleteEvento('${e.id}')" style="margin-top:0; padding:7px 12px; font-size:12px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); color:#f87171;">✕</button>
+          </div>
+        </div>`;
+      }).join('');
+    };
+
+    window.openNovoEvento = function() {
+      editingEventoId = null;
+      equipePrevisaoItems = [];
+      byId("eventoFormTitle").innerText = "Novo Evento";
+      ["evCliente","evPrograma","evHorario","evLocal","evFacilitador","evObs"].forEach(id => { if(byId(id)) byId(id).value = ""; });
+      byId("evDataInicio").value = "";
+      byId("evDataFim").value = "";
+      byId("evNoPax").value = "";
+      byId("evIdioma").value = "portugues";
+      renderEquipePrevisao();
+      byId("eventoFormCard").classList.remove("hidden");
+      byId("eventoFormCard").scrollIntoView({behavior:"smooth", block:"start"});
+    };
+
+    window.cancelEvento = function() {
+      byId("eventoFormCard").classList.add("hidden");
+      editingEventoId = null;
+      equipePrevisaoItems = [];
+    };
+
+    window.addMembroPrevisao = async function() {
+      // Load prestadores for select
+      const { data: prests } = await sb.from("profiles").select("id,nome,email").eq("role","prestador").order("nome");
+      const opts = (prests||[]).map(p => `<option value="${p.id}">${p.nome||p.email}</option>`).join('');
+      equipePrevisaoItems.push({ prestador_id: '', nome_livre: '', tipo: 'facilitador', valor_previsto: 0, valor_idioma: 0, valor_coordenacao: 0, _opts: opts });
+      renderEquipePrevisao();
+    };
+
+    function renderEquipePrevisao() {
+      const list = byId("equipePrevisaoList");
+      if (!list) return;
+      if (equipePrevisaoItems.length === 0) {
+        list.innerHTML = `<div class="muted" style="font-size:13px; padding:8px 0;">Nenhum membro adicionado. Clique em "+ Adicionar".</div>`;
+        return;
+      }
+      list.innerHTML = equipePrevisaoItems.map((m, i) => `
+        <div style="border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:12px; margin-bottom:8px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <div>
+              <label style="font-size:12px;">Prestador</label>
+              <select onchange="updateMembro(${i},'prestador_id',this.value)" style="width:100%;">
+                <option value="">Selecione...</option>
+                ${m._opts||''}
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;">Tipo</label>
+              <select onchange="updateMembro(${i},'tipo',this.value)" style="width:100%;">
+                <option value="facilitador" ${m.tipo==='facilitador'?'selected':''}>Facilitador</option>
+                <option value="assistencia" ${m.tipo==='assistencia'?'selected':''}>Assistência</option>
+                <option value="montagem" ${m.tipo==='montagem'?'selected':''}>Montagem</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;">Valor previsto (R$)</label>
+              <input type="number" value="${m.valor_previsto||0}" oninput="updateMembro(${i},'valor_previsto',this.value)" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-size:12px;">Adicional idioma (R$)</label>
+              <input type="number" value="${m.valor_idioma||0}" oninput="updateMembro(${i},'valor_idioma',this.value)" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-size:12px;">Adicional coord./liderança (R$)</label>
+              <input type="number" value="${m.valor_coordenacao||0}" oninput="updateMembro(${i},'valor_coordenacao',this.value)" style="width:100%;">
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <button onclick="removeMembro(${i})" style="margin-top:0; padding:8px 12px; font-size:12px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); color:#f87171; width:100%;">Remover</button>
+            </div>
+          </div>
+          <div style="font-size:12px; color:#F28A3C; font-weight:700;">
+            Total: R$ ${(Number(m.valor_previsto||0)+Number(m.valor_idioma||0)+Number(m.valor_coordenacao||0)).toLocaleString('pt-BR',{minimumFractionDigits:2})}
+          </div>
+        </div>`).join('');
+
+      // Restore selected values
+      equipePrevisaoItems.forEach((m, i) => {
+        const sel = list.querySelectorAll('select')[i*2];
+        if (sel && m.prestador_id) sel.value = m.prestador_id;
+      });
+    }
+
+    window.updateMembro = function(i, field, value) {
+      equipePrevisaoItems[i][field] = value;
+      if (['valor_previsto','valor_idioma','valor_coordenacao'].includes(field)) {
+        renderEquipePrevisao();
+      }
+    };
+
+    window.removeMembro = function(i) {
+      equipePrevisaoItems.splice(i, 1);
+      renderEquipePrevisao();
+    };
+
+    window.saveEvento = async function() {
+      const cliente = byId("evCliente").value.trim();
+      const programa = byId("evPrograma").value.trim();
+      const dataInicio = byId("evDataInicio").value;
+      if (!cliente || !programa || !dataInicio) {
+        setMsg("eventoFormMsg","Preencha Cliente, Programa e Data de início."); return;
+      }
+      setMsg("eventoFormMsg","Salvando...");
+
+      const payload = {
+        cliente,
+        programa,
+        data_inicio: dataInicio,
+        data_fim: byId("evDataFim").value || null,
+        horario: byId("evHorario").value.trim() || null,
+        local_evento: byId("evLocal").value.trim() || null,
+        idioma: byId("evIdioma").value,
+        no_pax: parseInt(byId("evNoPax").value||0) || null,
+        facilitador_principal: byId("evFacilitador").value.trim() || null,
+        observacoes: byId("evObs").value.trim() || null,
+        criado_por: currentProfile.id,
+      };
+
+      let eventoId = editingEventoId;
+      if (editingEventoId) {
+        const { error } = await sb.from("previsao_eventos").update(payload).eq("id", editingEventoId);
+        if (error) { setMsg("eventoFormMsg","Erro: "+error.message); return; }
+        // Delete old equipe
+        await sb.from("previsao_equipe").delete().eq("evento_id", editingEventoId);
+      } else {
+        const { data, error } = await sb.from("previsao_eventos").insert(payload).select().single();
+        if (error) { setMsg("eventoFormMsg","Erro: "+error.message); return; }
+        eventoId = data.id;
+      }
+
+      // Insert equipe
+      const equipe = equipePrevisaoItems.filter(m => m.prestador_id).map(m => ({
+        evento_id: eventoId,
+        prestador_profile_id: m.prestador_id,
+        tipo: m.tipo,
+        valor_previsto: parseFloat(m.valor_previsto||0),
+        valor_idioma: parseFloat(m.valor_idioma||0),
+        valor_coordenacao: parseFloat(m.valor_coordenacao||0),
+      }));
+      if (equipe.length > 0) {
+        const { error } = await sb.from("previsao_equipe").insert(equipe);
+        if (error) { setMsg("eventoFormMsg","Aviso equipe: "+error.message); }
+      }
+
+      setMsg("eventoFormMsg","Salvo com sucesso!");
+      setTimeout(() => { cancelEvento(); loadEventos(); }, 800);
+    };
+
+    window.deleteEvento = async function(id) {
+      if (!confirm("Excluir este evento e toda a previsão de equipe?")) return;
+      const { error } = await sb.from("previsao_eventos").delete().eq("id", id);
+      if (error) { setMsg("eventosMsg","Erro: "+error.message); return; }
+      loadEventos();
+    };
+
+    window.editEvento = async function(id) {
+      const { data, error } = await sb.from("previsao_eventos").select("*").eq("id",id).single();
+      if (error || !data) return;
+      editingEventoId = id;
+      byId("eventoFormTitle").innerText = "Editar Evento";
+      byId("evCliente").value = data.cliente||"";
+      byId("evPrograma").value = data.programa||"";
+      byId("evDataInicio").value = data.data_inicio||"";
+      byId("evDataFim").value = data.data_fim||"";
+      byId("evHorario").value = data.horario||"";
+      byId("evLocal").value = data.local_evento||"";
+      byId("evIdioma").value = data.idioma||"portugues";
+      byId("evNoPax").value = data.no_pax||"";
+      byId("evFacilitador").value = data.facilitador_principal||"";
+      byId("evObs").value = data.observacoes||"";
+
+      // Load equipe
+      const { data: equipe } = await sb.from("previsao_equipe").select("*").eq("evento_id",id);
+      const { data: prests } = await sb.from("profiles").select("id,nome,email").eq("role","prestador").order("nome");
+      const opts = (prests||[]).map(p => `<option value="${p.id}">${p.nome||p.email}</option>`).join('');
+      equipePrevisaoItems = (equipe||[]).map(m => ({...m, _opts: opts}));
+      renderEquipePrevisao();
+
+      byId("eventoFormCard").classList.remove("hidden");
+      byId("eventoFormCard").scrollIntoView({behavior:"smooth",block:"start"});
+    };
+
+    window.viewEvento = async function(id) {
+      openModule("eventoDetailModule");
+      byId("eventoDetailContent").innerHTML = `<span class="muted">Carregando...</span>`;
+      const { data: ev } = await sb.from("previsao_eventos").select("*").eq("id",id).single();
+      const { data: equipe } = await sb.from("previsao_equipe").select("*").eq("evento_id",id);
+      const prestIds = (equipe||[]).filter(e=>e.prestador_profile_id).map(e=>e.prestador_profile_id);
+      let profileMap = {};
+      if (prestIds.length > 0) {
+        const { data: profs } = await sb.from("profiles").select("id,nome,email").in("id",prestIds);
+        (profs||[]).forEach(p => { profileMap[p.id] = p; });
+      }
+      const totalPrev = (equipe||[]).reduce((s,e) => s+Number(e.valor_previsto||0)+Number(e.valor_idioma||0)+Number(e.valor_coordenacao||0),0);
+      const tipoLabel = { facilitador:'Facilitador', assistencia:'Assistência', montagem:'Montagem' };
+      byId("eventoDetailContent").innerHTML = `
+        <h2 style="margin:0 0 4px 0;">${ev.cliente}</h2>
+        <div style="font-size:15px; color:rgba(255,255,255,.7); margin-bottom:16px;">${ev.programa}</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-bottom:20px;">
+          ${[
+            ['Data', ev.data_inicio + (ev.data_fim ? ` a ${ev.data_fim}` : '')],
+            ['Horário', ev.horario||'-'],
+            ['Participantes', ev.no_pax ? ev.no_pax+' pax' : '-'],
+            ['Idioma', ev.idioma||'-'],
+            ['Facilitador', ev.facilitador_principal||'-'],
+          ].map(([l,v]) => `<div style="background:rgba(255,255,255,.04); border-radius:8px; padding:10px;"><div class="muted" style="font-size:11px;">${l}</div><div style="font-size:13px; margin-top:2px;">${v}</div></div>`).join('')}
+        </div>
+        ${ev.local_evento ? `<div style="font-size:13px; color:rgba(255,255,255,.5); margin-bottom:16px;">📍 ${ev.local_evento}</div>` : ''}
+        <h4 style="margin:0 0 10px 0;">Equipe Prevista</h4>
+        ${equipe && equipe.length > 0 ? `
+        <table class="table">
+          <thead><tr><th>Prestador</th><th>Tipo</th><th>Facilitação</th><th>Idioma</th><th>Coord.</th><th>Total</th></tr></thead>
+          <tbody>
+            ${equipe.map(e => {
+              const p = profileMap[e.prestador_profile_id];
+              const tot = Number(e.valor_previsto||0)+Number(e.valor_idioma||0)+Number(e.valor_coordenacao||0);
+              return `<tr>
+                <td>${p?.nome||p?.email||'-'}</td>
+                <td>${tipoLabel[e.tipo]||e.tipo}</td>
+                <td>R$ ${Number(e.valor_previsto||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td>R$ ${Number(e.valor_idioma||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td>R$ ${Number(e.valor_coordenacao||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td style="font-weight:700; color:#F28A3C;">R$ ${tot.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+              </tr>`;
+            }).join('')}
+            <tr style="background:rgba(242,138,60,.08);">
+              <td colspan="5" style="font-weight:700;">Total Previsto</td>
+              <td style="font-weight:800; color:#F28A3C;">R$ ${totalPrev.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+            </tr>
+          </tbody>
+        </table>` : `<div class="muted">Nenhuma equipe cadastrada para este evento.</div>`}
+        ${ev.observacoes ? `<div style="margin-top:16px; padding:12px; background:rgba(255,255,255,.04); border-radius:8px; font-size:13px; color:rgba(255,255,255,.6);">📝 ${ev.observacoes}</div>` : ''}
+        <div style="margin-top:16px;">
+          <button onclick="editEvento('${ev.id}'); openModule('eventosModule');" style="margin-top:0;">Editar Evento</button>
+        </div>`;
+    };
+
+    // Init dashboard defaults
+    const _now = new Date();
+    if(byId("dashMes")) byId("dashMes").value = _now.getMonth()+1;
+    if(byId("dashAno")) byId("dashAno").value = _now.getFullYear();
+    if(byId("evFiltroAno")) byId("evFiltroAno").value = _now.getFullYear();
     bootstrap();
     toggleReembolsoMode();
   </script>
